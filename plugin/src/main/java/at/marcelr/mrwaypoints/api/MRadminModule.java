@@ -382,6 +382,18 @@ final class MRadminModule implements AdminModule, WebModule {
             cards.add(card(w, lang, service));
         }
         blocks.add(new SelfBlock.Cards(m.plain("self-own-title"), cards, m.plain("self-own-empty")));
+        // Which categories the mod shows in Xaero - the same switches as in game (key J).
+        List<SelfBlock.Button> toggles = new ArrayList<>();
+        for (Category category : plugin.store().categories()) {
+            boolean shown = plugin.store().visible(viewer.player(), category);
+            toggles.add(new SelfBlock.Button(m.plain(shown ? "self-xaero-on" : "self-xaero-off", "name", category.name(lang)),
+                    "xaero", Map.of("category", category.id(), "visible", String.valueOf(!shown)), shown ? "good" : "",
+                    null, null));
+        }
+        if (!toggles.isEmpty()) {
+            blocks.add(new SelfBlock.Group(m.plain("self-xaero-title"), m.plain("self-xaero-text"),
+                    List.of(new SelfBlock.Buttons(toggles))));
+        }
         for (Category category : plugin.store().categories()) {
             List<SelfBlock.Row> rows = new ArrayList<>();
             for (Waypoint w : plugin.store().inCategory(category.id())) {
@@ -426,6 +438,14 @@ final class MRadminModule implements AdminModule, WebModule {
             Messages m = plugin.messages();
             if (!viewer.has(WaypointPerms.USE)) {
                 return m.plain("self-no-permission");
+            }
+            if (action.equals("xaero")) {
+                Category category = plugin.store().category(args.getOrDefault("category", ""));
+                if (category == null) {
+                    return m.plain("self-not-found");
+                }
+                plugin.store().setVisible(viewer.player(), category, Boolean.parseBoolean(args.get("visible")));
+                return null;
             }
             Waypoint w;
             try {

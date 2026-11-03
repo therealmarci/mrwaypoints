@@ -1,0 +1,30 @@
+{
+	"schemaVersion": 1,
+	"id": "mrwaypoints",
+	"version": "${version}",
+	"name": "MRwaypoints",
+	"description": "Client mod for the Paper plugin MRwaypoints: shows the server's waypoints in Xaero's Minimap and World Map, each category can be switched on and off. Does nothing on servers without the plugin.",
+	"authors": [
+		"_therealmarci"
+	],
+	"contact": {
+		"sources": "https://github.com/therealmarci/mrwaypoints"
+	},
+	"license": "LicenseRef-MRtechnology",
+	"environment": "client",
+	"entrypoints": {
+		"client": [
+			"at.marcelr.mrwaypoints.mod.MRwaypointsClient"
+		]
+	},
+	"depends": {
+		"fabricloader": ">=${loader}",
+		"minecraft": "~${minecraft}",
+		"java": ">=25",
+		"fabric-api": "*",
+		"xaerominimap": "*"
+	},
+	"suggests": {
+		"xaeroworldmap": "*"
+	}
+}

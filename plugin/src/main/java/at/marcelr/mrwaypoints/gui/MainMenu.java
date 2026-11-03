@@ -58,6 +58,16 @@ public final class MainMenu extends Menu {
                 render();
             });
         }
-        set(40, Items.of(Material.OAK_DOOR).name(messages.item("gui-close")).build(), click -> viewer.closeInventory());
+        // With the mod: "show in Xaero" and close side by side, otherwise close in the middle.
+        boolean mod = plugin.bridge().compatible(viewer);
+        if (mod) {
+            set(39, Items.of(Material.FILLED_MAP).name(messages.item("gui-xaero-name"))
+                    .lore(messages.lore("gui-xaero-lore")).build(), click -> {
+                clickSound();
+                viewer.closeInventory();
+                plugin.bridge().openScreen(viewer);
+            });
+        }
+        set(mod ? 41 : 40, Items.of(Material.OAK_DOOR).name(messages.item("gui-close")).build(), click -> viewer.closeInventory());
     }
 }

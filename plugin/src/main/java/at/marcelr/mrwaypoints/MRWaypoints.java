@@ -33,6 +33,7 @@ public final class MRWaypoints extends JavaPlugin implements Listener {
     private UpdateChecker updateChecker;
     private MenuListener menuListener;
     private MRadminLink mradmin;
+    private ModBridge bridge;
 
     @Override
     public void onEnable() {
@@ -43,6 +44,15 @@ public final class MRWaypoints extends JavaPlugin implements Listener {
         mradmin = new MRadminLink(this);
         store = new WaypointStore(this);
         store.onChange(mradmin::changed);
+        bridge = new ModBridge(this);
+        store.onChange(bridge::resendAll);
+        store.onVisibilityChange(id -> {
+            var player = Bukkit.getPlayer(id);
+            if (player != null) {
+                bridge.sendState(player);
+            }
+            mradmin.changed();
+        });
         store.load();
         guide = new Guide(this);
         guide.start();
@@ -51,6 +61,8 @@ public final class MRWaypoints extends JavaPlugin implements Listener {
         menuListener = new MenuListener(this);
         menuListener.start();
 
+        bridge.start();
+        getServer().getPluginManager().registerEvents(bridge, this);
         getServer().getPluginManager().registerEvents(guide, this);
         getServer().getPluginManager().registerEvents(menuListener, this);
         getServer().getPluginManager().registerEvents(this, this);
@@ -66,6 +78,9 @@ public final class MRWaypoints extends JavaPlugin implements Listener {
         if (menuListener != null) {
             menuListener.stop();
             menuListener.closeAll();
+        }
+        if (bridge != null) {
+            bridge.stop();
         }
         if (guide != null) {
             guide.stopTask();
@@ -144,6 +159,11 @@ public final class MRWaypoints extends JavaPlugin implements Listener {
 
     public WaypointStore store() {
         return store;
+    }
+
+    /** Connection to the MRwaypoints mod (Xaero's map). */
+    public ModBridge bridge() {
+        return bridge;
     }
 
     public Guide guide() {

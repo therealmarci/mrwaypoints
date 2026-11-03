@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 public record Settings(
         GuideSettings guide,
         WaypointSettings waypoints,
+        ModSettings mod,
         UpdateSettings update,
         GuiSettings gui
 ) {
@@ -26,6 +27,14 @@ public record Settings(
     public record WaypointSettings(int maxNameLength) {
     }
 
+    /**
+     * The MRwaypoints mod (Xaero's map).
+     *
+     * @param minimumVersion oldest mod version allowed ("" = any version that speaks a supported protocol)
+     */
+    public record ModSettings(String minimumVersion, String downloadUrl) {
+    }
+
     public record UpdateSettings(boolean enabled, String source, boolean includePrereleases,
                                  int intervalHours, boolean notifyOnJoin) {
     }
@@ -41,6 +50,14 @@ public record Settings(
         WaypointSettings waypoints = new WaypointSettings(
                 Math.clamp(c.getInt("waypoints.max-name-length", 32), 3, 64));
 
+        String minimum = c.getString("mod.minimum-version", "").trim();
+        if (!minimum.isEmpty() && !minimum.matches("\\d+(\\.\\d+){0,2}.*")) {
+            log.warning("Invalid mod.minimum-version '" + minimum + "' (expected e.g. 0.2.0), ignoring it.");
+            minimum = "";
+        }
+        ModSettings mod = new ModSettings(minimum,
+                c.getString("mod.download-url", "https://mrtechnology.marcelr.at/download/mrwaypoints/").trim());
+
         String source = c.getString("update-checker.source", "github").toLowerCase(Locale.ROOT);
         if (!source.equals("modrinth") && !source.equals("github")) {
             log.warning("Invalid update-checker.source '" + source + "', using github.");
@@ -55,6 +72,6 @@ public record Settings(
         GuiSettings gui = new GuiSettings(
                 Math.max(5, c.getInt("gui.refresh-ticks", 20)),
                 c.getBoolean("gui.sounds", true));
-        return new Settings(guide, waypoints, update, gui);
+        return new Settings(guide, waypoints, mod, update, gui);
     }
 }

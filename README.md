@@ -5,12 +5,21 @@
 **[⬇ Download](https://mrtechnology.marcelr.at/download/mrwaypoints/)** · **[📖 Anleitung online](https://mrtechnology.marcelr.at/docs/mrwaypoints/)** · **[🐞 Fehler melden](https://mrtechnology.marcelr.at/report/mrwaypoints/)**
 
 > [!NOTE]
-> MRwaypoints ist **in Entwicklung**. Fertig sind Menü, Wegweiser und mit MRadmin die Verwaltung im Web, die Ebenen auf der Webkarte und der Bereich auf der Spielerseite. Der Client-Mod für Xaero's Karten folgt.
+> MRwaypoints ist eine **Vorabversion**. Rückmeldungen gern über [Fehler melden](https://mrtechnology.marcelr.at/report/mrwaypoints/).
+
+MRwaypoints besteht aus **zwei Teilen** - beide gibt es auf der [Download-Seite](https://mrtechnology.marcelr.at/download/mrwaypoints/):
+
+| Teil | Wer braucht ihn | Wohin |
+|---|---|---|
+| **Plugin** (`MRwaypoints-mc26.3-v….jar`) | der Server | Paper 26.3, Java 25 → Ordner `plugins/` |
+| **Client-Mod** (`MRwaypoints-mod-mc26.3-v….jar`) | Spieler, die die Wegpunkte in Xaero's Karten sehen wollen | Fabric 26.3 mit [Fabric API](https://modrinth.com/mod/fabric-api) und [Xaero's Minimap](https://modrinth.com/mod/xaeros-minimap) → Ordner `mods/` |
+
+Spieler **ohne** Mod nutzen Menü und Wegweiser ganz normal. Plugin und Mod haben eigene Versionen.
 
 | Auf einen Blick | |
 |---|---|
 | Server | Paper 26.3 (oder ein Fork wie Purpur), Java 25 |
-| Client | nichts nötig - für Xaero's Karten später der MRwaypoints-Mod (Fabric) |
+| Client | nichts nötig - für Xaero's Karten der MRwaypoints-Mod (Fabric Loader + Fabric API + Xaero's Minimap) |
 | Benötigt | nichts - LuckPerms empfohlen, MRadmin optional |
 | Sprachen | Deutsch, Englisch - jeder Spieler automatisch in der Sprache seines Minecraft-Clients |
 | Status | Vorabversion (0.x) |
@@ -49,6 +58,11 @@
 
 Liegt ein Wegpunkt in einer anderen Welt, zeigt der Wegweiser, in welcher. Private Wegpunkte legst du wie gewohnt direkt in Xaero's Minimap an - sie bleiben auf deinem PC.
 
+### In Xaero's Minimap und World Map (mit Mod)
+1. **Fabric API**, **Xaero's Minimap** (und gern Xaero's World Map) und den **[MRwaypoints-Mod](https://mrtechnology.marcelr.at/download/mrwaypoints/)** (Zeile „Fabric-Mod (Client)“) in den Ordner `mods/` legen.
+2. Auf den Server gehen - die Server-Wegpunkte erscheinen von selbst auf der Minimap, im Spiel und auf der World Map, in der Farbe ihrer Kategorie. Sie liegen getrennt von deinen eigenen Xaero-Wegpunkten.
+3. **Kategorien ein- und ausschalten:** Taste **`J`** (änderbar unter Optionen → Steuerung → MRwaypoints), Knopf **„Server-Wegpunkte …“** in Xaeros Wegpunkt-Menü oder **„In Xaero anzeigen“** in `/waypoints`. Deine Auswahl speichert der Server - sie gilt auf jedem PC und auch auf der Spielerseite im Web.
+
 ## Für Server-Admins
 
 ### Kategorien
@@ -63,7 +77,7 @@ In `plugins/MRwaypoints/categories.yml`, danach `/mrwaypoints reload`:
 | `icon` | Item im Menü, z.B. `EMERALD` |
 | `players-create` | `true` = jeder Spieler (`mrwaypoints.player`) darf hier anlegen, `false` = nur mit `mrwaypoints.create.<id>` |
 | `max-per-player` | so viele eigene Wegpunkte pro Spieler, `0` = unbegrenzt (wer `mrwaypoints.manage.<id>` hat, ist nie begrenzt) |
-| `visible` | in Xaero's Karte standardmäßig eingeblendet (Spieler schalten Kategorien mit dem Mod um) - *kommt mit dem Mod* |
+| `visible` | in Xaero's Karte standardmäßig eingeblendet - jeder Spieler schaltet es für sich um (Mod oder Spielerseite) |
 | `map` | als eigene Ebene auf der Webkarte zeigen (mit MRadmin und squaremap) - die Karte ist öffentlich |
 
 Mitgeliefert sind **Spawn & Warps** (nur Team), **Shops** (Spieler, je 3), **Farmen** (Spieler, je 5, nicht auf der Webkarte) und **Sehenswürdigkeiten** (Spieler, je 3).
@@ -121,6 +135,7 @@ Alles steht kommentiert in `plugins/MRwaypoints/config.yml`. Änderungen überni
 | `language` · `fallback-language` · `server-language` | Sprachen - jeder Spieler automatisch in seiner |
 | `guide` | Wegweiser: wie oft der Pfeil aktualisiert (`update-ticks`), ab wie vielen Blöcken „angekommen“ (`arrive-distance`), Ton |
 | `waypoints` | längster Name (`max-name-length`) |
+| `mod` | Mod für Xaero: Mindestversion (`minimum-version`), Download-Link |
 | `update-checker` · `gui` | Update-Hinweise, Menüs |
 
 **Texte:** Alle Texte stehen in `plugins/MRwaypoints/lang/<sprache>.yml`, die Namen der Kategorien in `categories.yml`. Die Konsole ist immer Englisch.
@@ -136,12 +151,14 @@ MRwaypoints läuft **allein**. Zusammen mit anderen MRtechnology-Plugins kann es
 | Bereich **Wegpunkte** auf der Spielerseite (`/web`): eigene umbenennen und löschen, alle nach Kategorie | MRadmin |
 | Knopf im MRadmin-Dashboard (öffnet `/waypoints`) | MRadmin |
 | Kategorien mit `map: true` als Ebenen auf der Webkarte (Pin in der Kategoriefarbe, Klick zeigt Name, Ort und Ersteller) | MRadmin + squaremap |
-| Kategorien in Xaero's Minimap und World Map ein- und ausblenden *(kommt)* | MRwaypoints-Mod + Xaero's Minimap |
+| Wegpunkte in Xaero's Minimap und World Map, Kategorien ein- und ausblenden | MRwaypoints-Mod + Xaero's Minimap |
 
 ## Häufige Fragen
 **Ein Spieler kann keinen Wegpunkt anlegen.** In der Kategorie braucht er `mrwaypoints.create.<kategorie>` - oder die Kategorie hat `players-create: true` und er hat `mrwaypoints.player`. Ist das Limit (`max-per-player`) erreicht, wird der Knopf grau.
 
-**Brauchen Spieler einen Mod?** Nein. Menü und Wegweiser funktionieren mit jedem Client. Der Mod (kommt) bringt die Wegpunkte zusätzlich in Xaero's Karten.
+**Brauchen Spieler einen Mod?** Nein. Menü und Wegweiser funktionieren mit jedem Client. Der Mod bringt die Wegpunkte zusätzlich in Xaero's Karten.
+
+**Mit Mod erscheinen keine Wegpunkte in Xaero.** Ist die Kategorie für dich eingeschaltet (Taste `J`)? Ist Xaero's **Minimap** installiert (die World Map allein reicht nicht)? Im Client-Log steht „Connected to MRwaypoints …“ bzw. bei einer nicht unterstützten Xaero-Version eine Fehlermeldung.
 
 ## Lizenz
 MRwaypoints steht unter der **[MRtechnology Lizenz](LICENSE)** (source-available, nicht Open Source). Kurz gesagt:
@@ -159,4 +176,5 @@ Die Nutzung erfolgt auf eigenes Risiko - leg vor Updates eine Sicherung an. Maß
 | Ordner | Inhalt | Bauen |
 |---|---|---|
 | `plugin/` | Paper-Plugin (Java 25, Gradle) - [CHANGELOG](plugin/CHANGELOG.md) | `cd plugin && ./gradlew build` |
-| `docs/` | [Technische Doku](docs/DOKUMENTATION.md), [Releases](docs/RELEASES.md) | |
+| `mod/` | Fabric-Mod (Java 25, Fabric Loom) - [CHANGELOG](mod/CHANGELOG.md) | `cd mod && ./gradlew build` |
+| `docs/` | [Technische Doku](docs/DOKUMENTATION.md), [Kompatibilität](docs/COMPATIBILITY.md), [Releases](docs/RELEASES.md) | |

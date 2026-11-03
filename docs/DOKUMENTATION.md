@@ -18,11 +18,12 @@ plugin/src/main/java/at/marcelr/mrwaypoints/
 ├─ WaypointPerms.java     Permissions, auch die pro Kategorie (zur Laufzeit registriert)
 ├─ WaypointActions.java   anlegen, umbenennen, verschieben, löschen, teleportieren - mit Prüfungen und Meldungen
 ├─ Guide.java             Wegweiser in der Actionbar
+├─ ModBridge.java         Verbindung zum Mod (Handshake, Zustand, Ein/Aus), Compatibility (Protokoll)
 ├─ UpdateChecker.java     Update-Prüfung (GitHub/Modrinth)
 ├─ command/               /waypoints, /mrwaypoints
 ├─ gui/                   Menu, MenuListener, Items, MainMenu, CategoryMenu, WaypointMenu, ConfirmMenu, NameDialog
 ├─ api/                   MRadminLink (ohne MRadmin-Typen), MRadminModule (Karte, Dashboard, Spielerseite)
-├─ util/                  Layout (Menü-Plätze, Pfeil - mit Tests), LanguageChoice, TitleWidth, Versions
+├─ util/                  Layout (Menü-Plätze, Pfeil), Wire (Nachrichtenformat) - mit Tests; LanguageChoice, TitleWidth, Versions
 └─ waypoint/              Category, Waypoint, WaypointStore (categories.yml, waypoints.yml)
 plugin/src/main/resources/
 ├─ config.yml             UTF-8 mit BOM!
@@ -54,7 +55,12 @@ Alle symmetrisch (`util/Layout`): Kategorien je Reihe um die Mitte, bei gerader 
 - **Webkarte (API 7):** `mapLayers()` = eine Ebene pro Kategorie mit `map: true` (id = Kategorie-id, Name in der Server-Sprache, Reihenfolge der Datei), je Wegpunkt ein `MapMarker.Icon`. `mapIcons()` zeichnet pro Kategorie einen Pin in ihrer Farbe; der Schlüssel enthält die Farbe (`shops_ffb300`), damit MRadmin nach einer Farbänderung das neue Bild holt.
 - **Spielerseite (ab API 5):** Bereich `waypoints` mit Kennzahlen, Hinweis, Karten der eigenen Wegpunkte (Umbenennen mit Eingabe, Löschen mit Rückfrage, Kartenausschnitt über `mapUrl` nur bei `map: true`) und einer Tabelle je Kategorie. `selfAction` erlaubt nur eigene Wegpunkte, Namensprüfung wie im Spiel (`WaypointActions#nameProblem`).
 
-## 8. Testen
+## 8. Mod für Xaero (`ModBridge`, `mod/`)
+- Protokoll, Handshake und Nachrichten: [COMPATIBILITY.md](COMPATIBILITY.md). `ModBridge` (Plugin) wie in MRtoolbar: wartet mit Nachrichten, bis der Client den Kanal angemeldet hat, schickt nach OK den Zustand und bei jeder Änderung (`WaypointStore#onChange`, einmal pro Tick) neu an alle mit Mod.
+- **Auswahl pro Spieler:** `WaypointStore#visible/setVisible`, gespeichert in `players.yml` (nur Abweichungen von `visible` der Kategorie). Geändert über `toggle` vom Mod oder `selfAction` `xaero` von der Spielerseite; danach bekommt der Spieler den neuen Zustand und MRadmin lädt die Seite neu.
+- **Mod:** `MRwaypointsClient` (Handshake, Taste `J`, Knopf in `xaero.common.gui.GuiWaypoints` per `ScreenEvents.AFTER_INIT` - Klasse per Name, ohne Mixin), `CategoryScreen`, `XaeroBridge` (einzige Klasse mit Xaero-Typen). `XaeroBridge.apply` leert die eigenen Herkünfte und füllt sie neu, sobald ein Zustand kommt oder Xaero eine neue Welt-Sitzung hat (`getAutoRootContainer` hat sich geändert); Fehler → einmal loggen, danach still.
+
+## 9. Testen
 | # | Schritt | Erwartung |
 |---|---|---|
 | 1 | Erster Start | `categories.yml` mit 4 Kategorien, Log „4 categories, 0 waypoints loaded.“ |

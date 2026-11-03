@@ -14,6 +14,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -33,10 +34,15 @@ public final class WaypointStore {
     private final MRWaypoints plugin;
     private final File categoriesFile;
     private final File waypointsFile;
+    private final File playersFile;
     /** In file order = order in menus and on the maps. */
     private final Map<String, Category> categories = new LinkedHashMap<>();
     private final Map<Integer, Waypoint> waypoints = new LinkedHashMap<>();
+    /** player -> category -> shown in Xaero, where the player chose differently from the category's default */
+    private final Map<UUID, Map<String, Boolean>> visibility = new HashMap<>();
     private final List<Runnable> listeners = new ArrayList<>();
+    /** Told when a player switched categories on or off (players.yml). */
+    private final List<java.util.function.Consumer<UUID>> visibilityListeners = new ArrayList<>();
     private final ExecutorService writer = Executors.newSingleThreadExecutor(r -> {
         Thread thread = new Thread(r, "MRwaypoints-save");
         thread.setDaemon(true);
@@ -48,6 +54,7 @@ public final class WaypointStore {
         this.plugin = plugin;
         this.categoriesFile = new File(plugin.getDataFolder(), "categories.yml");
         this.waypointsFile = new File(plugin.getDataFolder(), "waypoints.yml");
+        this.playersFile = new File(plugin.getDataFolder(), "players.yml");
     }
 
     // ------------------------------------------------------------ loading
@@ -55,6 +62,72 @@ public final class WaypointStore {
     public void load() {
         loadCategories();
         loadWaypoints();
+        loadPlayers();
+    }
+
+    private void loadPlayers() {
+        visibility.clear();
+        if (!playersFile.exists()) {
+            return;
+        }
+        YamlConfiguration yaml = YamlConfiguration.loadConfiguration(playersFile);
+        ConfigurationSection section = yaml.getConfigurationSection("visibility");
+        if (section == null) {
+            return;
+        }
+        for (String key : section.getKeys(false)) {
+            ConfigurationSection choices = section.getConfigurationSection(key);
+            try {
+                Map<String, Boolean> map = new HashMap<>();
+                for (String category : choices.getKeys(false)) {
+                    map.put(category, choices.getBoolean(category));
+                }
+                visibility.put(UUID.fromString(key), map);
+            } catch (RuntimeException e) {
+                plugin.getLogger().warning("players.yml: entry " + key + " is broken and was skipped.");
+            }
+        }
+    }
+
+    // --------------------------------------------- shown in Xaero (per player)
+
+    /** Whether the player wants the category in Xaero's map: their own choice, otherwise the category's default. */
+    public boolean visible(UUID player, Category category) {
+        Map<String, Boolean> own = visibility.get(player);
+        Boolean choice = own == null ? null : own.get(category.id());
+        return choice != null ? choice : category.visible();
+    }
+
+    /** Switches a category ({@code null} = all) on or off for the player. A choice equal to the default is forgotten. */
+    public void setVisible(UUID player, @Nullable Category category, boolean visible) {
+        Map<String, Boolean> own = visibility.computeIfAbsent(player, k -> new HashMap<>());
+        for (Category c : category == null ? categories.values() : List.of(category)) {
+            if (c.visible() == visible) {
+                own.remove(c.id());
+            } else {
+                own.put(c.id(), visible);
+            }
+        }
+        if (own.isEmpty()) {
+            visibility.remove(player);
+        }
+        savePlayers();
+        for (var listener : visibilityListeners) {
+            listener.accept(player);
+        }
+    }
+
+    public void onVisibilityChange(java.util.function.Consumer<UUID> listener) {
+        visibilityListeners.add(listener);
+    }
+
+    private void savePlayers() {
+        YamlConfiguration yaml = new YamlConfiguration();
+        yaml.options().setHeader(List.of("Which categories each player switched on or off for Xaero's map "
+                + "(only choices that differ from the category's \"visible\")."));
+        visibility.forEach((player, choices) -> choices.forEach((category, shown) ->
+                yaml.set("visibility." + player + "." + category, shown)));
+        write(playersFile, yaml.saveToString());
     }
 
     /** (Re)reads categories.yml - on start and on /mrwaypoints reload. The bundled examples on the first start. */

@@ -1,0 +1,11 @@
+{
+  "key.category.mrwaypoints.main": "MRwaypoints",
+  "key.mrwaypoints.categories": "Server-Wegpunkte: Kategorien",
+  "mrwaypoints.screen.title": "Server-Wegpunkte",
+  "mrwaypoints.screen.hint": "Welche Kategorien in Xaero's Karte erscheinen - gilt auf jedem PC.",
+  "mrwaypoints.screen.all-on": "Alle an",
+  "mrwaypoints.screen.all-off": "Alle aus",
+  "mrwaypoints.button.xaero": "Server-Wegpunkte …",
+  "mrwaypoints.message.no-server": "Dieser Server hat kein MRwaypoints.",
+  "mrwaypoints.message.incompatible": "MRwaypoints %s auf dem Server passt nicht zu diesem Mod."
+}

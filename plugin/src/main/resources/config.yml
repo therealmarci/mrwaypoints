@@ -13,7 +13,7 @@
 # ==============================================================================
 
 # Do not change - used for automatic config updates.
-config-version: 1
+config-version: 2
 
 # Language of the texts (chat, menus, action bar). The texts are in plugins/MRwaypoints/lang/<language>.yml.
 #   auto = every player gets the language set in their Minecraft client:
@@ -54,7 +54,22 @@ waypoints:
 
 
 # ------------------------------------------------------------------------------
-#   3) UPDATE CHECK
+#   3) MOD FOR XAERO'S MAP
+# ------------------------------------------------------------------------------
+# Players with the MRwaypoints mod (Fabric, needs Xaero's Minimap) see the server waypoints in Xaero's Minimap and
+# World Map and switch categories on and off (key J, button in Xaero's waypoint menu or in /waypoints). Their choice
+# is saved on the server (players.yml). Without the mod, menu and guide work as usual.
+mod:
+  # Oldest version of the mod that is still allowed (e.g. "0.2.1", empty = any compatible version).
+  # Which mod versions fit the plugin in principle is built into the plugin (protocol version) - here you
+  # can additionally lock out older versions, e.g. because of a bug in the mod.
+  minimum-version: ""
+  # Where players download the mod (link in the notices).
+  download-url: "https://mrtechnology.marcelr.at/download/mrwaypoints/"
+
+
+# ------------------------------------------------------------------------------
+#   4) UPDATE CHECK
 # ------------------------------------------------------------------------------
 update-checker:
   # Look for new versions on startup and regularly afterwards.
@@ -71,7 +86,7 @@ update-checker:
 
 
 # ------------------------------------------------------------------------------
-#   4) MENUS
+#   5) MENUS
 # ------------------------------------------------------------------------------
 gui:
   # How often open menus are refreshed (in ticks, 20 = 1 second) - distances stay up to date.
