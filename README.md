@@ -95,7 +95,7 @@ In `plugins/MRwaypoints/categories.yml`, danach `/mrwaypoints reload`:
 | `icon` | Item im Menü, z.B. `EMERALD` |
 | `players-create` | `true` = jeder Spieler (`mrwaypoints.player`) darf hier anlegen, `false` = nur mit `mrwaypoints.create.<id>` |
 | `max-per-player` | so viele eigene Wegpunkte pro Spieler, `0` = unbegrenzt (wer `mrwaypoints.manage.<id>` hat, ist nie begrenzt) |
-| `visible` | in Xaero's Karte standardmäßig eingeblendet - jeder Spieler schaltet es für sich um (Mod oder Spielerseite) |
+| `visible` | in Xaero's Karte standardmäßig eingeblendet - jeder Spieler schaltet es für sich um (Mod oder Karte auf der Spielerseite) |
 | `map` | als eigene Ebene auf der Webkarte zeigen (mit MRadmin und squaremap) - die Karte ist öffentlich |
 
 Mitgeliefert sind **Spawn & Warps** (nur Team), **Shops** (Spieler, je 3), **Farmen** (Spieler, je 5, nicht auf der Webkarte) und **Sehenswürdigkeiten** (Spieler, je 3).
@@ -166,7 +166,7 @@ MRwaypoints läuft **allein**. Zusammen mit anderen MRtechnology-Plugins kann es
 | Funktion | Braucht |
 |---|---|
 | Seite **Wegpunkte** fürs Team: Kategorien anlegen, ändern, sortieren, löschen (`mrwaypoints.admin.categories`), alle Wegpunkte umbenennen, in eine andere Kategorie verschieben, löschen (`mrwaypoints.manage.*`) | MRadmin |
-| Bereich **Wegpunkte** auf der Spielerseite (`/web`): eigene umbenennen und löschen, alle nach Kategorie | MRadmin |
+| Tab **Karte** auf der Spielerseite (`/web`): alle Wegpunkte als Ebene pro Kategorie; Rechtsklick auf eine freie Stelle legt dort einen an (Höhe = Boden an der Stelle), auf eigene umbenennen und löschen, auf jeden den Wegweiser im Spiel starten; „in Xaero: an/aus“ pro Kategorie | MRadmin + squaremap |
 | Knopf im MRadmin-Dashboard (öffnet `/waypoints`) | MRadmin |
 | Kategorien mit `map: true` als Ebenen auf der Webkarte (Pin in der Kategoriefarbe, Klick zeigt Name, Ort und Ersteller) | MRadmin + squaremap |
 | Wegpunkte in Xaero's Minimap und World Map, Kategorien ein- und ausblenden | MRwaypoints-Mod + Xaero's Minimap |

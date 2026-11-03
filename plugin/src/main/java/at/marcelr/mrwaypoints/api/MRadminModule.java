@@ -4,8 +4,8 @@ import at.marcelr.mradmin.api.AdminModule;
 import at.marcelr.mradmin.api.MRadminService;
 import at.marcelr.mradmin.api.MapLayer;
 import at.marcelr.mradmin.api.MapMarker;
-import at.marcelr.mradmin.api.SelfArea;
 import at.marcelr.mradmin.api.SelfBlock;
+import at.marcelr.mradmin.api.SelfMapLayer;
 import at.marcelr.mradmin.api.SelfViewer;
 import at.marcelr.mradmin.api.WebModule;
 import at.marcelr.mradmin.api.WebUser;
@@ -17,7 +17,9 @@ import at.marcelr.mrwaypoints.gui.MainMenu;
 import at.marcelr.mrwaypoints.waypoint.Category;
 import at.marcelr.mrwaypoints.waypoint.Waypoint;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -39,15 +41,15 @@ import static at.marcelr.mrwaypoints.Messages.tag;
 
 /**
  * MRwaypoints as a module of MRadmin (module API, see MRadmin's docs/MODULE-API.md): the categories as layers on the
- * web map (those with {@code map: true}), a dashboard button that opens /waypoints and the area "Waypoints" on the
- * players' own page. <b>Only loaded while MRadmin runs</b> - everything else goes through {@link MRadminLink}.
+ * web map (those with {@code map: true}), a dashboard button that opens /waypoints, the waypoints page of the team
+ * and the layers on the map of the players' own page. <b>Only loaded while MRadmin runs</b> - everything else goes
+ * through {@link MRadminLink}.
  */
 final class MRadminModule implements AdminModule, WebModule {
 
     static final String ID = "mrwaypoints";
-    /** The web map since API 7, the building blocks of the player page (Cards, Group) since API 5. */
+    /** The web map since API 7 (the map of the player page, API 8, is only asked by an MRadmin that has it). */
     private static final int MAP_API = 7;
-    private static final int SELF_API = 5;
     private static final int ICON_SIZE = 16;
 
     private final MRWaypoints plugin;
@@ -355,119 +357,117 @@ final class MRadminModule implements AdminModule, WebModule {
         return Set.of(WaypointPerms.USE);
     }
 
+    /**
+     * The map of the player's page (MRadmin's tab "Map"): one layer per category with all its waypoints. On their own
+     * ones rename and delete, on every one the guide (while the player is online and in that world); a right-click on a
+     * free spot creates one there (categories the player may use); the switch "in Xaero" per category.
+     */
     @Override
-    public List<SelfArea> selfAreas(SelfViewer viewer) {
-        MRadminService service = MRadminService.get();
-        if (!viewer.has(WaypointPerms.USE) || service == null || service.apiVersion() < SELF_API) {
+    public List<SelfMapLayer> selfMap(SelfViewer viewer) {
+        if (!viewer.has(WaypointPerms.USE)) {
             return List.of();
         }
-        return plugin.messages().in(viewer.lang(), () -> List.of(area(viewer, service)));
-    }
-
-    private SelfArea area(SelfViewer viewer, MRadminService service) {
-        Messages m = plugin.messages();
-        String lang = viewer.lang();
-        List<Waypoint> own = plugin.store().all().stream().filter(w -> w.creator().equals(viewer.player()))
-                .sorted(java.util.Comparator.comparing(Waypoint::name, String.CASE_INSENSITIVE_ORDER)).toList();
-        SelfBlock.Stats stats = new SelfBlock.Stats(List.of(
-                new SelfBlock.Stat(m.plain("self-total"), String.valueOf(plugin.store().all().size()), ""),
-                new SelfBlock.Stat(m.plain("self-own"), String.valueOf(own.size()), ""),
-                new SelfBlock.Stat(m.plain("self-categories"), String.valueOf(plugin.store().categories().size()), "")));
-
-        List<SelfBlock> blocks = new ArrayList<>();
-        blocks.add(stats);
-        blocks.add(new SelfBlock.Text(m.plain("self-hint"), "info"));
-        List<SelfBlock.Card> cards = new ArrayList<>();
-        for (Waypoint w : own) {
-            cards.add(card(w, lang, service));
-        }
-        blocks.add(new SelfBlock.Cards(m.plain("self-own-title"), cards, m.plain("self-own-empty")));
-        // Which categories the mod shows in Xaero - the same switches as in game (key J).
-        List<SelfBlock.Button> toggles = new ArrayList<>();
-        for (Category category : plugin.store().categories()) {
-            boolean shown = plugin.store().visible(viewer.player(), category);
-            toggles.add(new SelfBlock.Button(m.plain(shown ? "self-xaero-on" : "self-xaero-off", "name", category.name(lang)),
-                    "xaero", Map.of("category", category.id(), "visible", String.valueOf(!shown)), shown ? "good" : "",
-                    null, null));
-        }
-        if (!toggles.isEmpty()) {
-            blocks.add(new SelfBlock.Group(m.plain("self-xaero-title"), m.plain("self-xaero-text"),
-                    List.of(new SelfBlock.Buttons(toggles))));
-        }
-        for (Category category : plugin.store().categories()) {
-            List<SelfBlock.Row> rows = new ArrayList<>();
-            for (Waypoint w : plugin.store().inCategory(category.id())) {
-                rows.add(new SelfBlock.Row(List.of(w.name(), place(w), w.creatorName()),
-                        w.creator().equals(viewer.player()) ? "info" : "", List.of()));
-            }
-            blocks.add(new SelfBlock.Table(category.name(lang), List.of(m.plain("self-col-name"), m.plain("self-col-place"),
-                    m.plain("self-col-creator")), rows, m.plain("self-category-empty")));
-        }
-        return new SelfArea("waypoints", m.plain("self-title"), "📍", List.of(stats), blocks);
-    }
-
-    private SelfBlock.Card card(Waypoint w, String lang, MRadminService service) {
-        Messages m = plugin.messages();
-        Category category = plugin.store().category(w.category());
-        String categoryName = category == null ? w.category() : category.name(lang);
-        Map<String, String> args = Map.of("id", String.valueOf(w.id()));
-        List<SelfBlock.Button> buttons = List.of(
-                new SelfBlock.Button(m.plain("self-rename"), "rename", args, "", null,
-                        new SelfBlock.Input(m.plain("self-rename-label"), w.name(), plugin.settings().waypoints().maxNameLength())),
-                new SelfBlock.Button(m.plain("self-delete"), "delete", args, "bad",
-                        m.plain("self-delete-confirm", "name", w.name()), null));
-        List<SelfBlock> details = new ArrayList<>();
-        World world = w.bukkitWorld();
-        String url = world == null || service.apiVersion() < MAP_API || category == null || !category.onMap()
-                ? null : service.mapUrl(world, w.x(), w.z());
-        if (url != null) {
-            details.add(new SelfBlock.Embed(m.plain("self-map"), url, 320, m.plain("self-map-open")));
-        }
-        return new SelfBlock.Card("waypoint-" + w.id(), w.name(), categoryName + " · " + place(w), "", "",
-                List.of(), List.of(), null, buttons, details);
-    }
-
-    private static String place(Waypoint w) {
-        return w.worldName() + " " + w.x() + " " + w.y() + " " + w.z();
-    }
-
-    /** Only the player's own waypoints - the same name rules as in game. */
-    @Override
-    public @Nullable String selfAction(SelfViewer viewer, String area, String action, Map<String, String> args) {
         return plugin.messages().in(viewer.lang(), () -> {
             Messages m = plugin.messages();
-            if (!viewer.has(WaypointPerms.USE)) {
-                return m.plain("self-no-permission");
-            }
-            if (action.equals("xaero")) {
-                Category category = plugin.store().category(args.getOrDefault("category", ""));
-                if (category == null) {
-                    return m.plain("self-not-found");
+            String lang = viewer.lang();
+            Player online = Bukkit.getPlayer(viewer.player());
+            int max = plugin.settings().waypoints().maxNameLength();
+            List<SelfMapLayer> layers = new ArrayList<>();
+            for (Category category : plugin.store().categories()) {
+                List<SelfMapLayer.Marker> markers = new ArrayList<>();
+                for (Waypoint w : plugin.store().inCategory(category.id())) {
+                    World world = w.bukkitWorld();
+                    if (world == null) {
+                        continue;
+                    }
+                    boolean own = w.creator().equals(viewer.player());
+                    List<SelfMapLayer.Action> actions = new ArrayList<>();
+                    if (online != null && online.getWorld().equals(world)) {
+                        actions.add(new SelfMapLayer.Action("guide", m.plain("map-guide"), "", null, null));
+                    }
+                    if (own) {
+                        actions.add(new SelfMapLayer.Action("rename", m.plain("map-rename"), "", null,
+                                new SelfBlock.Input(m.plain("map-rename-label"), w.name(), max)));
+                        actions.add(new SelfMapLayer.Action("delete", m.plain("map-delete"), "bad",
+                                m.plain("map-delete-confirm", "name", w.name()), null));
+                    }
+                    markers.add(new SelfMapLayer.Marker(String.valueOf(w.id()), world.getKey().asString(), w.x(), w.z(),
+                            0, 0, w.name(), "", List.of(category.name(lang), w.x() + " " + w.y() + " " + w.z(),
+                            m.plain(own ? "map-own" : "map-by", "player", w.creatorName())), actions));
                 }
-                plugin.store().setVisible(viewer.player(), category, Boolean.parseBoolean(args.get("visible")));
-                return null;
+                List<SelfMapLayer.Action> here = mayCreate(viewer, category, online) == null
+                        ? List.of(new SelfMapLayer.Action("create", m.plain("map-create", "category", category.name(lang)),
+                        "good", null, new SelfBlock.Input(m.plain("map-create-label"), "", max)))
+                        : List.of();
+                boolean shown = plugin.store().visible(viewer.player(), category);
+                layers.add(new SelfMapLayer(category.id(), category.name(lang), category.hexColor(), markers, here,
+                        new SelfMapLayer.Toggle(m.plain(shown ? "map-xaero-on" : "map-xaero-off"), shown, "xaero")));
+            }
+            return layers;
+        });
+    }
+
+    /**
+     * Why the player may not create in the category from the web (language key), or null. Online: the same check as in
+     * game. Offline their permissions are unknown - only categories every player may use, within the limit.
+     */
+    private @Nullable String mayCreate(SelfViewer viewer, Category category, @Nullable Player online) {
+        if (online != null) {
+            return plugin.actions().createBlocked(online, category);
+        }
+        if (!category.playersCreate()) {
+            return "create-no-permission";
+        }
+        return category.maxPerPlayer() > 0 && plugin.store().countBy(viewer.player(), category.id()) >= category.maxPerPlayer()
+                ? "create-limit" : null;
+    }
+
+    @Override
+    public @Nullable String selfMapAction(SelfViewer viewer, String layer, String action, Map<String, String> args) {
+        return plugin.messages().in(viewer.lang(), () -> {
+            Messages m = plugin.messages();
+            Category category = plugin.store().category(layer);
+            if (!viewer.has(WaypointPerms.USE) || category == null) {
+                return m.plain("self-not-found");
+            }
+            Player online = Bukkit.getPlayer(viewer.player());
+            switch (action) {
+                case "xaero" -> {
+                    plugin.store().setVisible(viewer.player(), category, Boolean.parseBoolean(args.get("on")));
+                    return null;
+                }
+                case "create" -> {
+                    return create(viewer, category, online, args);
+                }
+                default -> {
+                }
             }
             Waypoint w;
             try {
-                w = plugin.store().byId(Integer.parseInt(args.getOrDefault("id", "")));
+                w = plugin.store().byId(Integer.parseInt(args.getOrDefault("marker", "")));
             } catch (NumberFormatException e) {
                 w = null;
             }
-            if (w == null) {
+            if (w == null || !w.category().equals(category.id())) {
                 return m.plain("self-not-found");
+            }
+            if (action.equals("guide")) {
+                if (online == null || !online.getWorld().getUID().equals(w.world())) {
+                    return m.plain("map-guide-offline");
+                }
+                Waypoint target = w;
+                plugin.messages().run(online, () -> plugin.guide().guide(online, target));
+                return null;
             }
             if (!w.creator().equals(viewer.player())) {
                 return m.plain("self-not-yours");
             }
             switch (action) {
                 case "rename" -> {
-                    Category category = plugin.store().category(w.category());
                     String name = WaypointActions.clean(args.get("value"));
-                    String problem = category == null ? "self-not-found"
-                            : plugin.actions().nameProblem(category, name, w);
+                    String problem = plugin.actions().nameProblem(category, name, w);
                     if (problem != null) {
-                        return m.plain(problem.startsWith("self-") ? problem : "self-" + problem,
-                                "max", plugin.settings().waypoints().maxNameLength(), "name", name);
+                        return m.plain("self-" + problem, "max", plugin.settings().waypoints().maxNameLength(), "name", name);
                     }
                     plugin.store().update(w.withName(name));
                     return null;
@@ -481,5 +481,36 @@ final class MRadminModule implements AdminModule, WebModule {
                 }
             }
         });
+    }
+
+    /** A waypoint at the spot of the map: the ground there (highest block), the same name rules and limits as in game. */
+    private @Nullable String create(SelfViewer viewer, Category category, @Nullable Player online, Map<String, String> args) {
+        Messages m = plugin.messages();
+        String blocked = mayCreate(viewer, category, online);
+        if (blocked != null) {
+            return m.plain("self-" + blocked, "max", category.maxPerPlayer());
+        }
+        NamespacedKey key = NamespacedKey.fromString(args.getOrDefault("world", ""));
+        World world = key == null ? null : Bukkit.getWorld(key);
+        int x;
+        int z;
+        try {
+            x = Integer.parseInt(args.getOrDefault("x", ""));
+            z = Integer.parseInt(args.getOrDefault("z", ""));
+        } catch (NumberFormatException e) {
+            return m.plain("self-not-found");
+        }
+        if (world == null || !world.getWorldBorder().isInside(new org.bukkit.Location(world, x + 0.5, 64, z + 0.5))) {
+            return m.plain("map-outside");
+        }
+        String name = WaypointActions.clean(args.get("value"));
+        String problem = plugin.actions().nameProblem(category, name, null);
+        if (problem != null) {
+            return m.plain("self-" + problem, "max", plugin.settings().waypoints().maxNameLength(), "name", name);
+        }
+        int y = world.getHighestBlockYAt(x, z) + 1;
+        plugin.store().add(new Waypoint(0, category.id(), name, world.getUID(), world.getName(), x, y, z,
+                viewer.player(), viewer.name(), System.currentTimeMillis()));
+        return null;
     }
 }
