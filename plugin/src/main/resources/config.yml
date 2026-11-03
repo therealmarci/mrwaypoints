@@ -1,0 +1,80 @@
+﻿# ==============================================================================
+#   MRwaypoints - Configuration
+# ==============================================================================
+#   After changes:   /mrwaypoints reload   (no restart needed)
+#   Waypoints:       /waypoints
+#   Help & docs:     https://mrtechnology.marcelr.at/docs/mrwaypoints/
+#
+#   The categories are in categories.yml (same folder) - or edited in MRadmin's web interface.
+#   Texts & messages: lang/de.yml or lang/en.yml (see "language" below).
+#
+#   This file is UTF-8 encoded. If special characters (ä, ö, ü) look wrong,
+#   set the encoding in your editor to "UTF-8".
+# ==============================================================================
+
+# Do not change - used for automatic config updates.
+config-version: 1
+
+# Language of the texts (chat, menus, action bar). The texts are in plugins/MRwaypoints/lang/<language>.yml.
+#   auto = every player gets the language set in their Minecraft client:
+#          German (also Austria/Switzerland) -> de.yml, English -> en.yml, a language without a file -> fallback-language.
+#   de / en / ... = fixed language for all players.
+# The console is always English. Own language: copy a file (e.g. as fr.yml) and translate it - with "auto"
+# French players then get it automatically.
+language: auto
+
+# Language for players whose Minecraft language has no file of its own.
+fallback-language: en
+
+# Language of texts that are not meant for a single player: the web map (squaremap through MRadmin).
+server-language: en
+
+
+# ------------------------------------------------------------------------------
+#   1) GUIDE
+# ------------------------------------------------------------------------------
+# A click on a waypoint in /waypoints shows the way in the action bar: an arrow and the distance.
+guide:
+  # How often the arrow is refreshed (in ticks, 20 = 1 second).
+  update-ticks: 5
+  # Within this many blocks the guide ends ("You have arrived").
+  arrive-distance: 5
+  # A short sound on arrival.
+  sound: true
+
+
+# ------------------------------------------------------------------------------
+#   2) WAYPOINTS
+# ------------------------------------------------------------------------------
+# Who may create waypoints is set per category: permission mrwaypoints.create.<category>, or "players-create: true"
+# in categories.yml (then mrwaypoints.player is enough). The limit per player is set per category too.
+waypoints:
+  # Longest name of a waypoint.
+  max-name-length: 32
+
+
+# ------------------------------------------------------------------------------
+#   3) UPDATE CHECK
+# ------------------------------------------------------------------------------
+update-checker:
+  # Look for new versions on startup and regularly afterwards.
+  # If a newer version is available, a notice appears in the console.
+  enabled: true
+  # Source: "github" (GitHub Releases, default) or "modrinth"
+  source: github
+  # Also report beta/alpha versions. If a pre-release (0.x) is running, they are always reported.
+  include-prereleases: false
+  # How often to check again (in hours).
+  interval-hours: 6
+  # Notify players with "mrwaypoints.admin.update" when they join the server.
+  notify-on-join: true
+
+
+# ------------------------------------------------------------------------------
+#   4) MENUS
+# ------------------------------------------------------------------------------
+gui:
+  # How often open menus are refreshed (in ticks, 20 = 1 second) - distances stay up to date.
+  refresh-ticks: 20
+  # Click sounds in the menus.
+  sounds: true

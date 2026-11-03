@@ -1,0 +1,126 @@
+﻿# ==============================================================================
+#   MRwaypoints - Sprachdatei: Deutsch (de)
+# ==============================================================================
+#   Aktivieren: in der config.yml  language: de  (Standard "auto": jeder Spieler in seiner Sprache)
+#   Eigene Sprache: diese Datei kopieren (z.B. als fr.yml) und übersetzen.
+#   Fehlende Texte werden bei Updates automatisch ergänzt - deine Änderungen bleiben erhalten.
+#
+#   Format: MiniMessage - https://docs.advntr.dev/minimessage/format.html
+#   Leerer Text ("") = Nachricht wird nicht gesendet.
+#   Die Namen der Kategorien stehen nicht hier, sondern in categories.yml (pro Sprache).
+# ==============================================================================
+
+# Nicht ändern - damit erkennt das Plugin bei Updates, welche Texte erneuert werden müssen.
+lang-version: 1
+
+prefix: "<dark_gray>[<gold>MRwaypoints</gold>]</dark_gray> "
+
+# --- Allgemein ---------------------------------------------------------------
+no-permission: "<prefix><red>Dazu hast du keine Berechtigung."
+players-only: "<prefix><red>Dieser Befehl kann nur von Spielern genutzt werden."
+help-header: "<prefix><gray>Befehle:"
+help-waypoints: "<gold>/waypoints [stop]</gold> <dark_gray>- <gray>alle Wegpunkte, Wegweiser beenden"
+help-reload: "<gold>/mrwaypoints reload</gold> <dark_gray>- <gray>Config, Kategorien und Texte neu laden"
+help-version: "<gold>/mrwaypoints version</gold> <dark_gray>- <gray>Version und Updates"
+reloaded: "<prefix><hover:show_text:'<gray><categories> Kategorien, <waypoints> Wegpunkte'><green>Neu geladen</hover>"
+
+# --- Wegweiser (Actionbar) ---------------------------------------------------
+guide-started: "<prefix><hover:show_text:'<gray>Pfeil und Entfernung in der Actionbar - beenden mit /waypoints stop'><gray>Wegweiser zu <white><name></white></hover>"
+guide-stopped: "<prefix><gray>Wegweiser beendet."
+guide-none: "<prefix><gray>Es läuft gerade kein Wegweiser."
+guide-gone: "<prefix><gray>Der Wegpunkt wurde gelöscht - Wegweiser beendet."
+guide-arrived: "<prefix><green>Angekommen: <white><name>"
+# Platzhalter: <arrow> <name> (in der Farbe der Kategorie) <distance> <height>
+guide-actionbar: "<gold><arrow></gold> <name> <gray><distance> m</gray><height>"
+guide-other-world: "<name> <gray>liegt in <white><world></white>"
+guide-up: " <dark_gray>▲ <blocks>"
+guide-down: " <dark_gray>▼ <blocks>"
+
+# --- Anlegen und Bearbeiten --------------------------------------------------
+create-no-permission: "<prefix><red>In <white><category></white> darfst du keine Wegpunkte anlegen."
+create-limit: "<prefix><hover:show_text:'<gray>Höchstens <max> eigene Wegpunkte pro Spieler - lösche einen alten'><red>Limit in <white><category></white> erreicht</hover>"
+created: "<prefix><hover:show_text:'<gray><category> · <x> <y> <z>'><green>Wegpunkt <white><name></white> angelegt</hover>"
+renamed: "<prefix><hover:show_text:'<gray>vorher: <old>'><green>Umbenannt in <white><name></white></hover>"
+moved: "<prefix><hover:show_text:'<gray>neu: <x> <y> <z>'><green><white><name></white> liegt jetzt hier</hover>"
+deleted: "<prefix><gray>Wegpunkt <white><name></white> gelöscht."
+teleported: "<prefix><gray>Teleportiert zu <white><name></white>."
+world-not-loaded: "<prefix><red>Die Welt <white><world></white> ist gerade nicht geladen."
+edit-no-permission: "<prefix><red>Diesen Wegpunkt darfst du nicht bearbeiten."
+name-empty: "<prefix><red>Der Name darf nicht leer sein."
+name-too-long: "<prefix><red>Der Name ist zu lang <gray>(höchstens <max> Zeichen)"
+name-taken: "<prefix><red>In dieser Kategorie gibt es <white><name></white> schon."
+
+# --- Menüs ------------------------------------------------------------------
+gui-main-title: "<dark_gray>Wegpunkte"
+gui-category-lore:
+  - "<gray><count> Wegpunkte"
+  - "<yellow>Klick: öffnen"
+gui-no-categories: "<red>Keine Kategorien"
+gui-no-categories-lore:
+  - "<gray>Das Team legt sie in categories.yml"
+  - "<gray>oder in MRadmin an."
+gui-guide-name: "<gold>Wegweiser: <white><name>"
+gui-guide-lore:
+  - "<yellow>Klick: beenden"
+gui-close: "<red>Schließen"
+gui-back: "<gray>Zurück"
+gui-previous: "<gray>Vorherige Seite <dark_gray>(<page>/<pages>)"
+gui-next: "<gray>Nächste Seite <dark_gray>(<page>/<pages>)"
+gui-category-title: "<dark_gray>Wegpunkte · <category>"
+gui-category-empty: "<gray>Noch keine Wegpunkte"
+gui-category-empty-lore:
+  - "<gray>Leg unten den ersten an,"
+  - "<gray>falls du hier darfst."
+gui-create: "<green>Neuer Wegpunkt hier"
+gui-create-lore:
+  - "<gray>An deiner Position, Name im Dialog"
+gui-create-limit-lore:
+  - "<dark_gray>Deine Wegpunkte hier: <used>/<max>"
+gui-create-full: "<gray>Neuer Wegpunkt hier"
+gui-create-full-lore:
+  - "<red>Limit erreicht <dark_gray>(<max>)"
+  - "<gray>Lösch einen eigenen, um Platz zu machen."
+gui-waypoint-near: "<gray><distance> m entfernt <dark_gray>· <x> <y> <z>"
+gui-waypoint-far: "<gray>in <white><world></white> <dark_gray>· <x> <y> <z>"
+gui-waypoint-creator: "<dark_gray>von <player>"
+gui-waypoint-guide: "<yellow>Klick: Wegweiser"
+gui-waypoint-teleport: "<yellow>Shift-Klick: teleportieren"
+gui-waypoint-edit: "<yellow>Rechtsklick: bearbeiten"
+gui-waypoint-title: "<dark_gray>Wegpunkt · <name>"
+gui-waypoint-info: "<white><name>"
+gui-waypoint-info-lore:
+  - "<gray><category> · <world> <x> <y> <z>"
+  - "<dark_gray>von <player>"
+gui-action-guide: "<gold>Wegweiser"
+gui-action-teleport: "<light_purple>Teleportieren"
+gui-action-rename: "<aqua>Umbenennen"
+gui-action-move: "<aqua>Hierher verschieben"
+gui-action-move-lore:
+  - "<gray>Setzt ihn auf deine Position."
+gui-action-delete: "<red>Löschen"
+gui-delete-title: "<dark_gray><name> löschen?"
+gui-confirm: "<red>Ja, löschen"
+gui-cancel: "<gray>Abbrechen"
+
+# --- Dialoge ----------------------------------------------------------------
+dialog-create-title: "Neuer Wegpunkt · <category>"
+dialog-create-hint: "Der Wegpunkt kommt an deine Position. Höchstens <max> Zeichen."
+dialog-rename-title: "<name> umbenennen"
+dialog-rename-hint: "Höchstens <max> Zeichen."
+dialog-name-label: "Name"
+dialog-save: "Speichern"
+dialog-cancel: "Abbrechen"
+
+# --- Version & Updates -------------------------------------------------------
+version: "<prefix><gray>MRwaypoints <white>v<version></white> <dark_gray>(MC <mc>)</dark_gray> von <white><author></white>"
+version-latest: "<prefix><green>Du nutzt die aktuellste Version."
+version-outdated: "<prefix><gold>Neue Version verfügbar: <white><latest></white> <gray>(installiert: <current>) <download>"
+version-unknown: "<prefix><gray>Update-Status unbekannt: <reason>"
+version-checking: "<prefix><gray>Suche nach Updates ..."
+version-links: "<prefix><website> <dark_gray>| <github>"
+update-download-label: "<aqua><u>[Download]</u></aqua>"
+update-join-notify: "<prefix><gold>Für MRwaypoints gibt es ein Update: <white><latest></white> <gray>(installiert: <current>) <download>"
+update-reason-disabled: "Update-Check ist deaktiviert"
+update-reason-not-found: "Projekt nicht gefunden (HTTP 404) - noch nicht veröffentlicht?"
+update-reason-no-release: "Keine veröffentlichte Version gefunden"
+update-reason-no-repository: "Kein GitHub-Repository hinterlegt"

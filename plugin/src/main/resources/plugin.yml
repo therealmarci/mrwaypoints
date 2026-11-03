@@ -1,0 +1,82 @@
+name: MRwaypoints
+version: '${version}'
+main: at.marcelr.mrwaypoints.MRWaypoints
+api-version: '${mcVersion}'
+softdepend: [MRadmin]
+author: _therealmarci
+website: ${website}/docs/${websiteSlug}/
+description: Server waypoints in categories - menu and guide in game, in Xaero's map with the MRwaypoints mod, on the web map and in the web interface through MRadmin.
+
+commands:
+  waypoints:
+    description: Menu with all server waypoints - guide, create, edit; /waypoints stop ends the guide.
+    usage: /waypoints [stop]
+    aliases: [wegpunkte, wps]
+  mrwaypoints:
+    description: Management of MRwaypoints.
+    usage: /mrwaypoints <reload|version|help>
+
+permissions:
+  # ------------------------------------------------------------------ Groups
+  # The same in every MRtechnology plugin: <plugin>.player for players, <plugin>.groups.support / staff / admin for
+  # the team - each group contains the one below. The single permissions further down stay usable on their own.
+  # mrwaypoints.create.<category> and mrwaypoints.manage.<category> exist for every category of categories.yml.
+  mrwaypoints.player:
+    description: "Player: /waypoints - see all waypoints and be guided there; create waypoints in categories with players-create; /mrwaypoints version."
+    default: op
+    children:
+      mrwaypoints.use: true
+      mrwaypoints.version: true
+  mrwaypoints.groups.support:
+    description: "Group support: player + see the waypoints page in MRadmin's web interface."
+    default: op
+    children:
+      mrwaypoints.player: true
+      mrwaypoints.admin.view: true
+  mrwaypoints.groups.staff:
+    description: "Group staff: support + create waypoints in every category, edit and delete all waypoints, no limits."
+    default: op
+    children:
+      mrwaypoints.groups.support: true
+      mrwaypoints.create.*: true
+      mrwaypoints.manage.*: true
+  mrwaypoints.groups.admin:
+    description: "Group admin: everything of MRwaypoints - staff + teleport to waypoints, manage categories in the web interface, reload, update notice."
+    default: op
+    children:
+      mrwaypoints.groups.staff: true
+      mrwaypoints.teleport: true
+      mrwaypoints.admin.categories: true
+      mrwaypoints.admin.reload: true
+      mrwaypoints.admin.update: true
+
+  # ------------------------------------------------------------ Players
+  mrwaypoints.use:
+    description: /waypoints - see all waypoints and be guided there.
+    default: op
+  mrwaypoints.version:
+    description: /mrwaypoints version - version, update status and links.
+    default: op
+  mrwaypoints.create.*:
+    description: "Create waypoints in every category (mrwaypoints.create.<category> for single ones)."
+    default: op
+  mrwaypoints.manage.*:
+    description: "Edit and delete all waypoints of every category, without the limit per player (mrwaypoints.manage.<category> for single ones)."
+    default: op
+
+  # -------------------------------------------------------------- Team
+  mrwaypoints.teleport:
+    description: Teleport to waypoints (shift-click in /waypoints, web interface).
+    default: op
+  mrwaypoints.admin.view:
+    description: See the waypoints page in MRadmin's web interface.
+    default: op
+  mrwaypoints.admin.categories:
+    description: "Create, edit and delete categories in MRadmin's web interface."
+    default: op
+  mrwaypoints.admin.reload:
+    description: /mrwaypoints reload - config, categories and texts.
+    default: op
+  mrwaypoints.admin.update:
+    description: Update notice when joining the server.
+    default: op

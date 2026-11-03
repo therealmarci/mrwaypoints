@@ -1,0 +1,58 @@
+name: 🐞 Fehler melden
+description: Etwas funktioniert nicht wie erwartet.
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Danke fürs Melden! Bitte prüfe vorher mit `/mrwaypoints debug <spieler>`, ob die Verbindung zum Mod steht
+        (häufigste Ursache: Mod fehlt, ist zu alt, oder Fabric API bzw. Xaero's Minimap fehlt).
+  - type: input
+    id: version
+    attributes:
+      label: MRwaypoints-Version (Plugin)
+      description: Ausgabe von `/mrwaypoints version`
+      placeholder: "0.1.0"
+    validations:
+      required: true
+  - type: input
+    id: mod
+    attributes:
+      label: Mod-Version
+      description: Version des MRwaypoints-Mods im Client und von Xaero's Minimap / World Map (stehen in Mod Menu)
+      placeholder: "0.1.0"
+  - type: input
+    id: server
+    attributes:
+      label: Server-Version
+      description: Ausgabe von `/version`
+      placeholder: "Paper 26.3 Build 200"
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: Was ist passiert?
+      description: Was hast du gemacht, was hast du erwartet, was ist stattdessen passiert?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Schritte zum Nachstellen
+      placeholder: |
+        1. /waypoints öffnen, Kategorie „Shops“ wählen
+        2. Wegpunkt anklicken
+        3. ...
+  - type: textarea
+    id: logs
+    attributes:
+      label: Konsole / /mrwaypoints debug
+      description: Relevante Konsolenausgabe (Server oder Client-Log) oder Ausgabe von `/mrwaypoints debug <spieler>`.
+      render: text
+  - type: textarea
+    id: config
+    attributes:
+      label: Geänderte Config-Werte (optional)
+      description: Nur die Werte, die du gegenüber dem Standard geändert hast.
+      render: yaml

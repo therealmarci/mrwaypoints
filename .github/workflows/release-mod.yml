@@ -1,0 +1,75 @@
+# Mod-Release: beim Pushen eines Tags "mod-mc<minecraft>-v<version>" (z.B. mod-mc26.3-v0.1.0) ein GitHub-Release mit
+# der Mod-JAR erstellen. Unabhängig vom Plugin - Spieler müssen den Mod nur aktualisieren, wenn es ein neues
+# Mod-Release gibt. Ablauf: docs/RELEASES.md, Kompatibilität: docs/COMPATIBILITY.md
+name: Release Mod
+
+on:
+  push:
+    tags: ['mod-mc*-v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mod
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # nötig, um zu prüfen, auf welchem Branch der Tag liegt
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Tag mit mod/gradle.properties abgleichen
+        run: |
+          prop() { grep "^$1=" gradle.properties | cut -d= -f2 | tr -d '[:space:]'; }
+          VERSION=$(prop version)
+          MC=$(prop minecraft_version)
+          FULL="mc$MC-v$VERSION"
+          if [ "mod-$FULL" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME passt nicht zu mod/gradle.properties (erwartet: mod-$FULL)"
+            exit 1
+          fi
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+          echo "MC=$MC" >> "$GITHUB_ENV"
+          echo "FULL=$FULL" >> "$GITHUB_ENV"
+          case "$VERSION" in
+            0.*|*-*) echo "PRERELEASE=true" >> "$GITHUB_ENV" ;;
+            *)       echo "PRERELEASE=false" >> "$GITHUB_ENV" ;;
+          esac
+
+      # Stabile Versionen nur von main oder mc/<version>, Vorabversionen auch von beta.
+      - name: Branch prüfen
+        run: |
+          on() { git merge-base --is-ancestor "$GITHUB_SHA" "origin/$1" 2>/dev/null; }
+          if [ "$PRERELEASE" = "false" ] && ! on main && ! on "mc/$MC"; then
+            echo "::error::Stabile Version $FULL muss auf main oder mc/$MC getaggt werden (Vorabversionen dürfen von beta kommen)."
+            exit 1
+          fi
+
+      - name: Bauen
+        run: chmod +x gradlew && ./gradlew build
+
+      - name: Changelog-Abschnitt auslesen
+        run: |
+          awk -v v="$VERSION" '/^## \[/ { p = index($0, "[" v "]") > 0; next } p' CHANGELOG.md > release-notes.md
+          if [ ! -s release-notes.md ]; then
+            echo "::error::Kein Abschnitt '## [$VERSION]' in mod/CHANGELOG.md gefunden"
+            exit 1
+          fi
+
+      # Mod-Releases werden nie als "Latest" markiert - das bleibt das Plugin (Server-Admins laden es zuerst).
+      - name: GitHub-Release erstellen
+        uses: softprops/action-gh-release@v2
+        with:
+          name: MRwaypoints Mod ${{ env.VERSION }} (MC ${{ env.MC }})
+          body_path: mod/release-notes.md
+          files: mod/build/libs/MRwaypoints-mod-${{ env.FULL }}.jar
+          prerelease: ${{ env.PRERELEASE == 'true' }}
+          make_latest: false

@@ -1,0 +1,58 @@
+# ==============================================================================
+#   MRwaypoints - Categories
+# ==============================================================================
+#   The categories of the server waypoints. Easier: edit them in MRadmin's web interface (page "Waypoints").
+#   After changes here: /mrwaypoints reload
+#
+#   id (the key)     short, lowercase, letters/digits/-/_ - do not change it later, waypoints and permissions
+#                    use it: mrwaypoints.create.<id> (create), mrwaypoints.manage.<id> (edit and delete all)
+#   name             name per language (de, en ...)
+#   color            colour on the maps and in the menus, "#RRGGBB"
+#   icon             item in the menus (Minecraft item name, e.g. EMERALD)
+#   players-create   true = every player (mrwaypoints.player) may create waypoints here,
+#                    false = only with mrwaypoints.create.<id> (e.g. the team)
+#   max-per-player   waypoints one player may create here, 0 = no limit (the team with manage has none)
+#   visible          shown by default in Xaero's map (players switch categories on and off with the mod)
+#   map              shown on the web map (squaremap through MRadmin) - the web map is public
+# ==============================================================================
+categories:
+  spawn:
+    name:
+      de: "Spawn & Warps"
+      en: "Spawn & warps"
+    color: "#4FC3F7"
+    icon: BEACON
+    players-create: false
+    max-per-player: 0
+    visible: true
+    map: true
+  shops:
+    name:
+      de: "Shops"
+      en: "Shops"
+    color: "#FFB300"
+    icon: EMERALD
+    players-create: true
+    max-per-player: 3
+    visible: true
+    map: true
+  farms:
+    name:
+      de: "Farmen"
+      en: "Farms"
+    color: "#66BB6A"
+    icon: WHEAT
+    players-create: true
+    max-per-player: 5
+    visible: true
+    map: false
+  sights:
+    name:
+      de: "Sehenswürdigkeiten"
+      en: "Sights"
+    color: "#BA68C8"
+    icon: SPYGLASS
+    players-create: true
+    max-per-player: 3
+    visible: true
+    map: true

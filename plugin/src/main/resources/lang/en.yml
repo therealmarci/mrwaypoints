@@ -1,0 +1,126 @@
+﻿# ==============================================================================
+#   MRwaypoints - Language file: English (en)
+# ==============================================================================
+#   Activate: in config.yml  language: en  (default "auto": every player in their own language)
+#   Own language: copy this file (e.g. as fr.yml) and translate it.
+#   Missing texts are added automatically on updates - your changes are kept.
+#
+#   Format: MiniMessage - https://docs.advntr.dev/minimessage/format.html
+#   Empty text ("") = the message is not sent.
+#   The names of the categories are not here but in categories.yml (per language).
+# ==============================================================================
+
+# Do not change - tells the plugin which texts need renewing on updates.
+lang-version: 1
+
+prefix: "<dark_gray>[<gold>MRwaypoints</gold>]</dark_gray> "
+
+# --- General -----------------------------------------------------------------
+no-permission: "<prefix><red>You don't have permission to do that."
+players-only: "<prefix><red>Only players can use this command."
+help-header: "<prefix><gray>Commands:"
+help-waypoints: "<gold>/waypoints [stop]</gold> <dark_gray>- <gray>all waypoints, end the guide"
+help-reload: "<gold>/mrwaypoints reload</gold> <dark_gray>- <gray>reload config, categories and texts"
+help-version: "<gold>/mrwaypoints version</gold> <dark_gray>- <gray>version and updates"
+reloaded: "<prefix><hover:show_text:'<gray><categories> categories, <waypoints> waypoints'><green>Reloaded</hover>"
+
+# --- Guide (action bar) ------------------------------------------------------
+guide-started: "<prefix><hover:show_text:'<gray>Arrow and distance in the action bar - end it with /waypoints stop'><gray>Guiding you to <white><name></white></hover>"
+guide-stopped: "<prefix><gray>Guide ended."
+guide-none: "<prefix><gray>No guide is running."
+guide-gone: "<prefix><gray>The waypoint was deleted - guide ended."
+guide-arrived: "<prefix><green>Arrived: <white><name>"
+# Placeholders: <arrow> <name> (in the colour of the category) <distance> <height>
+guide-actionbar: "<gold><arrow></gold> <name> <gray><distance> m</gray><height>"
+guide-other-world: "<name> <gray>is in <white><world></white>"
+guide-up: " <dark_gray>▲ <blocks>"
+guide-down: " <dark_gray>▼ <blocks>"
+
+# --- Create and edit ---------------------------------------------------------
+create-no-permission: "<prefix><red>You may not create waypoints in <white><category></white>."
+create-limit: "<prefix><hover:show_text:'<gray>At most <max> own waypoints per player - delete an old one'><red>Limit reached in <white><category></white></hover>"
+created: "<prefix><hover:show_text:'<gray><category> · <x> <y> <z>'><green>Waypoint <white><name></white> created</hover>"
+renamed: "<prefix><hover:show_text:'<gray>before: <old>'><green>Renamed to <white><name></white></hover>"
+moved: "<prefix><hover:show_text:'<gray>new: <x> <y> <z>'><green><white><name></white> is here now</hover>"
+deleted: "<prefix><gray>Waypoint <white><name></white> deleted."
+teleported: "<prefix><gray>Teleported to <white><name></white>."
+world-not-loaded: "<prefix><red>The world <white><world></white> is not loaded right now."
+edit-no-permission: "<prefix><red>You may not edit this waypoint."
+name-empty: "<prefix><red>The name must not be empty."
+name-too-long: "<prefix><red>The name is too long <gray>(at most <max> characters)"
+name-taken: "<prefix><red>There already is <white><name></white> in this category."
+
+# --- Menus -------------------------------------------------------------------
+gui-main-title: "<dark_gray>Waypoints"
+gui-category-lore:
+  - "<gray><count> waypoints"
+  - "<yellow>Click: open"
+gui-no-categories: "<red>No categories"
+gui-no-categories-lore:
+  - "<gray>The team creates them in categories.yml"
+  - "<gray>or in MRadmin."
+gui-guide-name: "<gold>Guide: <white><name>"
+gui-guide-lore:
+  - "<yellow>Click: end"
+gui-close: "<red>Close"
+gui-back: "<gray>Back"
+gui-previous: "<gray>Previous page <dark_gray>(<page>/<pages>)"
+gui-next: "<gray>Next page <dark_gray>(<page>/<pages>)"
+gui-category-title: "<dark_gray>Waypoints · <category>"
+gui-category-empty: "<gray>No waypoints yet"
+gui-category-empty-lore:
+  - "<gray>Create the first one below,"
+  - "<gray>if you may here."
+gui-create: "<green>New waypoint here"
+gui-create-lore:
+  - "<gray>At your position, name in the dialog"
+gui-create-limit-lore:
+  - "<dark_gray>Your waypoints here: <used>/<max>"
+gui-create-full: "<gray>New waypoint here"
+gui-create-full-lore:
+  - "<red>Limit reached <dark_gray>(<max>)"
+  - "<gray>Delete one of yours to make room."
+gui-waypoint-near: "<gray><distance> m away <dark_gray>· <x> <y> <z>"
+gui-waypoint-far: "<gray>in <white><world></white> <dark_gray>· <x> <y> <z>"
+gui-waypoint-creator: "<dark_gray>by <player>"
+gui-waypoint-guide: "<yellow>Click: guide"
+gui-waypoint-teleport: "<yellow>Shift-click: teleport"
+gui-waypoint-edit: "<yellow>Right-click: edit"
+gui-waypoint-title: "<dark_gray>Waypoint · <name>"
+gui-waypoint-info: "<white><name>"
+gui-waypoint-info-lore:
+  - "<gray><category> · <world> <x> <y> <z>"
+  - "<dark_gray>by <player>"
+gui-action-guide: "<gold>Guide"
+gui-action-teleport: "<light_purple>Teleport"
+gui-action-rename: "<aqua>Rename"
+gui-action-move: "<aqua>Move here"
+gui-action-move-lore:
+  - "<gray>Puts it at your position."
+gui-action-delete: "<red>Delete"
+gui-delete-title: "<dark_gray>Delete <name>?"
+gui-confirm: "<red>Yes, delete"
+gui-cancel: "<gray>Cancel"
+
+# --- Dialogs -----------------------------------------------------------------
+dialog-create-title: "New waypoint · <category>"
+dialog-create-hint: "The waypoint goes to your position. At most <max> characters."
+dialog-rename-title: "Rename <name>"
+dialog-rename-hint: "At most <max> characters."
+dialog-name-label: "Name"
+dialog-save: "Save"
+dialog-cancel: "Cancel"
+
+# --- Version & updates -------------------------------------------------------
+version: "<prefix><gray>MRwaypoints <white>v<version></white> <dark_gray>(MC <mc>)</dark_gray> by <white><author></white>"
+version-latest: "<prefix><green>You are using the latest version."
+version-outdated: "<prefix><gold>New version available: <white><latest></white> <gray>(installed: <current>) <download>"
+version-unknown: "<prefix><gray>Update status unknown: <reason>"
+version-checking: "<prefix><gray>Checking for updates ..."
+version-links: "<prefix><website> <dark_gray>| <github>"
+update-download-label: "<aqua><u>[Download]</u></aqua>"
+update-join-notify: "<prefix><gold>There is an update for MRwaypoints: <white><latest></white> <gray>(installed: <current>) <download>"
+update-reason-disabled: "update check is disabled"
+update-reason-not-found: "project not found (HTTP 404) - not published yet?"
+update-reason-no-release: "no published version found"
+update-reason-no-repository: "no GitHub repository set"
