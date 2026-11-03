@@ -4,6 +4,7 @@ on:
   push:
     branches: [main, beta, 'mc/**']
   pull_request:
+  workflow_dispatch:
 
 jobs:
   plugin:
