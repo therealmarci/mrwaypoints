@@ -269,26 +269,38 @@ final class MRadminModule implements AdminModule, WebModule {
         return Set.of(WaypointPerms.USE);
     }
 
+    /** Groups, selections and symbols on the map came with MRadmin's API 9. */
+    private static final int MAP_GROUP_API = 9;
+
     /**
-     * The map of the player's page (MRadmin's tab "Map"): one layer per category with all its waypoints. On their own
-     * ones rename and delete, on every one the guide (while the player is online and in that world); a right-click on a
-     * free spot creates one there (categories the player may use); the switch "in Xaero" per category.
+     * The map of the player's page (MRadmin's tab "Map"): one layer per category with all its waypoints, under the
+     * heading "Waypoints". A right-click on a free spot: "Create waypoint" - name and category (those the player may
+     * use) in one dialog. On their own waypoints "Edit waypoint" (name and category) and "Delete waypoint", on every
+     * one the guide while the player is online in that world; the switch "in Xaero" per category. With an MRadmin
+     * older than API 9: one "create here" per category and only renaming, as before.
      */
     @Override
     public List<SelfMapLayer> selfMap(SelfViewer viewer) {
         if (!viewer.has(WaypointPerms.USE)) {
             return List.of();
         }
+        MRadminService service = MRadminService.get();
+        boolean grouped = service != null && service.apiVersion() >= MAP_GROUP_API;
         return plugin.messages().in(viewer.lang(), () -> {
             Messages m = plugin.messages();
             String lang = viewer.lang();
             Player online = Bukkit.getPlayer(viewer.player());
             int max = plugin.settings().waypoints().maxNameLength();
-            List<SelfMapLayer> layers = new ArrayList<>();
-            for (Category category : plugin.store().categories()) {
-                if (!category.onMap()) {
-                    continue;
+            List<Category> onMap = plugin.store().categories().stream().filter(Category::onMap).toList();
+            List<SelfMapLayer.Option> usable = new ArrayList<>();
+            for (Category category : onMap) {
+                if (mayCreate(viewer, category, online) == null) {
+                    usable.add(new SelfMapLayer.Option(category.id(), category.name(lang), category.hexColor()));
                 }
+            }
+            String group = m.plain("map-group");
+            List<SelfMapLayer> layers = new ArrayList<>();
+            for (Category category : onMap) {
                 List<SelfMapLayer.Marker> markers = new ArrayList<>();
                 for (Waypoint w : plugin.store().inCategory(category.id())) {
                     World world = w.bukkitWorld();
@@ -296,30 +308,74 @@ final class MRadminModule implements AdminModule, WebModule {
                         continue;
                     }
                     boolean own = w.creator().equals(viewer.player());
-                    List<SelfMapLayer.Action> actions = new ArrayList<>();
-                    if (online != null && online.getWorld().equals(world)) {
-                        actions.add(new SelfMapLayer.Action("guide", m.plain("map-guide"), "", null, null));
-                    }
-                    if (own) {
-                        actions.add(new SelfMapLayer.Action("rename", m.plain("map-rename"), "", null,
-                                new SelfBlock.Input(m.plain("map-rename-label"), w.name(), max)));
-                        actions.add(new SelfMapLayer.Action("delete", m.plain("map-delete"), "bad",
-                                m.plain("map-delete-confirm", "name", w.name()), null));
-                    }
+                    List<SelfMapLayer.Action> actions = grouped
+                            ? actions(m, w, category, own, online, world, usable, max, lang)
+                            : oldActions(m, w, own, online, world, max);
                     markers.add(new SelfMapLayer.Marker(String.valueOf(w.id()), world.getKey().asString(), w.x(), w.z(),
                             0, 0, w.name(), "", List.of(category.name(lang), w.x() + " " + w.y() + " " + w.z(),
                             m.plain(own ? "map-own" : "map-by", "player", w.creatorName())), actions));
                 }
-                List<SelfMapLayer.Action> here = mayCreate(viewer, category, online) == null
-                        ? List.of(new SelfMapLayer.Action("create", m.plain("map-create", "category", category.name(lang)),
-                        "good", null, new SelfBlock.Input(m.plain("map-create-label"), "", max)))
-                        : List.of();
+                List<SelfMapLayer.Action> here;
+                if (grouped) {
+                    // One entry for all categories, on the first layer (MRadmin shows the "here" of every layer).
+                    here = layers.isEmpty() && !usable.isEmpty()
+                            ? List.of(new SelfMapLayer.Action("create", m.plain("map-create-one"), "good", null,
+                            new SelfBlock.Input(m.plain("map-create-label"), "", max),
+                            new SelfMapLayer.Choice(m.plain("map-category-label"), usable.getFirst().id(), usable), "plus"))
+                            : List.of();
+                } else {
+                    here = mayCreate(viewer, category, online) == null
+                            ? List.of(new SelfMapLayer.Action("create", m.plain("map-create", "category", category.name(lang)),
+                            "good", null, new SelfBlock.Input(m.plain("map-create-label"), "", max)))
+                            : List.of();
+                }
                 boolean shown = plugin.store().visible(viewer.player(), category);
-                layers.add(new SelfMapLayer(category.id(), category.name(lang), category.hexColor(), markers, here,
-                        new SelfMapLayer.Toggle(m.plain(shown ? "map-xaero-on" : "map-xaero-off"), shown, "xaero")));
+                SelfMapLayer.Toggle toggle = new SelfMapLayer.Toggle(m.plain(shown ? "map-xaero-on" : "map-xaero-off"),
+                        shown, "xaero");
+                layers.add(grouped
+                        ? new SelfMapLayer(category.id(), category.name(lang), category.hexColor(), markers, here, toggle, group)
+                        : new SelfMapLayer(category.id(), category.name(lang), category.hexColor(), markers, here, toggle));
             }
             return layers;
         });
+    }
+
+    /** Right-click on a waypoint (API 9): guide, on own ones edit (name + category) and delete. */
+    private List<SelfMapLayer.Action> actions(Messages m, Waypoint w, Category category, boolean own,
+                                              @Nullable Player online, World world, List<SelfMapLayer.Option> usable,
+                                              int max, String lang) {
+        List<SelfMapLayer.Action> actions = new ArrayList<>();
+        if (online != null && online.getWorld().equals(world)) {
+            actions.add(new SelfMapLayer.Action("guide", m.plain("map-guide"), "", null, null, null, "compass"));
+        }
+        if (own) {
+            // The own category always stays selectable, even if the player could not create in it any more.
+            List<SelfMapLayer.Option> options = new ArrayList<>();
+            options.add(new SelfMapLayer.Option(category.id(), category.name(lang), category.hexColor()));
+            usable.stream().filter(o -> !o.id().equals(category.id())).forEach(options::add);
+            actions.add(new SelfMapLayer.Action("edit", m.plain("map-edit"), "", null,
+                    new SelfBlock.Input(m.plain("map-rename-label"), w.name(), max),
+                    new SelfMapLayer.Choice(m.plain("map-category-label"), category.id(), options), "edit"));
+            actions.add(new SelfMapLayer.Action("delete", m.plain("map-delete-one"), "bad",
+                    m.plain("map-delete-confirm", "name", w.name()), null, null, "trash"));
+        }
+        return actions;
+    }
+
+    /** Right-click on a waypoint for an MRadmin before API 9. */
+    private List<SelfMapLayer.Action> oldActions(Messages m, Waypoint w, boolean own, @Nullable Player online,
+                                                 World world, int max) {
+        List<SelfMapLayer.Action> actions = new ArrayList<>();
+        if (online != null && online.getWorld().equals(world)) {
+            actions.add(new SelfMapLayer.Action("guide", m.plain("map-guide"), "", null, null));
+        }
+        if (own) {
+            actions.add(new SelfMapLayer.Action("rename", m.plain("map-rename"), "", null,
+                    new SelfBlock.Input(m.plain("map-rename-label"), w.name(), max)));
+            actions.add(new SelfMapLayer.Action("delete", m.plain("map-delete"), "bad",
+                    m.plain("map-delete-confirm", "name", w.name()), null));
+        }
+        return actions;
     }
 
     /**
@@ -352,7 +408,12 @@ final class MRadminModule implements AdminModule, WebModule {
                     return null;
                 }
                 case "create" -> {
-                    return create(viewer, category, online, args);
+                    // With API 9 the category comes from the dialog, before from the layer.
+                    Category target = args.containsKey("choice") ? plugin.store().category(args.get("choice")) : category;
+                    if (target == null || !target.onMap()) {
+                        return m.plain("self-not-found");
+                    }
+                    return create(viewer, target, online, args);
                 }
                 default -> {
                 }
@@ -385,6 +446,25 @@ final class MRadminModule implements AdminModule, WebModule {
                         return m.plain("self-" + problem, "max", plugin.settings().waypoints().maxNameLength(), "name", name);
                     }
                     plugin.store().update(w.withName(name));
+                    return null;
+                }
+                case "edit" -> {
+                    String name = WaypointActions.clean(args.get("value"));
+                    Category target = plugin.store().category(args.getOrDefault("choice", category.id()));
+                    if (target == null) {
+                        return m.plain("self-not-found");
+                    }
+                    if (!target.id().equals(category.id())) {
+                        String blocked = mayCreate(viewer, target, online);
+                        if (blocked != null) {
+                            return m.plain("self-" + blocked, "max", target.maxPerPlayer());
+                        }
+                    }
+                    String problem = plugin.actions().nameProblem(target, name, w);
+                    if (problem != null) {
+                        return m.plain("self-" + problem, "max", plugin.settings().waypoints().maxNameLength(), "name", name);
+                    }
+                    plugin.store().update(w.withName(name).inCategory(target.id()));
                     return null;
                 }
                 case "delete" -> {

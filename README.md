@@ -166,7 +166,7 @@ MRwaypoints läuft **allein**. Zusammen mit anderen MRtechnology-Plugins kann es
 | Funktion | Braucht |
 |---|---|
 | Seite **Wegpunkte** fürs Team: Kategorien anlegen, ändern, sortieren, löschen (`mrwaypoints.admin.categories`), alle Wegpunkte umbenennen, in eine andere Kategorie verschieben, löschen (`mrwaypoints.manage.*`) | MRadmin |
-| Tab **Karte** auf der Spielerseite (`/web`): eine Ebene pro Kategorie mit `map: true`; Rechtsklick auf eine freie Stelle legt dort einen an (Höhe = Boden an der Stelle), auf eigene umbenennen und löschen, auf jeden den Wegweiser im Spiel starten; „in Xaero: an/aus“ pro Kategorie | MRadmin |
+| Tab **Karte** auf der Spielerseite (`/web`): eine Ebene pro Kategorie mit `map: true`; Rechtsklick auf eine freie Stelle: „Wegpunkt erstellen“ mit Name und Kategorie (Höhe = Boden an der Stelle), auf eigene „Wegpunkt bearbeiten“ (Name, Kategorie) und „Wegpunkt löschen“, auf jeden den Wegweiser im Spiel starten; „in Xaero: an/aus“ pro Kategorie | MRadmin |
 | Knopf im MRadmin-Dashboard (öffnet `/waypoints`) | MRadmin |
 | Wegpunkte in Xaero's Minimap und World Map, Kategorien ein- und ausblenden | MRwaypoints-Mod + Xaero's Minimap |
 
