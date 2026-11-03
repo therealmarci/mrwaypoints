@@ -21,7 +21,7 @@ plugin/src/main/java/at/marcelr/mrwaypoints/
 ├─ ModBridge.java         Verbindung zum Mod (Handshake, Zustand, Ein/Aus), Compatibility (Protokoll)
 ├─ UpdateChecker.java     Update-Prüfung (GitHub/Modrinth)
 ├─ command/               /waypoints, /mrwaypoints
-├─ gui/                   Menu, MenuListener, Items, MainMenu, CategoryMenu, WaypointMenu, ConfirmMenu, NameDialog
+├─ gui/                   Menu, MenuListener, Items, MainMenu, ListMenu, WaypointMenu, ConfirmMenu, CreateDialog, NameDialog
 ├─ api/                   MRadminLink (ohne MRadmin-Typen), MRadminModule (Karte, Dashboard, Spielerseite)
 ├─ util/                  Layout (Menü-Plätze, Pfeil), Wire (Nachrichtenformat) - mit Tests; LanguageChoice, TitleWidth, Versions
 └─ waypoint/              Category, Waypoint, WaypointStore (categories.yml, waypoints.yml)
@@ -47,7 +47,7 @@ Bearbeiten darf der Ersteller oder wer `manage.<kategorie>` hat; `manage` hebt a
 `Guide` merkt pro Spieler die Wegpunkt-ID und zeigt alle `guide.update-ticks` in der Actionbar: Pfeil (`Layout.arrowIndex`: Winkel zum Ziel minus Blickrichtung, acht Richtungen; Minecraft-Yaw 0 = Süden, 90 = Westen, rechts drehen erhöht den Yaw), Entfernung, ab 4 Blöcken Höhenunterschied ▲/▼. Ende bei Ankunft, `/waypoints stop`, gelöschtem Wegpunkt oder Quit.
 
 ## 6. Menüs
-Alle symmetrisch (`util/Layout`): Kategorien je Reihe um die Mitte, bei gerader Anzahl bleibt die Mitte frei; Aktionen eines Wegpunkts um Platz 13. Unten Zurück links, Schließen rechts, „Neuer Wegpunkt hier“ in der Mitte. Namen kommen über einen Paper-Dialog (`NameDialog`).
+Alle symmetrisch. `MainMenu` (3 Reihen): Meine (11) · Erstellen (13) · Alle (15), Wegweiser oben (4), unten Schließen (22) bzw. mit Mod „In Xaero“ (21) + Schließen (23). `ListMenu` (6 Reihen, „meine“ oder „alle“, nur die Welt des Spielers): 28 Plätze, oben (4) die aktiven Filter, unten Zurück (45) · Kategorie (46) · ◀ (48) · Sortierung (49) · ▶ (50) · Suche (52) · Schließen (53); Rechtsklick auf einen Filter setzt ihn zurück, die Filter leben nur im offenen Menü. Aktionen eines Wegpunkts (`WaypointMenu`) um Platz 13 (`util/Layout`). Dialoge: `CreateDialog` (Name + Kategorie als Auswahlliste, nur erlaubte), `NameDialog` (umbenennen, suchen).
 
 ## 7. MRadmin (`api/MRadminLink`, `api/MRadminModule`)
 - `MRadminLink` hat keine MRadmin-Typen und verbindet sich am Ende von `onEnable` (bzw. wenn MRadmin später startet). `WaypointStore#onChange` → `changed()` → `webChanged` und (ab API 7) `mapChanged`.
@@ -64,8 +64,8 @@ Alle symmetrisch (`util/Layout`): Kategorien je Reihe um die Mitte, bei gerader 
 | # | Schritt | Erwartung |
 |---|---|---|
 | 1 | Erster Start | `categories.yml` mit 4 Kategorien, Log „4 categories, 0 waypoints loaded.“ |
-| 2 | `/waypoints` → Shops → Neuer Wegpunkt hier | Dialog, danach Wegpunkt in der Liste, Meldung mit Koordinaten im Hover |
-| 3 | 4. Shop als Spieler (Limit 3) | Knopf grau mit Hinweis |
+| 2 | `/waypoints` → Wegpunkt erstellen | ein Dialog mit Name und Kategorie, danach Wegpunkt unter „Meine Wegpunkte“, Meldung mit Koordinaten im Hover |
+| 3 | 4. Shop als Spieler (Limit 3) | Shops fehlt in der Auswahl des Dialogs |
 | 4 | Klick auf Wegpunkt, weglaufen und drehen | Pfeil dreht mit, Entfernung zählt, bei ≤ 5 Blöcken „Angekommen“ |
 | 5 | Rechtsklick auf fremden Wegpunkt ohne manage | nichts (kein Bearbeiten-Hinweis in der Beschreibung) |
 | 6 | Kategorie in `categories.yml` auf `players-create: false`, reload | Spieler ohne `create.<id>` sehen „Neuer Wegpunkt hier“ nicht mehr |

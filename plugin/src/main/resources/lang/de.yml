@@ -11,7 +11,7 @@
 # ==============================================================================
 
 # Nicht ändern - damit erkennt das Plugin bei Updates, welche Texte erneuert werden müssen.
-lang-version: 1
+lang-version: 2
 
 prefix: "<dark_gray>[<gold>MRwaypoints</gold>]</dark_gray> "
 
@@ -52,13 +52,21 @@ name-taken: "<prefix><red>In dieser Kategorie gibt es <white><name></white> scho
 
 # --- Menüs ------------------------------------------------------------------
 gui-main-title: "<dark_gray>Wegpunkte"
-gui-category-lore:
-  - "<gray><count> Wegpunkte"
+gui-mine-name: "<aqua>Meine Wegpunkte"
+gui-mine-lore:
+  - "<gray><count> in <white><world></white>"
   - "<yellow>Klick: öffnen"
-gui-no-categories: "<red>Keine Kategorien"
-gui-no-categories-lore:
-  - "<gray>Das Team legt sie in categories.yml"
-  - "<gray>oder in MRadmin an."
+gui-create-name: "<green>Wegpunkt erstellen"
+gui-create-here-lore:
+  - "<gray>An deiner Position, Name und Kategorie"
+  - "<gray>im Dialog <dark_gray>(<count> Kategorien frei)"
+gui-create-none-lore:
+  - "<gray>In keiner Kategorie frei:"
+  - "<gray>keine Berechtigung oder Limit erreicht."
+gui-all-name: "<gold>Alle Wegpunkte"
+gui-all-lore:
+  - "<gray><count> in <white><world></white>"
+  - "<yellow>Klick: öffnen"
 gui-guide-name: "<gold>Wegweiser: <white><name>"
 gui-guide-lore:
   - "<yellow>Klick: beenden"
@@ -66,23 +74,39 @@ gui-close: "<red>Schließen"
 gui-back: "<gray>Zurück"
 gui-previous: "<gray>Vorherige Seite <dark_gray>(<page>/<pages>)"
 gui-next: "<gray>Nächste Seite <dark_gray>(<page>/<pages>)"
-gui-category-title: "<dark_gray>Wegpunkte · <category>"
-gui-category-empty: "<gray>Noch keine Wegpunkte"
-gui-category-empty-lore:
-  - "<gray>Leg unten den ersten an,"
-  - "<gray>falls du hier darfst."
-gui-create: "<green>Neuer Wegpunkt hier"
-gui-create-lore:
-  - "<gray>An deiner Position, Name im Dialog"
-gui-create-limit-lore:
-  - "<dark_gray>Deine Wegpunkte hier: <used>/<max>"
-gui-create-full: "<gray>Neuer Wegpunkt hier"
-gui-create-full-lore:
-  - "<red>Limit erreicht <dark_gray>(<max>)"
-  - "<gray>Lösch einen eigenen, um Platz zu machen."
+gui-mine-title: "<dark_gray>Meine Wegpunkte · <world>"
+gui-all-title: "<dark_gray>Alle Wegpunkte · <world>"
+gui-list-info: "<white><count> Wegpunkte <gray>in <white><world>"
+gui-list-info-lore:
+  - "<gray>Kategorie: <white><category>"
+  - "<gray>Sortierung: <white><sort>"
+  - "<gray>Suche: <white><search>"
+gui-list-empty: "<gray>Keine Wegpunkte"
+gui-list-empty-lore:
+  - "<gray>In dieser Welt gibt es noch keine."
+gui-list-empty-mine-lore:
+  - "<gray>Du hast hier noch keine angelegt -"
+  - "<gray>zurück und „Wegpunkt erstellen“."
+gui-list-empty-filtered-lore:
+  - "<gray>Nichts passt zu den Filtern."
+  - "<gray>Rechtsklick auf einen Filter setzt ihn zurück."
+gui-filter-category: "<aqua>Kategorie: <white><category>"
+gui-filter-category-lore:
+  - "<yellow>Klick: nächste · Rechtsklick: alle"
+gui-filter-all: "alle"
+gui-sort: "<aqua>Sortierung: <white><sort>"
+gui-sort-lore:
+  - "<yellow>Klick: wechseln · Rechtsklick: Entfernung"
+gui-sort-distance: "Entfernung"
+gui-sort-name: "Name"
+gui-sort-newest: "neueste zuerst"
+gui-search: "<aqua>Suche: <white><search>"
+gui-search-lore:
+  - "<yellow>Klick: Suchbegriff · Rechtsklick: löschen"
+gui-search-none: "-"
 gui-waypoint-near: "<gray><distance> m entfernt <dark_gray>· <x> <y> <z>"
-gui-waypoint-far: "<gray>in <white><world></white> <dark_gray>· <x> <y> <z>"
-gui-waypoint-creator: "<dark_gray>von <player>"
+gui-waypoint-category: "<dark_gray><category>"
+gui-waypoint-category-creator: "<dark_gray><category> · von <player>"
 gui-waypoint-guide: "<yellow>Klick: Wegweiser"
 gui-waypoint-teleport: "<yellow>Shift-Klick: teleportieren"
 gui-waypoint-edit: "<yellow>Rechtsklick: bearbeiten"
@@ -103,14 +127,19 @@ gui-confirm: "<red>Ja, löschen"
 gui-cancel: "<gray>Abbrechen"
 
 # --- Dialoge ----------------------------------------------------------------
-dialog-create-title: "Neuer Wegpunkt · <category>"
-dialog-create-hint: "Der Wegpunkt kommt an deine Position. Höchstens <max> Zeichen."
+dialog-create-title: "Wegpunkt erstellen"
+dialog-create-hint: "Er kommt an deine Position (<world> <x> <y> <z>). Name höchstens <max> Zeichen."
+dialog-name-label: "Name"
+dialog-category-label: "Kategorie"
 dialog-rename-title: "<name> umbenennen"
 dialog-rename-hint: "Höchstens <max> Zeichen."
-dialog-name-label: "Name"
+dialog-rename-label: "Neuer Name"
+dialog-search-title: "Wegpunkte suchen"
+dialog-search-hint: "Teil des Namens, leer = alle."
+dialog-search-label: "Suche"
 dialog-save: "Speichern"
 dialog-cancel: "Abbrechen"
-
+create-none: "<prefix><hover:show_text:'<gray>Keine Berechtigung oder Limit erreicht'><red>In keiner Kategorie kannst du gerade anlegen</hover>"
 
 # --- MRadmin: Dashboard, Webkarte, Spielerseite -------------------------------
 admin-summary:

@@ -27,7 +27,7 @@ Spieler **ohne** Mod nutzen Menü und Wegweiser ganz normal. Plugin und Mod habe
 ## Was kann MRwaypoints?
 - **Kategorien vom Team:** Name pro Sprache, Farbe, Symbol, wer darin Wegpunkte anlegen darf und wie viele pro Spieler.
 - **Wegpunkte auf dem Server gespeichert:** Jeder sieht dieselben - anders als private Wegpunkte in Xaero, die nur auf deinem PC liegen.
-- **Menü `/waypoints` für alle:** Kategorien, Wegpunkte nach Entfernung sortiert, neue Wegpunkte an der eigenen Position anlegen.
+- **Menü `/waypoints` für alle:** meine Wegpunkte, alle Wegpunkte (mit Filter nach Kategorie, Sortierung und Suche), neue Wegpunkte an der eigenen Position anlegen - immer für die Dimension, in der du bist.
 - **Wegweiser:** Ein Klick auf einen Wegpunkt zeigt in der Actionbar einen Pfeil, die Entfernung und den Höhenunterschied - ohne Mod.
 - **Teleport** nur fürs Team (Admins).
 
@@ -48,15 +48,24 @@ Spieler **ohne** Mod nutzen Menü und Wegweiser ganz normal. Plugin und Mod habe
 ---
 
 ## Für Spieler
-**`/waypoints`** (auch `/wegpunkte`) öffnet die Kategorien. Darin:
+**`/waypoints`** (auch `/wegpunkte`) öffnet ein kleines Menü mit drei Knöpfen. Alles darin gilt für die **Welt bzw. Dimension, in der du gerade bist** - Wegpunkte im Nether siehst du im Nether.
+
+| Knopf | Was passiert |
+|---|---|
+| **Meine Wegpunkte** | deine eigenen Wegpunkte hier |
+| **Wegpunkt erstellen** | ein Dialog mit Name und Kategorie - nur Kategorien, in denen du gerade anlegen darfst (mit „genutzt/Limit“). Der Wegpunkt kommt an deine Position. Grau, wenn du nirgends darfst. |
+| **Alle Wegpunkte** | alle Server-Wegpunkte hier |
+| oben: **Wegweiser** | nur wenn einer läuft - Klick beendet ihn |
+
+In den Listen:
 
 | Aktion | Was passiert |
 |---|---|
-| **Klick** auf einen Wegpunkt | Wegweiser in der Actionbar: Pfeil in Blickrichtung, Entfernung, ▲/▼ Höhenunterschied. Endet bei Ankunft, mit `/waypoints stop` oder oben im Menü. |
+| **Klick** auf einen Wegpunkt | Wegweiser in der Actionbar: Pfeil in Blickrichtung, Entfernung, ▲/▼ Höhenunterschied. Endet bei Ankunft, mit `/waypoints stop` oder oben im Startmenü. |
 | **Rechtsklick** auf einen eigenen Wegpunkt | Bearbeiten: umbenennen, an die eigene Position verschieben, löschen |
-| **Neuer Wegpunkt hier** (unten in der Mitte) | Legt einen Wegpunkt an deiner Position an, den Namen gibst du im Dialog ein. Nur in Kategorien, in denen du darfst - mit Anzeige, wie viele du dort schon hast. |
+| unten **Kategorie** · **Sortierung** · **Suche** | Filter: Klick wechselt (Kategorie: nächste, Sortierung: Entfernung → Name → neueste), Suche per Dialog - **Rechtsklick setzt den Filter zurück**. Oben in der Mitte steht, was gerade gefiltert ist. |
 
-Liegt ein Wegpunkt in einer anderen Welt, zeigt der Wegweiser, in welcher. Private Wegpunkte legst du wie gewohnt direkt in Xaero's Minimap an - sie bleiben auf deinem PC.
+Private Wegpunkte legst du wie gewohnt direkt in Xaero's Minimap an - sie bleiben auf deinem PC.
 
 ### In Xaero's Minimap und World Map (mit Mod)
 1. **Fabric API**, **Xaero's Minimap** (und gern Xaero's World Map) und den **[MRwaypoints-Mod](https://mrtechnology.marcelr.at/download/mrwaypoints/)** (Zeile „Fabric-Mod (Client)“) in den Ordner `mods/` legen.

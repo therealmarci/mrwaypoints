@@ -9,15 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class LayoutTest {
 
     @Test
-    void categoriesCentredPerRow() {
-        assertArrayEquals(new int[]{13}, Layout.centered(1));
-        assertArrayEquals(new int[]{12, 14}, Layout.centered(2));
-        assertArrayEquals(new int[]{11, 12, 14, 15}, Layout.centered(4));
-        assertArrayEquals(new int[]{10, 11, 12, 13, 14, 15, 16, 21, 22, 23}, Layout.centered(10));
-        assertArrayEquals(Layout.CONTENT, Layout.centered(30));
-    }
-
-    @Test
     void actionsSymmetric() {
         assertArrayEquals(new int[]{13}, Layout.row(1));
         assertArrayEquals(new int[]{11, 15}, Layout.row(2));

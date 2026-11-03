@@ -16,6 +16,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Main class of MRwaypoints: server waypoints in categories set by the admin - menu and guide in game for everyone,
@@ -25,7 +26,8 @@ public final class MRWaypoints extends JavaPlugin implements Listener {
 
     private FileConfiguration config;
     private Settings settings;
-    private final Messages messages = new Messages(1, Map.of());
+    // lang-version 2: one dialog for name and category (create).
+    private final Messages messages = new Messages(2, Map.of(2, Set.of("dialog-create-title", "dialog-create-hint")));
     private final WaypointPerms permissions = new WaypointPerms();
     private final WaypointActions actions = new WaypointActions(this);
     private WaypointStore store;

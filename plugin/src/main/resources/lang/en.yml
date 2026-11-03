@@ -11,7 +11,7 @@
 # ==============================================================================
 
 # Do not change - tells the plugin which texts need renewing on updates.
-lang-version: 1
+lang-version: 2
 
 prefix: "<dark_gray>[<gold>MRwaypoints</gold>]</dark_gray> "
 
@@ -52,13 +52,21 @@ name-taken: "<prefix><red>There already is <white><name></white> in this categor
 
 # --- Menus -------------------------------------------------------------------
 gui-main-title: "<dark_gray>Waypoints"
-gui-category-lore:
-  - "<gray><count> waypoints"
+gui-mine-name: "<aqua>My waypoints"
+gui-mine-lore:
+  - "<gray><count> in <white><world></white>"
   - "<yellow>Click: open"
-gui-no-categories: "<red>No categories"
-gui-no-categories-lore:
-  - "<gray>The team creates them in categories.yml"
-  - "<gray>or in MRadmin."
+gui-create-name: "<green>Create waypoint"
+gui-create-here-lore:
+  - "<gray>At your position, name and category"
+  - "<gray>in the dialog <dark_gray>(<count> categories free)"
+gui-create-none-lore:
+  - "<gray>No category free:"
+  - "<gray>no permission or limit reached."
+gui-all-name: "<gold>All waypoints"
+gui-all-lore:
+  - "<gray><count> in <white><world></white>"
+  - "<yellow>Click: open"
 gui-guide-name: "<gold>Guide: <white><name>"
 gui-guide-lore:
   - "<yellow>Click: end"
@@ -66,23 +74,39 @@ gui-close: "<red>Close"
 gui-back: "<gray>Back"
 gui-previous: "<gray>Previous page <dark_gray>(<page>/<pages>)"
 gui-next: "<gray>Next page <dark_gray>(<page>/<pages>)"
-gui-category-title: "<dark_gray>Waypoints · <category>"
-gui-category-empty: "<gray>No waypoints yet"
-gui-category-empty-lore:
-  - "<gray>Create the first one below,"
-  - "<gray>if you may here."
-gui-create: "<green>New waypoint here"
-gui-create-lore:
-  - "<gray>At your position, name in the dialog"
-gui-create-limit-lore:
-  - "<dark_gray>Your waypoints here: <used>/<max>"
-gui-create-full: "<gray>New waypoint here"
-gui-create-full-lore:
-  - "<red>Limit reached <dark_gray>(<max>)"
-  - "<gray>Delete one of yours to make room."
+gui-mine-title: "<dark_gray>My waypoints · <world>"
+gui-all-title: "<dark_gray>All waypoints · <world>"
+gui-list-info: "<white><count> waypoints <gray>in <white><world>"
+gui-list-info-lore:
+  - "<gray>Category: <white><category>"
+  - "<gray>Sorting: <white><sort>"
+  - "<gray>Search: <white><search>"
+gui-list-empty: "<gray>No waypoints"
+gui-list-empty-lore:
+  - "<gray>There are none in this world yet."
+gui-list-empty-mine-lore:
+  - "<gray>You have not created any here -"
+  - "<gray>go back and \"Create waypoint\"."
+gui-list-empty-filtered-lore:
+  - "<gray>Nothing matches the filters."
+  - "<gray>Right-click a filter to reset it."
+gui-filter-category: "<aqua>Category: <white><category>"
+gui-filter-category-lore:
+  - "<yellow>Click: next · right-click: all"
+gui-filter-all: "all"
+gui-sort: "<aqua>Sorting: <white><sort>"
+gui-sort-lore:
+  - "<yellow>Click: change · right-click: distance"
+gui-sort-distance: "distance"
+gui-sort-name: "name"
+gui-sort-newest: "newest first"
+gui-search: "<aqua>Search: <white><search>"
+gui-search-lore:
+  - "<yellow>Click: search term · right-click: clear"
+gui-search-none: "-"
 gui-waypoint-near: "<gray><distance> m away <dark_gray>· <x> <y> <z>"
-gui-waypoint-far: "<gray>in <white><world></white> <dark_gray>· <x> <y> <z>"
-gui-waypoint-creator: "<dark_gray>by <player>"
+gui-waypoint-category: "<dark_gray><category>"
+gui-waypoint-category-creator: "<dark_gray><category> · by <player>"
 gui-waypoint-guide: "<yellow>Click: guide"
 gui-waypoint-teleport: "<yellow>Shift-click: teleport"
 gui-waypoint-edit: "<yellow>Right-click: edit"
@@ -103,14 +127,19 @@ gui-confirm: "<red>Yes, delete"
 gui-cancel: "<gray>Cancel"
 
 # --- Dialogs -----------------------------------------------------------------
-dialog-create-title: "New waypoint · <category>"
-dialog-create-hint: "The waypoint goes to your position. At most <max> characters."
+dialog-create-title: "Create waypoint"
+dialog-create-hint: "It goes to your position (<world> <x> <y> <z>). Name at most <max> characters."
+dialog-name-label: "Name"
+dialog-category-label: "Category"
 dialog-rename-title: "Rename <name>"
 dialog-rename-hint: "At most <max> characters."
-dialog-name-label: "Name"
+dialog-rename-label: "New name"
+dialog-search-title: "Search waypoints"
+dialog-search-hint: "Part of the name, empty = all."
+dialog-search-label: "Search"
 dialog-save: "Save"
 dialog-cancel: "Cancel"
-
+create-none: "<prefix><hover:show_text:'<gray>No permission or limit reached'><red>You cannot create in any category right now</hover>"
 
 # --- MRadmin: dashboard, web map, player page --------------------------------
 admin-summary:
