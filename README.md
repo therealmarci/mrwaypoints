@@ -1,6 +1,6 @@
 # MRwaypoints
 
-**Gemeinsame Wegpunkte für deinen Server:** Das Team legt Kategorien fest (Spawn, Shops, Farmen …), Spieler und Team tragen dort Wegpunkte ein - und jeder findet sie im Spiel über ein Menü mit Wegweiser, in Xaero's Minimap und World Map und auf der Webkarte.
+**Gemeinsame Wegpunkte für deinen Server:** Das Team legt Kategorien fest (Spawn, Shops, Farmen …), Spieler und Team tragen dort Wegpunkte ein - und jeder findet sie im Spiel über ein Menü mit Wegweiser, in Xaero's Minimap und World Map und auf der Karte der Spielerseite (mit MRadmin).
 
 **[⬇ Download](https://mrtechnology.marcelr.at/download/mrwaypoints/)** · **[📖 Anleitung online](https://mrtechnology.marcelr.at/docs/mrwaypoints/)** · **[🐞 Fehler melden](https://mrtechnology.marcelr.at/report/mrwaypoints/)**
 
@@ -96,9 +96,9 @@ In `plugins/MRwaypoints/categories.yml`, danach `/mrwaypoints reload`:
 | `players-create` | `true` = jeder Spieler (`mrwaypoints.player`) darf hier anlegen, `false` = nur mit `mrwaypoints.create.<id>` |
 | `max-per-player` | so viele eigene Wegpunkte pro Spieler, `0` = unbegrenzt (wer `mrwaypoints.manage.<id>` hat, ist nie begrenzt) |
 | `visible` | in Xaero's Karte standardmäßig eingeblendet - jeder Spieler schaltet es für sich um (Mod oder Karte auf der Spielerseite) |
-| `map` | als eigene Ebene auf der Webkarte zeigen (mit MRadmin und squaremap) - die Karte ist öffentlich |
+| `map` | als eigene Ebene auf der Karte der Spielerseite zeigen (Tab „Karte“ in MRadmin, nur für angemeldete Spieler) |
 
-Mitgeliefert sind **Spawn & Warps** (nur Team), **Shops** (Spieler, je 3), **Farmen** (Spieler, je 5, nicht auf der Webkarte) und **Sehenswürdigkeiten** (Spieler, je 3).
+Mitgeliefert sind **Spawn & Warps** (nur Team), **Shops** (Spieler, je 3), **Farmen** (Spieler, je 5, nicht auf der Karte) und **Sehenswürdigkeiten** (Spieler, je 3).
 
 > [!WARNING]
 > Löschst du eine Kategorie aus der Datei, verschwinden ihre Wegpunkte aus den Menüs, bleiben aber in `waypoints.yml`. Mit derselben id kommen sie zurück.
@@ -166,9 +166,8 @@ MRwaypoints läuft **allein**. Zusammen mit anderen MRtechnology-Plugins kann es
 | Funktion | Braucht |
 |---|---|
 | Seite **Wegpunkte** fürs Team: Kategorien anlegen, ändern, sortieren, löschen (`mrwaypoints.admin.categories`), alle Wegpunkte umbenennen, in eine andere Kategorie verschieben, löschen (`mrwaypoints.manage.*`) | MRadmin |
-| Tab **Karte** auf der Spielerseite (`/web`): alle Wegpunkte als Ebene pro Kategorie; Rechtsklick auf eine freie Stelle legt dort einen an (Höhe = Boden an der Stelle), auf eigene umbenennen und löschen, auf jeden den Wegweiser im Spiel starten; „in Xaero: an/aus“ pro Kategorie | MRadmin + squaremap |
+| Tab **Karte** auf der Spielerseite (`/web`): eine Ebene pro Kategorie mit `map: true`; Rechtsklick auf eine freie Stelle legt dort einen an (Höhe = Boden an der Stelle), auf eigene umbenennen und löschen, auf jeden den Wegweiser im Spiel starten; „in Xaero: an/aus“ pro Kategorie | MRadmin |
 | Knopf im MRadmin-Dashboard (öffnet `/waypoints`) | MRadmin |
-| Kategorien mit `map: true` als Ebenen auf der Webkarte (Pin in der Kategoriefarbe, Klick zeigt Name, Ort und Ersteller) | MRadmin + squaremap |
 | Wegpunkte in Xaero's Minimap und World Map, Kategorien ein- und ausblenden | MRwaypoints-Mod + Xaero's Minimap |
 
 ## Häufige Fragen

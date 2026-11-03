@@ -17,7 +17,7 @@ import java.util.Map;
  *                       mrwaypoints.create.&lt;id&gt;
  * @param maxPerPlayer   waypoints one player may create here, 0 = no limit (the team with manage is never limited)
  * @param visible        shown by default in Xaero's map (players switch categories on and off with the mod)
- * @param onMap          shown on the web map (squaremap through MRadmin) - it is public
+ * @param onMap          shown on the map of the player page in MRadmin
  */
 public record Category(String id, Map<String, String> names, int color, Material icon, boolean playersCreate,
                        int maxPerPlayer, boolean visible, boolean onMap) {

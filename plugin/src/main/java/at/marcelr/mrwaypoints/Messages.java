@@ -169,7 +169,7 @@ public final class Messages {
         }
     }
 
-    /** The language of texts without a single recipient (web map ...): the fixed one or server-language. */
+    /** The language of texts without a single recipient (Discord ...): the fixed one or server-language. */
     public String serverLanguage() {
         return fixed != null ? fixed : serverCode;
     }

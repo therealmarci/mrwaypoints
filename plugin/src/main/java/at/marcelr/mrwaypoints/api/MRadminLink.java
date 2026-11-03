@@ -10,8 +10,8 @@ import org.bukkit.event.server.PluginEnableEvent;
 
 /**
  * The optional connection to MRadmin. MRwaypoints works the same without it; while MRadmin runs, MRwaypoints is one of
- * its modules ({@link MRadminModule}): the categories as layers on the web map, a button on the dashboard and an area
- * on the players' own page. This class uses no MRadmin types, so it is safe to load without MRadmin - only
+ * its modules ({@link MRadminModule}): a button on the dashboard, the team page and a layer
+ * per category on the map of the players' own page. This class uses no MRadmin types, so it is safe to load without MRadmin - only
  * {@link MRadminModule} touches them, and only after MRadmin is known to be enabled.
  */
 public final class MRadminLink implements Listener {
@@ -41,7 +41,7 @@ public final class MRadminLink implements Listener {
         }
     }
 
-    /** Waypoints or categories changed - MRadmin draws the web map again and open pages reload. */
+    /** Waypoints or categories changed - open pages in MRadmin reload. */
     public void changed() {
         if (connected) {
             try {

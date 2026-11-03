@@ -4,7 +4,7 @@ MRwaypoints besteht aus zwei Teilen:
 
 | Teil | Ordner | Läuft auf | Aufgabe |
 |---|---|---|---|
-| **Plugin** (Paper) | `plugin/` | Server | Kategorien, Wegpunkte, Rechte, Menü `/waypoints`, Wegweiser, Webkarte und Web über MRadmin, welche Kategorien ein Spieler in Xaero sehen will (`players.yml`) |
+| **Plugin** (Paper) | `plugin/` | Server | Kategorien, Wegpunkte, Rechte, Menü `/waypoints`, Wegweiser, Web und Karte über MRadmin, welche Kategorien ein Spieler in Xaero sehen will (`players.yml`) |
 | **Mod** (Fabric) | `mod/` | Client | Zeigt die Server-Wegpunkte in Xaero's Minimap und World Map, Bildschirm zum Ein- und Ausschalten der Kategorien (Taste `J`, Knopf in Xaeros Wegpunkt-Menü) |
 
 Der Mod ist **optional**: Ohne ihn funktionieren Menü und Wegweiser ganz normal. Er braucht **Xaero's Minimap** (die World Map zeigt die Wegpunkte der Minimap mit an).

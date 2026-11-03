@@ -141,11 +141,9 @@ dialog-save: "Speichern"
 dialog-cancel: "Abbrechen"
 create-none: "<prefix><hover:show_text:'<gray>Keine Berechtigung oder Limit erreicht'><red>In keiner Kategorie kannst du gerade anlegen</hover>"
 
-# --- MRadmin: Dashboard, Webkarte, Spielerseite -------------------------------
+# --- MRadmin: Dashboard, Spielerseite -------------------------------
 admin-summary:
   - "<gray><waypoints> Wegpunkte in <categories> Kategorien"
-# Beim Anklicken auf der Webkarte (HTML erlaubt, Server-Sprache). Platzhalter: {name} {category} {x} {y} {z} {player}
-map-tooltip: "<b>{name}</b><br>{category}<br>{x} {y} {z}<br>von {player}"
 # Karte der Spielerseite (/web, Tab „Karte“) - reiner Text, kein MiniMessage. Platzhalter: <name> <max> <player> <category>
 map-own: "von dir"
 map-by: "von <player>"

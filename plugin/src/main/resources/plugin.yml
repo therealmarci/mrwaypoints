@@ -5,7 +5,7 @@ api-version: '${mcVersion}'
 softdepend: [MRadmin]
 author: _therealmarci
 website: ${website}/docs/${websiteSlug}/
-description: Server waypoints in categories - menu and guide in game, in Xaero's map with the MRwaypoints mod, on the web map and in the web interface through MRadmin.
+description: Server waypoints in categories - menu and guide in game, in Xaero's map with the MRwaypoints mod and in the web interface through MRadmin.
 
 commands:
   waypoints:

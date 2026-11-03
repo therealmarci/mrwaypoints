@@ -26,7 +26,7 @@ language: auto
 # Language for players whose Minecraft language has no file of its own.
 fallback-language: en
 
-# Language of texts that are not meant for a single player: the web map (squaremap through MRadmin).
+# Language of texts that are not meant for a single player (kept for all MR plugins alike; MRwaypoints has none yet).
 server-language: en
 
 

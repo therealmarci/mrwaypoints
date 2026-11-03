@@ -20,7 +20,7 @@ import java.util.Set;
 
 /**
  * Main class of MRwaypoints: server waypoints in categories set by the admin - menu and guide in game for everyone,
- * the categories in Xaero's map with the MRwaypoints mod, on the web map and in the web interface through MRadmin.
+ * the categories in Xaero's map with the MRwaypoints mod and in the web interface through MRadmin.
  */
 public final class MRWaypoints extends JavaPlugin implements Listener {
 
@@ -42,7 +42,7 @@ public final class MRWaypoints extends JavaPlugin implements Listener {
         ConfigUpdater.update(this);
         loadConfiguration();
 
-        // Optional: MRadmin (module API) - web map layers, dashboard, player page. Connected at the end of enabling.
+        // Optional: MRadmin (module API) - dashboard, team page, map of the player page. Connected at the end of enabling.
         mradmin = new MRadminLink(this);
         store = new WaypointStore(this);
         store.onChange(mradmin::changed);

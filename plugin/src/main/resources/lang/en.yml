@@ -141,11 +141,9 @@ dialog-save: "Save"
 dialog-cancel: "Cancel"
 create-none: "<prefix><hover:show_text:'<gray>No permission or limit reached'><red>You cannot create in any category right now</hover>"
 
-# --- MRadmin: dashboard, web map, player page --------------------------------
+# --- MRadmin: dashboard, player page ------------------------------------------
 admin-summary:
   - "<gray><waypoints> waypoints in <categories> categories"
-# On click on the web map (HTML allowed, server language). Placeholders: {name} {category} {x} {y} {z} {player}
-map-tooltip: "<b>{name}</b><br>{category}<br>{x} {y} {z}<br>by {player}"
 # Map of the player page (/web, tab "Map") - plain text, no MiniMessage. Placeholders: <name> <max> <player> <category>
 map-own: "by you"
 map-by: "by <player>"

@@ -22,7 +22,7 @@ plugin/src/main/java/at/marcelr/mrwaypoints/
 ├─ UpdateChecker.java     Update-Prüfung (GitHub/Modrinth)
 ├─ command/               /waypoints, /mrwaypoints
 ├─ gui/                   Menu, MenuListener, Items, MainMenu, ListMenu, WaypointMenu, ConfirmMenu, CreateDialog, NameDialog
-├─ api/                   MRadminLink (ohne MRadmin-Typen), MRadminModule (Webkarte, Dashboard, Team-Seite, Karte der Spielerseite)
+├─ api/                   MRadminLink (ohne MRadmin-Typen), MRadminModule (Dashboard, Team-Seite, Karte der Spielerseite)
 ├─ util/                  Layout (Menü-Plätze, Pfeil), Wire (Nachrichtenformat) - mit Tests; LanguageChoice, TitleWidth, Versions
 └─ waypoint/              Category, Waypoint, WaypointStore (categories.yml, waypoints.yml)
 plugin/src/main/resources/
@@ -36,7 +36,7 @@ plugin/src/main/resources/
 - **`categories.yml`** (Server-Admin oder MRadmin-Web): Abschnitt `categories.<id>` mit `name.<sprache>`, `color`, `icon`, `players-create`, `max-per-player`, `visible`, `map`. Die Reihenfolge der Datei ist die Reihenfolge in Menüs und auf den Karten. Wird aus dem Web gespeichert, schreibt `WaypointStore#saveCategories` die Datei neu und übernimmt den Kommentarblock aus der mitgelieferten Datei.
 - **`waypoints.yml`**: `next-id` und `waypoints.<id>` mit `category`, `name`, `world` (UUID), `world-name`, `x`/`y`/`z` (Block), `creator`, `creator-name`, `created`.
 - Geschrieben wird im Hintergrund über einen eigenen Thread (Reihenfolge bleibt), mit Temp-Datei und Umbenennen. `close()` beim Abschalten wartet darauf.
-- Jede Änderung ruft die `onChange`-Listener auf (später: Webkarte, Mod-Abgleich).
+- Jede Änderung ruft die `onChange`-Listener auf (MRadmin-Seiten, Mod-Abgleich).
 
 ## 4. Permissions pro Kategorie
 `WaypointPerms#register` legt für jede Kategorie `mrwaypoints.create.<id>` und `mrwaypoints.manage.<id>` an (Default `false`) und hängt sie als Kinder an `mrwaypoints.create.*` / `mrwaypoints.manage.*` (aus der plugin.yml, in `groups.staff`). Bei `players-create: true` wird `create.<id>` zusätzlich Kind von `mrwaypoints.player`. Gelöschte Kategorien verlieren ihre Permissions wieder. Danach `recalculatePermissions()` für alle Online-Spieler. LuckPerms liest Kinder von registrierten Permissions wie die aus der plugin.yml.
@@ -50,10 +50,9 @@ Bearbeiten darf der Ersteller oder wer `manage.<kategorie>` hat; `manage` hebt a
 Alle symmetrisch. `MainMenu` (3 Reihen): oben Meine (2) · Erstellen (4) · Alle (6), Wegweiser in der Mitte (13), unten Schließen (22) bzw. mit Mod „In Xaero“ (21) + Schließen (23). `ListMenu` (6 Reihen, „meine“ oder „alle“, nur die Welt des Spielers): 28 Plätze, oben (4) die aktiven Filter, unten Zurück (45) · Kategorie (46) · ◀ (48) · Sortierung (49) · ▶ (50) · Suche (52) · Schließen (53); Rechtsklick auf einen Filter setzt ihn zurück, die Filter leben nur im offenen Menü. Aktionen eines Wegpunkts (`WaypointMenu`) um Platz 13 (`util/Layout`). Dialoge: `CreateDialog` (Name + Kategorie als Auswahlliste, nur erlaubte), `NameDialog` (umbenennen, suchen).
 
 ## 7. MRadmin (`api/MRadminLink`, `api/MRadminModule`)
-- `MRadminLink` hat keine MRadmin-Typen und verbindet sich am Ende von `onEnable` (bzw. wenn MRadmin später startet). `WaypointStore#onChange` → `changed()` → `webChanged` und (ab API 7) `mapChanged`.
+- `MRadminLink` hat keine MRadmin-Typen und verbindet sich am Ende von `onEnable` (bzw. wenn MRadmin später startet). `WaypointStore#onChange` → `changed()` → `webChanged`.
 - `MRadminModule` (nur mit MRadmin geladen): Dashboard-Knopf mit `viewPermission` `mrwaypoints.admin.view`, `openMenu` öffnet `/waypoints`.
-- **Webkarte (API 7):** `mapLayers()` = eine Ebene pro Kategorie mit `map: true` (id = Kategorie-id, Name in der Server-Sprache, Reihenfolge der Datei), je Wegpunkt ein `MapMarker.Icon`. `mapIcons()` zeichnet pro Kategorie einen Pin in ihrer Farbe; der Schlüssel enthält die Farbe (`shops_ffb300`), damit MRadmin nach einer Farbänderung das neue Bild holt.
-- **Karte der Spielerseite (API 8):** `selfMap` = eine `SelfMapLayer` pro Kategorie (alle Welten, MRadmin zeigt die gewählte), Marker = Wegpunkte mit Aktionen `guide` (nur online in der Welt), `rename`/`delete` (nur eigene); `here` = `create` (Name per Eingabe, Höhe `getHighestBlockYAt + 1`, Weltgrenze geprüft). Anlegen offline nur mit `players-create` (Rechte offline unbekannt), online wie im Spiel (`createBlocked`). Schalter `xaero` = `WaypointStore#setVisible`. Der frühere Bereich „Wegpunkte“ der Spielerseite ist entfallen.
+- **Karte der Spielerseite (API 8):** `selfMap` = eine `SelfMapLayer` pro Kategorie mit `map: true` (alle Welten, MRadmin zeigt die gewählte), Marker = Wegpunkte mit Aktionen `guide` (nur online in der Welt), `rename`/`delete` (nur eigene); `here` = `create` (Name per Eingabe, Höhe `getHighestBlockYAt + 1`, Weltgrenze geprüft). Anlegen offline nur mit `players-create` (Rechte offline unbekannt), online wie im Spiel (`createBlocked`). Schalter `xaero` = `WaypointStore#setVisible`. Der frühere Bereich „Wegpunkte“ der Spielerseite ist entfallen.
 
 ## 8. Mod für Xaero (`ModBridge`, `mod/`)
 - Protokoll, Handshake und Nachrichten: [COMPATIBILITY.md](COMPATIBILITY.md). `ModBridge` (Plugin) wie in MRtoolbar: wartet mit Nachrichten, bis der Client den Kanal angemeldet hat, schickt nach OK den Zustand und bei jeder Änderung (`WaypointStore#onChange`, einmal pro Tick) neu an alle mit Mod.
