@@ -1,5 +1,6 @@
 package at.marcelr.mrwaypoints;
 
+import at.marcelr.mrwaypoints.api.MRadminLink;
 import at.marcelr.mrwaypoints.command.MRWaypointsCommand;
 import at.marcelr.mrwaypoints.command.WaypointsCommand;
 import at.marcelr.mrwaypoints.gui.MenuListener;
@@ -31,13 +32,17 @@ public final class MRWaypoints extends JavaPlugin implements Listener {
     private Guide guide;
     private UpdateChecker updateChecker;
     private MenuListener menuListener;
+    private MRadminLink mradmin;
 
     @Override
     public void onEnable() {
         ConfigUpdater.update(this);
         loadConfiguration();
 
+        // Optional: MRadmin (module API) - web map layers, dashboard, player page. Connected at the end of enabling.
+        mradmin = new MRadminLink(this);
         store = new WaypointStore(this);
+        store.onChange(mradmin::changed);
         store.load();
         guide = new Guide(this);
         guide.start();
@@ -51,6 +56,8 @@ public final class MRWaypoints extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(this, this);
         register("waypoints", new WaypointsCommand(this));
         register("mrwaypoints", new MRWaypointsCommand(this));
+        getServer().getPluginManager().registerEvents(mradmin, this);
+        mradmin.connect();
         getLogger().info(store.categories().size() + " categories, " + store.all().size() + " waypoints loaded.");
     }
 
@@ -141,6 +148,11 @@ public final class MRWaypoints extends JavaPlugin implements Listener {
 
     public Guide guide() {
         return guide;
+    }
+
+    /** The optional connection to MRadmin. */
+    public MRadminLink mradmin() {
+        return mradmin;
     }
 
     public UpdateChecker updateChecker() {

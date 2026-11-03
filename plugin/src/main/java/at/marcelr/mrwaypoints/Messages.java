@@ -151,6 +151,30 @@ public final class Messages {
     }
 
     /**
+     * Runs {@code action} with the texts of one language ("de", "en" ...) - e.g. the language a player chose on their
+     * page in MRadmin's web interface. Unknown codes get English.
+     */
+    public <T> T in(String code, Supplier<T> action) {
+        YamlConfiguration target = languages.getOrDefault(code, english);
+        YamlConfiguration previous = CURRENT.get();
+        CURRENT.set(target);
+        try {
+            return action.get();
+        } finally {
+            if (previous == null) {
+                CURRENT.remove();
+            } else {
+                CURRENT.set(previous);
+            }
+        }
+    }
+
+    /** The language of texts without a single recipient (web map ...): the fixed one or server-language. */
+    public String serverLanguage() {
+        return fixed != null ? fixed : serverCode;
+    }
+
+    /**
      * The language a player gets: the fixed one from the config, or the language of their game ("de_at" -> de.yml,
      * a language without file -> the fallback).
      */

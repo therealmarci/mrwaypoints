@@ -127,22 +127,33 @@ public final class WaypointActions {
      * renamed). Null if not ok - the player was told why.
      */
     private @Nullable String name(Player player, Category category, String raw, @Nullable Waypoint self) {
-        String name = raw == null ? "" : raw.strip().replaceAll("\\s+", " ");
-        int max = plugin.settings().waypoints().maxNameLength();
-        if (name.isEmpty()) {
-            messages().send(player, "name-empty");
-            return null;
-        }
-        if (name.length() > max) {
-            messages().send(player, "name-too-long", tag("max", max));
-            return null;
-        }
-        Waypoint existing = plugin.store().byName(category.id(), name);
-        if (existing != null && (self == null || existing.id() != self.id())) {
-            messages().send(player, "name-taken", tag("name", name));
+        String name = clean(raw);
+        String problem = nameProblem(category, name, self);
+        if (problem != null) {
+            messages().send(player, problem, tag("max", plugin.settings().waypoints().maxNameLength()), tag("name", name));
             return null;
         }
         return name;
+    }
+
+    /** Trimmed, inner spaces collapsed. */
+    public static String clean(String raw) {
+        return raw == null ? "" : raw.strip().replaceAll("\\s+", " ");
+    }
+
+    /**
+     * Why the (cleaned) name does not work - language key name-empty, name-too-long or name-taken (placeholders
+     * &lt;max&gt;, &lt;name&gt;) - or null if it is fine. {@code self} is the waypoint being renamed.
+     */
+    public @Nullable String nameProblem(Category category, String name, @Nullable Waypoint self) {
+        if (name.isEmpty()) {
+            return "name-empty";
+        }
+        if (name.length() > plugin.settings().waypoints().maxNameLength()) {
+            return "name-too-long";
+        }
+        Waypoint existing = plugin.store().byName(category.id(), name);
+        return existing != null && (self == null || existing.id() != self.id()) ? "name-taken" : null;
     }
 
     private void deny(Player player, String key, Category category) {

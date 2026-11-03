@@ -111,6 +111,36 @@ dialog-name-label: "Name"
 dialog-save: "Speichern"
 dialog-cancel: "Abbrechen"
 
+
+# --- MRadmin: Dashboard, Webkarte, Spielerseite -------------------------------
+admin-summary:
+  - "<gray><waypoints> Wegpunkte in <categories> Kategorien"
+# Beim Anklicken auf der Webkarte (HTML erlaubt, Server-Sprache). Platzhalter: {name} {category} {x} {y} {z} {player}
+map-tooltip: "<b>{name}</b><br>{category}<br>{x} {y} {z}<br>von {player}"
+# Spielerseite (/web) - reiner Text, kein MiniMessage. Platzhalter: <name> <max>
+self-title: "Wegpunkte"
+self-total: "Wegpunkte"
+self-own: "Deine"
+self-categories: "Kategorien"
+self-hint: "Neue Wegpunkte legst du im Spiel mit /waypoints an - dort, wo du gerade stehst."
+self-own-title: "Deine Wegpunkte"
+self-own-empty: "Du hast noch keine Wegpunkte angelegt."
+self-category-empty: "Noch keine Wegpunkte."
+self-col-name: "Name"
+self-col-place: "Ort"
+self-col-creator: "von"
+self-rename: "Umbenennen"
+self-rename-label: "Neuer Name"
+self-delete: "Löschen"
+self-delete-confirm: "<name> wirklich löschen?"
+self-map: "Auf der Karte"
+self-map-open: "Karte öffnen"
+self-no-permission: "Dazu hast du keine Berechtigung."
+self-not-found: "Diesen Wegpunkt gibt es nicht mehr."
+self-not-yours: "Nur eigene Wegpunkte kannst du hier ändern."
+self-name-empty: "Der Name darf nicht leer sein."
+self-name-too-long: "Der Name ist zu lang (höchstens <max> Zeichen)."
+self-name-taken: "In dieser Kategorie gibt es <name> schon."
 # --- Version & Updates -------------------------------------------------------
 version: "<prefix><gray>MRwaypoints <white>v<version></white> <dark_gray>(MC <mc>)</dark_gray> von <white><author></white>"
 version-latest: "<prefix><green>Du nutzt die aktuellste Version."

@@ -11,3 +11,4 @@
 - **Wegweiser** in der Actionbar: Pfeil, Entfernung, Höhenunterschied; Ende bei Ankunft (`guide.arrive-distance`) oder mit `/waypoints stop`.
 - **Permissions pro Kategorie:** `mrwaypoints.create.<kategorie>` und `mrwaypoints.manage.<kategorie>` (bzw. `.*`), Gruppen `mrwaypoints.player` und `mrwaypoints.groups.support|staff|admin`.
 - `/mrwaypoints reload|version`, Update-Prüfung, Deutsch und Englisch pro Spieler.
+- **Mit MRadmin:** Kategorien mit `map: true` als eigene Ebenen auf der Webkarte (`mrwaypoints:<kategorie>`, Pin in der Kategoriefarbe, Klick zeigt Name, Ort und Ersteller; Text `map-tooltip`), Knopf im Dashboard (`mrwaypoints.admin.view`, öffnet `/waypoints`) und Bereich **Wegpunkte** auf der Spielerseite (`/web`): eigene Wegpunkte umbenennen und löschen mit Kartenausschnitt, alle Wegpunkte nach Kategorie.

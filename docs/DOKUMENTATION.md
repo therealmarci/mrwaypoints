@@ -21,6 +21,7 @@ plugin/src/main/java/at/marcelr/mrwaypoints/
 ├─ UpdateChecker.java     Update-Prüfung (GitHub/Modrinth)
 ├─ command/               /waypoints, /mrwaypoints
 ├─ gui/                   Menu, MenuListener, Items, MainMenu, CategoryMenu, WaypointMenu, ConfirmMenu, NameDialog
+├─ api/                   MRadminLink (ohne MRadmin-Typen), MRadminModule (Karte, Dashboard, Spielerseite)
 ├─ util/                  Layout (Menü-Plätze, Pfeil - mit Tests), LanguageChoice, TitleWidth, Versions
 └─ waypoint/              Category, Waypoint, WaypointStore (categories.yml, waypoints.yml)
 plugin/src/main/resources/
@@ -47,7 +48,13 @@ Bearbeiten darf der Ersteller oder wer `manage.<kategorie>` hat; `manage` hebt a
 ## 6. Menüs
 Alle symmetrisch (`util/Layout`): Kategorien je Reihe um die Mitte, bei gerader Anzahl bleibt die Mitte frei; Aktionen eines Wegpunkts um Platz 13. Unten Zurück links, Schließen rechts, „Neuer Wegpunkt hier“ in der Mitte. Namen kommen über einen Paper-Dialog (`NameDialog`).
 
-## 7. Testen
+## 7. MRadmin (`api/MRadminLink`, `api/MRadminModule`)
+- `MRadminLink` hat keine MRadmin-Typen und verbindet sich am Ende von `onEnable` (bzw. wenn MRadmin später startet). `WaypointStore#onChange` → `changed()` → `webChanged` und (ab API 7) `mapChanged`.
+- `MRadminModule` (nur mit MRadmin geladen): Dashboard-Knopf mit `viewPermission` `mrwaypoints.admin.view`, `openMenu` öffnet `/waypoints`.
+- **Webkarte (API 7):** `mapLayers()` = eine Ebene pro Kategorie mit `map: true` (id = Kategorie-id, Name in der Server-Sprache, Reihenfolge der Datei), je Wegpunkt ein `MapMarker.Icon`. `mapIcons()` zeichnet pro Kategorie einen Pin in ihrer Farbe; der Schlüssel enthält die Farbe (`shops_ffb300`), damit MRadmin nach einer Farbänderung das neue Bild holt.
+- **Spielerseite (ab API 5):** Bereich `waypoints` mit Kennzahlen, Hinweis, Karten der eigenen Wegpunkte (Umbenennen mit Eingabe, Löschen mit Rückfrage, Kartenausschnitt über `mapUrl` nur bei `map: true`) und einer Tabelle je Kategorie. `selfAction` erlaubt nur eigene Wegpunkte, Namensprüfung wie im Spiel (`WaypointActions#nameProblem`).
+
+## 8. Testen
 | # | Schritt | Erwartung |
 |---|---|---|
 | 1 | Erster Start | `categories.yml` mit 4 Kategorien, Log „4 categories, 0 waypoints loaded.“ |
