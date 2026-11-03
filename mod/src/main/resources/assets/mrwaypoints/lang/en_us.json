@@ -1,11 +1,17 @@
 {
   "key.category.mrwaypoints.main": "MRwaypoints",
   "key.mrwaypoints.categories": "Server waypoints: categories",
+  "key.mrwaypoints.create": "Create waypoint here",
+  "key.mrwaypoints.toggle-all": "Server waypoints on/off",
+  "key.mrwaypoints.menu": "Open waypoint menu",
+  "key.mrwaypoints.guide-stop": "End guide",
   "mrwaypoints.screen.title": "Server waypoints",
   "mrwaypoints.screen.hint": "Which categories show in Xaero's map - the same on every PC.",
   "mrwaypoints.screen.all-on": "All on",
   "mrwaypoints.screen.all-off": "All off",
   "mrwaypoints.button.xaero": "Server waypoints …",
   "mrwaypoints.message.no-server": "This server has no MRwaypoints.",
+  "mrwaypoints.message.all-hidden": "Server waypoints hidden in Xaero (press again: back on).",
+  "mrwaypoints.message.all-shown": "Server waypoints shown in Xaero again.",
   "mrwaypoints.message.incompatible": "MRwaypoints %s on the server does not fit this mod."
 }

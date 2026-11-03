@@ -71,6 +71,15 @@ Private Wegpunkte legst du wie gewohnt direkt in Xaero's Minimap an - sie bleibe
 1. **Fabric API**, **Xaero's Minimap** (und gern Xaero's World Map) und den **[MRwaypoints-Mod](https://mrtechnology.marcelr.at/download/mrwaypoints/)** (Zeile „Fabric-Mod (Client)“) in den Ordner `mods/` legen.
 2. Auf den Server gehen - die Server-Wegpunkte erscheinen von selbst auf der Minimap, im Spiel und auf der World Map, in der Farbe ihrer Kategorie. Sie liegen getrennt von deinen eigenen Xaero-Wegpunkten.
 3. **Kategorien ein- und ausschalten:** Taste **`J`** (änderbar unter Optionen → Steuerung → MRwaypoints), Knopf **„Server-Wegpunkte …“** in Xaeros Wegpunkt-Menü oder **„In Xaero anzeigen“** in `/waypoints`. Deine Auswahl speichert der Server - sie gilt auf jedem PC und auch auf der Spielerseite im Web.
+4. **Tasten** (Optionen → Steuerung → MRwaypoints): nur `J` ist vorbelegt, die anderen legst du selbst fest, damit nichts mit Xaero oder anderen Mods kollidiert.
+
+   | Taste | Was passiert |
+   |---|---|
+   | Kategorien (`J`) | Bildschirm mit allen Kategorien zum Ein- und Ausschalten |
+   | Wegpunkt hier erstellen | der Dialog mit Name und Kategorie - wie im Menü |
+   | Server-Wegpunkte ein/aus | alle Server-Wegpunkte in Xaero aus- und wieder einblenden (nur auf diesem PC, deine Auswahl pro Kategorie bleibt) |
+   | Wegpunkt-Menü öffnen | `/waypoints` |
+   | Wegweiser beenden | wie `/waypoints stop` |
 
 ## Für Server-Admins
 

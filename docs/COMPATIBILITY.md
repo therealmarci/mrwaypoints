@@ -33,6 +33,7 @@ Die Formate von `hello` und `welcome` ändern sich **nie** (Felder nur hinten an
 | `mrwaypoints:state` | Plugin → Mod | VarInt n, n × (String id, String Name in der Sprache des Spielers, Int Farbe, Boolean an); VarInt m, m × (VarInt id, String Kategorie, String Name, String Dimension wie `minecraft:overworld`, Int x, Int y, Int z) |
 | `mrwaypoints:toggle` | Mod → Plugin | String Kategorie (`*` = alle), Boolean an |
 | `mrwaypoints:open` | Plugin → Mod | leer - öffnet den Kategorien-Bildschirm (Knopf in `/waypoints`) |
+| `mrwaypoints:action` | Mod → Plugin | Byte Aktion: 0 `/waypoints` öffnen, 1 Wegpunkt hier erstellen (Server zeigt seinen Dialog), 2 Wegweiser beenden - unbekannte Codes ignoriert das Plugin, neue Aktionen nur hinten anhängen (kein neues Protokoll nötig) |
 
 Strings sind VarInt-Länge + UTF-8, Zahlen Big-Endian - wie Minecrafts `FriendlyByteBuf` (Plugin: `util/Wire`, getestet in `WireTest`).
 

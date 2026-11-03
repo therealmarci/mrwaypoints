@@ -59,8 +59,11 @@ final class XaeroBridge {
         }
     }
 
-    /** Puts the waypoints of the visible categories into Xaero. @return false if Xaero is not ready yet (try later) */
-    static boolean apply(StatePayload state) {
+    /**
+     * Puts the waypoints of the visible categories into Xaero ({@code hiddenAll}: none - the key "server waypoints
+     * on/off"). @return false if Xaero is not ready yet (try later)
+     */
+    static boolean apply(StatePayload state, boolean hiddenAll) {
         if (broken) {
             return true;
         }
@@ -73,7 +76,7 @@ final class XaeroBridge {
             clearNow();
             Map<String, Category> visible = new HashMap<>();
             for (Category category : state.categories()) {
-                if (category.visible()) {
+                if (category.visible() && !hiddenAll) {
                     visible.put(category.id(), category);
                 }
             }

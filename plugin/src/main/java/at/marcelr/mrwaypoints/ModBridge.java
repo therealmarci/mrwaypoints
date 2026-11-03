@@ -1,5 +1,7 @@
 package at.marcelr.mrwaypoints;
 
+import at.marcelr.mrwaypoints.gui.CreateDialog;
+import at.marcelr.mrwaypoints.gui.MainMenu;
 import at.marcelr.mrwaypoints.util.Wire;
 import at.marcelr.mrwaypoints.waypoint.Category;
 import at.marcelr.mrwaypoints.waypoint.Waypoint;
@@ -40,6 +42,7 @@ public final class ModBridge implements Listener, PluginMessageListener {
     public static final String STATE = "mrwaypoints:state";
     public static final String TOGGLE = "mrwaypoints:toggle";
     public static final String OPEN = "mrwaypoints:open";
+    public static final String ACTION = "mrwaypoints:action";
 
     /** What the handshake of a player gave. */
     public record Client(int protocol, String modVersion, Compatibility.Status status) {
@@ -62,6 +65,7 @@ public final class ModBridge implements Listener, PluginMessageListener {
     public void start() {
         Bukkit.getMessenger().registerIncomingPluginChannel(plugin, HELLO, this);
         Bukkit.getMessenger().registerIncomingPluginChannel(plugin, TOGGLE, this);
+        Bukkit.getMessenger().registerIncomingPluginChannel(plugin, ACTION, this);
         Bukkit.getMessenger().registerOutgoingPluginChannel(plugin, WELCOME);
         Bukkit.getMessenger().registerOutgoingPluginChannel(plugin, STATE);
         Bukkit.getMessenger().registerOutgoingPluginChannel(plugin, OPEN);
@@ -192,6 +196,7 @@ public final class ModBridge implements Listener, PluginMessageListener {
             switch (channel) {
                 case HELLO -> hello(player, new Wire.Reader(message));
                 case TOGGLE -> toggle(player, new Wire.Reader(message));
+                case ACTION -> action(player, new Wire.Reader(message));
                 default -> {
                 }
             }
@@ -230,6 +235,22 @@ public final class ModBridge implements Listener, PluginMessageListener {
         }
     }
 
+
+    /** action: byte (0 open /waypoints, 1 create here, 2 end the guide) - keys of the mod. Unknown codes are ignored. */
+    private void action(Player player, Wire.Reader in) throws IOException {
+        int code = in.unsignedByte();
+        if (!compatible(player) || !player.hasPermission(WaypointPerms.USE)) {
+            return;
+        }
+        switch (code) {
+            case 0 -> new MainMenu(plugin, player).open();
+            case 1 -> CreateDialog.open(plugin, player, () -> {
+            });
+            case 2 -> plugin.messages().send(player, plugin.guide().stop(player) ? "guide-stopped" : "guide-none");
+            default -> {
+            }
+        }
+    }
     /** toggle: String category ("*" = all), Boolean visible. */
     private void toggle(Player player, Wire.Reader in) throws IOException {
         String id = in.string();

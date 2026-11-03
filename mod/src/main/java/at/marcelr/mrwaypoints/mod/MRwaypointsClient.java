@@ -1,5 +1,7 @@
 package at.marcelr.mrwaypoints.mod;
 
+import at.marcelr.mrwaypoints.mod.Protocol.Action;
+import at.marcelr.mrwaypoints.mod.Protocol.ActionPayload;
 import at.marcelr.mrwaypoints.mod.Protocol.HelloPayload;
 import at.marcelr.mrwaypoints.mod.Protocol.OpenPayload;
 import at.marcelr.mrwaypoints.mod.Protocol.StatePayload;
@@ -39,6 +41,12 @@ public final class MRwaypointsClient implements ClientModInitializer {
     private static final String XAERO_WAYPOINTS_SCREEN = "xaero.common.gui.GuiWaypoints";
 
     private static KeyMapping screenKey;
+    private static KeyMapping createKey;
+    private static KeyMapping toggleAllKey;
+    private static KeyMapping menuKey;
+    private static KeyMapping guideStopKey;
+    /** All server waypoints hidden in Xaero with the key (only on this PC; the choice per category stays). */
+    private static volatile boolean hiddenAll;
     private static volatile StatePayload state;
     /** The server answered the hello with OK. */
     private static volatile boolean compatible;
@@ -54,6 +62,7 @@ public final class MRwaypointsClient implements ClientModInitializer {
     public void onInitializeClient() {
         PayloadTypeRegistry.serverboundPlay().register(HelloPayload.TYPE, HelloPayload.CODEC);
         PayloadTypeRegistry.serverboundPlay().register(TogglePayload.TYPE, TogglePayload.CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(ActionPayload.TYPE, ActionPayload.CODEC);
         PayloadTypeRegistry.clientboundPlay().register(WelcomePayload.TYPE, WelcomePayload.CODEC);
         PayloadTypeRegistry.clientboundPlay().register(StatePayload.TYPE, StatePayload.CODEC);
         PayloadTypeRegistry.clientboundPlay().register(OpenPayload.TYPE, OpenPayload.CODEC);
@@ -87,8 +96,13 @@ public final class MRwaypointsClient implements ClientModInitializer {
             dirty = false;
         });
 
-        screenKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.mrwaypoints.categories",
-                InputConstants.Type.KEYBOARD, InputConstants.KEY_J, CATEGORY, 0));
+        // Only J has a default; the others are free to bind (Options -> Controls -> MRwaypoints), so nothing clashes
+        // with Xaero or other mods. Fixed order there, the ids stay the same.
+        screenKey = key("categories", InputConstants.KEY_J, 0);
+        createKey = key("create", InputConstants.UNKNOWN.getValue(), 1);
+        toggleAllKey = key("toggle-all", InputConstants.UNKNOWN.getValue(), 2);
+        menuKey = key("menu", InputConstants.UNKNOWN.getValue(), 3);
+        guideStopKey = key("guide-stop", InputConstants.UNKNOWN.getValue(), 4);
 
         // A button in Xaero's waypoint menu opens the category screen (only on servers with MRwaypoints).
         ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
@@ -106,18 +120,56 @@ public final class MRwaypointsClient implements ClientModInitializer {
                 ClientPlayNetworking.send(hello());
             }
             while (screenKey.consumeClick()) {
-                if (state() != null) {
+                if (connected(client)) {
                     client.gui.setScreen(new CategoryScreen(null));
-                } else if (client.player != null) {
-                    client.player.sendSystemMessage(Component.translatable("mrwaypoints.message.no-server"));
+                }
+            }
+            while (createKey.consumeClick()) {
+                send(client, Action.CREATE);
+            }
+            while (menuKey.consumeClick()) {
+                send(client, Action.MENU);
+            }
+            while (guideStopKey.consumeClick()) {
+                send(client, Action.GUIDE_STOP);
+            }
+            while (toggleAllKey.consumeClick()) {
+                if (connected(client)) {
+                    hiddenAll = !hiddenAll;
+                    dirty = true;
+                    client.player.sendSystemMessage(Component.translatable(hiddenAll
+                            ? "mrwaypoints.message.all-hidden" : "mrwaypoints.message.all-shown"));
                 }
             }
             // Xaero's session can come later than our state, and it changes on every world/server switch.
             StatePayload current = state();
             if (current != null && (dirty || XaeroBridge.needsApply())) {
-                dirty = !XaeroBridge.apply(current);
+                dirty = !XaeroBridge.apply(current, hiddenAll);
             }
         });
+    }
+
+    private static KeyMapping key(String name, int defaultKey, int order) {
+        return KeyMappingHelper.registerKeyMapping(new KeyMapping("key.mrwaypoints." + name,
+                InputConstants.Type.KEYBOARD, defaultKey, CATEGORY, order));
+    }
+
+    /** Whether MRwaypoints answered on this server - otherwise a short hint in the chat. */
+    private static boolean connected(Minecraft client) {
+        if (state() != null) {
+            return true;
+        }
+        if (client.player != null) {
+            client.player.sendSystemMessage(Component.translatable("mrwaypoints.message.no-server"));
+        }
+        return false;
+    }
+
+    /** Asks the server to do something (only with a compatible MRwaypoints on the server). */
+    private static void send(Minecraft client, Action action) {
+        if (connected(client) && ClientPlayNetworking.canSend(ActionPayload.TYPE)) {
+            ClientPlayNetworking.send(new ActionPayload(action));
+        }
     }
 
     private static void sayHello() {

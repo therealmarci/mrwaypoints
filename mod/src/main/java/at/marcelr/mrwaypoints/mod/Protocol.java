@@ -158,6 +158,33 @@ public final class Protocol {
         }
     }
 
+    /**
+     * A key was pressed, sent as the ordinal - new actions only at the end. Plugins ignore codes they do not know, so
+     * a new action needs no new protocol (it just does nothing on older servers).
+     */
+    public enum Action {
+        /** Open /waypoints. */
+        MENU,
+        /** Create a waypoint here (the server shows its dialog with name and category). */
+        CREATE,
+        /** End the guide. */
+        GUIDE_STOP
+    }
+
+    /** Client to server: byte action. */
+    public record ActionPayload(Action action) implements CustomPacketPayload {
+
+        public static final Type<ActionPayload> TYPE = new Type<>(id("action"));
+        public static final StreamCodec<FriendlyByteBuf, ActionPayload> CODEC = StreamCodec.of(
+                (buf, payload) -> buf.writeByte(payload.action.ordinal()),
+                buf -> new ActionPayload(Action.values()[Math.min(buf.readUnsignedByte(), Action.values().length - 1)]));
+
+        @Override
+        public Type<? extends CustomPacketPayload> type() {
+            return TYPE;
+        }
+    }
+
     /** The server asks to open the category screen (button in /waypoints). No content. */
     public record OpenPayload() implements CustomPacketPayload {
 

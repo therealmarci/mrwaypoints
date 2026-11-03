@@ -1,11 +1,17 @@
 {
   "key.category.mrwaypoints.main": "MRwaypoints",
   "key.mrwaypoints.categories": "Server-Wegpunkte: Kategorien",
+  "key.mrwaypoints.create": "Wegpunkt hier erstellen",
+  "key.mrwaypoints.toggle-all": "Server-Wegpunkte ein/aus",
+  "key.mrwaypoints.menu": "Wegpunkt-Menü öffnen",
+  "key.mrwaypoints.guide-stop": "Wegweiser beenden",
   "mrwaypoints.screen.title": "Server-Wegpunkte",
   "mrwaypoints.screen.hint": "Welche Kategorien in Xaero's Karte erscheinen - gilt auf jedem PC.",
   "mrwaypoints.screen.all-on": "Alle an",
   "mrwaypoints.screen.all-off": "Alle aus",
   "mrwaypoints.button.xaero": "Server-Wegpunkte …",
   "mrwaypoints.message.no-server": "Dieser Server hat kein MRwaypoints.",
+  "mrwaypoints.message.all-hidden": "Server-Wegpunkte in Xaero ausgeblendet (Taste nochmal: wieder an).",
+  "mrwaypoints.message.all-shown": "Server-Wegpunkte in Xaero wieder eingeblendet.",
   "mrwaypoints.message.incompatible": "MRwaypoints %s auf dem Server passt nicht zu diesem Mod."
 }
