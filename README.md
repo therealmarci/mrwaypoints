@@ -55,7 +55,7 @@ Spieler **ohne** Mod nutzen Menü und Wegweiser ganz normal. Plugin und Mod habe
 | **Meine Wegpunkte** | deine eigenen Wegpunkte hier |
 | **Wegpunkt erstellen** | ein Dialog mit Name und Kategorie - nur Kategorien, in denen du gerade anlegen darfst (mit „genutzt/Limit“). Der Wegpunkt kommt an deine Position. Grau, wenn du nirgends darfst. |
 | **Alle Wegpunkte** | alle Server-Wegpunkte hier |
-| oben: **Wegweiser** | nur wenn einer läuft - Klick beendet ihn |
+| Mitte: **Wegweiser** | nur wenn einer läuft - Klick beendet ihn |
 
 In den Listen:
 

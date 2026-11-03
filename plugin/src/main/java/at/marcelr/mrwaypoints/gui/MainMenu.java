@@ -12,9 +12,9 @@ import java.util.List;
 import static at.marcelr.mrwaypoints.Messages.tag;
 
 /**
- * /waypoints: the start - "my waypoints", "create waypoint" and "all waypoints" in the middle, the running guide on
- * top (click ends it), "show in Xaero" (with the mod) and close at the bottom. Everything only for the dimension the
- * player is in.
+ * /waypoints: the start - "my waypoints", "create waypoint" and "all waypoints" in the top row, the running guide
+ * in the middle (click ends it), "show in Xaero" (with the mod) and close at the bottom. Everything only for the
+ * dimension the player is in.
  */
 public final class MainMenu extends Menu {
 
@@ -30,13 +30,13 @@ public final class MainMenu extends Menu {
                 .filter(w -> w.creator().equals(viewer.getUniqueId()) && inWorld(w)).count();
         long all = plugin.store().all().stream().filter(this::inWorld).count();
 
-        set(11, Items.of(Material.PLAYER_HEAD).name(messages.item("gui-mine-name"))
+        set(2, Items.of(Material.PLAYER_HEAD).name(messages.item("gui-mine-name"))
                 .lore(messages.lore("gui-mine-lore", tag("count", mine), tag("world", world))).build(), click -> {
             clickSound();
             new ListMenu(plugin, viewer, true, this).open();
         });
         createButton();
-        set(15, Items.of(Material.FILLED_MAP).name(messages.item("gui-all-name"))
+        set(6, Items.of(Material.FILLED_MAP).name(messages.item("gui-all-name"))
                 .lore(messages.lore("gui-all-lore", tag("count", all), tag("world", world))).build(), click -> {
             clickSound();
             new ListMenu(plugin, viewer, false, this).open();
@@ -45,7 +45,7 @@ public final class MainMenu extends Menu {
         Integer target = plugin.guide().target(viewer);
         Waypoint guided = target == null ? null : plugin.store().byId(target);
         if (guided != null) {
-            set(4, Items.of(Material.COMPASS).name(messages.item("gui-guide-name", tag("name", guided.name())))
+            set(13, Items.of(Material.COMPASS).name(messages.item("gui-guide-name", tag("name", guided.name())))
                     .lore(messages.lore("gui-guide-lore")).glint(true).build(), click -> {
                 clickSound();
                 plugin.guide().stop(viewer);
@@ -71,11 +71,11 @@ public final class MainMenu extends Menu {
         Messages messages = plugin.messages();
         List<Category> allowed = CreateDialog.allowed(plugin, viewer);
         if (allowed.isEmpty()) {
-            set(13, Items.of(Material.GRAY_DYE).name(messages.item("gui-create-name"))
+            set(4, Items.of(Material.GRAY_DYE).name(messages.item("gui-create-name"))
                     .lore(messages.lore("gui-create-none-lore")).build());
             return;
         }
-        set(13, Items.of(Material.LIME_DYE).name(messages.item("gui-create-name"))
+        set(4, Items.of(Material.LIME_DYE).name(messages.item("gui-create-name"))
                 .lore(messages.lore("gui-create-here-lore", tag("count", allowed.size()))).build(), click -> {
             clickSound();
             CreateDialog.open(plugin, viewer, this::open);
