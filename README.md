@@ -5,7 +5,7 @@
 **[⬇ Download](https://mrtechnology.marcelr.at/download/mrwaypoints/)** · **[📖 Anleitung online](https://mrtechnology.marcelr.at/docs/mrwaypoints/)** · **[🐞 Fehler melden](https://mrtechnology.marcelr.at/report/mrwaypoints/)**
 
 > [!NOTE]
-> MRwaypoints ist **in Entwicklung**. Fertig sind Menü, Wegweiser, die Ebenen auf der Webkarte und der Bereich auf der Spielerseite (beides mit MRadmin). Der Client-Mod für Xaero's Karten und die Verwaltung im MRadmin-Web folgen.
+> MRwaypoints ist **in Entwicklung**. Fertig sind Menü, Wegweiser und mit MRadmin die Verwaltung im Web, die Ebenen auf der Webkarte und der Bereich auf der Spielerseite. Der Client-Mod für Xaero's Karten folgt.
 
 | Auf einen Blick | |
 |---|---|
@@ -52,6 +52,7 @@ Liegt ein Wegpunkt in einer anderen Welt, zeigt der Wegweiser, in welcher. Priva
 ## Für Server-Admins
 
 ### Kategorien
+Am bequemsten in der MRadmin-Weboberfläche (Seite **Wegpunkte**, `mrwaypoints.admin.categories`) - ohne MRadmin direkt in der Datei.
 In `plugins/MRwaypoints/categories.yml`, danach `/mrwaypoints reload`:
 
 | Schlüssel | Bedeutung |
@@ -85,9 +86,9 @@ Am einfachsten vergibst du die **Gruppen** - sie sind in allen MRtechnology-Plug
 | Gruppe | Enthält |
 |---|---|
 | `mrwaypoints.player` | `/waypoints` mit Wegweiser, anlegen in Kategorien mit `players-create: true`, `/mrwaypoints version` |
-| `mrwaypoints.groups.support` | Spieler + MRwaypoints im MRadmin-Dashboard, die Wegpunkte-Seite im Web *(kommt)* |
+| `mrwaypoints.groups.support` | Spieler + MRwaypoints im MRadmin-Dashboard und die Seite **Wegpunkte** im Web ansehen |
 | `mrwaypoints.groups.staff` | Support + in **jeder** Kategorie anlegen, **alle** Wegpunkte bearbeiten und löschen, ohne Limit |
-| `mrwaypoints.groups.admin` | Alles: Staff + zu Wegpunkten teleportieren, Kategorien im Web verwalten *(kommt)*, Reload, Update-Hinweis |
+| `mrwaypoints.groups.admin` | Alles: Staff + zu Wegpunkten teleportieren, Kategorien im Web verwalten, Reload, Update-Hinweis |
 
 <details>
 <summary>Alle einzelnen Permissions</summary>
@@ -101,8 +102,8 @@ Standard ist `op`, die Rechte pro Kategorie haben standardmäßig niemand (sie k
 | `mrwaypoints.create.<kategorie>` · `mrwaypoints.create.*` | Wegpunkte in einer bzw. allen Kategorien anlegen |
 | `mrwaypoints.manage.<kategorie>` · `mrwaypoints.manage.*` | alle Wegpunkte einer bzw. aller Kategorien bearbeiten und löschen, ohne Limit |
 | `mrwaypoints.teleport` | Shift-Klick im Menü: teleportieren |
-| `mrwaypoints.admin.view` | MRwaypoints im MRadmin-Dashboard, Wegpunkte-Seite in der Weboberfläche *(kommt)* |
-| `mrwaypoints.admin.categories` | Kategorien im Web anlegen, ändern, löschen *(kommt)* |
+| `mrwaypoints.admin.view` | MRwaypoints im MRadmin-Dashboard, Seite **Wegpunkte** in der Weboberfläche |
+| `mrwaypoints.admin.categories` | Kategorien im Web anlegen, ändern, sortieren, löschen |
 | `mrwaypoints.admin.reload` | `/mrwaypoints reload` |
 | `mrwaypoints.admin.update` | Update-Hinweis beim Betreten des Servers |
 
@@ -131,7 +132,7 @@ MRwaypoints läuft **allein**. Zusammen mit anderen MRtechnology-Plugins kann es
 
 | Funktion | Braucht |
 |---|---|
-| Wegpunkte-Seite fürs Team und Kategorien im Web verwalten *(kommt)* | MRadmin |
+| Seite **Wegpunkte** fürs Team: Kategorien anlegen, ändern, sortieren, löschen (`mrwaypoints.admin.categories`), alle Wegpunkte umbenennen, in eine andere Kategorie verschieben, löschen (`mrwaypoints.manage.*`) | MRadmin |
 | Bereich **Wegpunkte** auf der Spielerseite (`/web`): eigene umbenennen und löschen, alle nach Kategorie | MRadmin |
 | Knopf im MRadmin-Dashboard (öffnet `/waypoints`) | MRadmin |
 | Kategorien mit `map: true` als Ebenen auf der Webkarte (Pin in der Kategoriefarbe, Klick zeigt Name, Ort und Ersteller) | MRadmin + squaremap |

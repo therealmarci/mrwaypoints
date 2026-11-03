@@ -190,24 +190,162 @@ final class MRadminModule implements AdminModule, WebModule {
 
     // ---------------------------------------------------------- web module
 
+    /** may.mrwaypointsManage: edit all waypoints; may.mrwaypointsCategories: manage the categories. */
     @Override
     public Map<String, String> permissions() {
-        return Map.of();
-    }
-
-    @Override
-    public @Nullable Object data(String request, Map<String, String> args) {
-        return null;
+        return Map.of("manage", WaypointPerms.MANAGE + "*", "categories", WaypointPerms.CATEGORIES);
     }
 
     @Override
     public Map<String, String> actions() {
-        return Map.of();
+        return Map.of("rename", "manage", "delete", "manage", "recategorize", "manage",
+                "categorySave", "categories", "categoryDelete", "categories", "categoryOrder", "categories");
+    }
+
+    /** "overview": all categories (with counts) and all waypoints - the waypoints page of the team. */
+    @Override
+    public @Nullable Object data(String request, Map<String, String> args) {
+        if (!request.equals("overview")) {
+            return null;
+        }
+        List<Map<String, Object>> categories = new ArrayList<>();
+        for (Category c : plugin.store().categories()) {
+            Map<String, Object> map = new java.util.LinkedHashMap<>();
+            map.put("id", c.id());
+            map.put("names", c.names());
+            map.put("color", c.hexColor());
+            map.put("icon", c.icon().getKey().getKey());
+            map.put("playersCreate", c.playersCreate());
+            map.put("maxPerPlayer", c.maxPerPlayer());
+            map.put("visible", c.visible());
+            map.put("map", c.onMap());
+            map.put("count", plugin.store().inCategory(c.id()).size());
+            categories.add(map);
+        }
+        List<Map<String, Object>> waypoints = new ArrayList<>();
+        for (Waypoint w : plugin.store().all()) {
+            Map<String, Object> map = new java.util.LinkedHashMap<>();
+            map.put("id", w.id());
+            map.put("category", w.category());
+            map.put("name", w.name());
+            map.put("world", w.worldName());
+            map.put("x", w.x());
+            map.put("y", w.y());
+            map.put("z", w.z());
+            map.put("creator", w.creator().toString());
+            map.put("creatorName", w.creatorName());
+            map.put("created", w.created());
+            waypoints.add(map);
+        }
+        return Map.of("categories", categories, "waypoints", waypoints,
+                "maxNameLength", plugin.settings().waypoints().maxNameLength());
     }
 
     @Override
     public @Nullable String action(String action, Map<String, Object> args, WebUser user) {
-        return "unknown-action";
+        return switch (action) {
+            case "rename", "delete", "recategorize" -> waypointAction(action, args);
+            case "categorySave" -> saveCategory(args);
+            case "categoryDelete" -> {
+                Category c = plugin.store().category(text(args, "id"));
+                if (c == null) {
+                    yield "not-found";
+                }
+                plugin.store().removeCategory(c.id());
+                yield null;
+            }
+            case "categoryOrder" -> {
+                plugin.store().reorder(List.of(text(args, "ids").split(",")));
+                yield null;
+            }
+            default -> "unknown-action";
+        };
+    }
+
+    private @Nullable String waypointAction(String action, Map<String, Object> args) {
+        Waypoint w;
+        try {
+            w = plugin.store().byId(Integer.parseInt(text(args, "id")));
+        } catch (NumberFormatException e) {
+            w = null;
+        }
+        if (w == null) {
+            return "not-found";
+        }
+        switch (action) {
+            case "rename" -> {
+                Category category = plugin.store().category(w.category());
+                String name = WaypointActions.clean(text(args, "name"));
+                String problem = category == null ? "not-found" : plugin.actions().nameProblem(category, name, w);
+                if (problem != null) {
+                    return problem.equals("not-found") ? problem : "wp-" + problem;
+                }
+                plugin.store().update(w.withName(name));
+            }
+            case "recategorize" -> {
+                Category target = plugin.store().category(text(args, "category"));
+                if (target == null) {
+                    return "wp-invalid-category";
+                }
+                if (plugin.store().byName(target.id(), w.name()) != null) {
+                    return "wp-name-taken";
+                }
+                plugin.store().update(w.inCategory(target.id()));
+            }
+            default -> plugin.store().remove(w.id());
+        }
+        return null;
+    }
+
+    /** New or changed category; "isNew" decides whether the id may already exist. */
+    private @Nullable String saveCategory(Map<String, Object> args) {
+        String id = text(args, "id").toLowerCase(java.util.Locale.ROOT);
+        boolean isNew = Boolean.parseBoolean(text(args, "isNew"));
+        if (!Category.validId(id)) {
+            return "wp-invalid-id";
+        }
+        if (isNew == (plugin.store().category(id) != null)) {
+            return isNew ? "wp-id-taken" : "not-found";
+        }
+        String color = text(args, "color").replace("#", "");
+        if (!color.matches("[0-9a-fA-F]{6}")) {
+            return "wp-invalid-color";
+        }
+        Material icon = Material.matchMaterial(text(args, "icon"));
+        if (icon == null || !icon.isItem() || icon.isAir()) {
+            return "wp-invalid-icon";
+        }
+        int max;
+        try {
+            max = Integer.parseInt(text(args, "maxPerPlayer"));
+        } catch (NumberFormatException e) {
+            return "wp-invalid-limit";
+        }
+        if (max < 0 || max > 1000) {
+            return "wp-invalid-limit";
+        }
+        Map<String, String> names = new java.util.LinkedHashMap<>();
+        for (String lang : List.of("de", "en")) {
+            String name = text(args, "name" + Character.toUpperCase(lang.charAt(0)) + lang.substring(1)).strip();
+            if (name.length() > 48) {
+                return "wp-name-too-long";
+            }
+            if (!name.isEmpty()) {
+                names.put(lang, name);
+            }
+        }
+        if (names.isEmpty()) {
+            return "wp-name-empty";
+        }
+        plugin.store().putCategory(new Category(id, names, Integer.parseInt(color, 16), icon,
+                Boolean.parseBoolean(text(args, "playersCreate")), max, Boolean.parseBoolean(text(args, "visible")),
+                Boolean.parseBoolean(text(args, "map"))));
+        return null;
+    }
+
+    private static String text(Map<String, Object> args, String key) {
+        Object value = args.get(key);
+        return value == null ? "" : String.valueOf(value);
     }
 
     // ------------------------------------------------------ player's page
