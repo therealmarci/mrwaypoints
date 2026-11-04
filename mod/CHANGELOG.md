@@ -6,6 +6,8 @@ Versionen - welche Plugin-Versionen passen, steht in [docs/COMPATIBILITY.md](../
 
 ## [Unveröffentlicht]
 
+## [0.1.0] - 2026-11-04
+
 ### Neu
 - **Erste Version:** Zeigt die Server-Wegpunkte von MRwaypoints in Xaero's Minimap und World Map - je Kategorie in deren Farbe (die nächstliegende Xaero-Farbe), mit den Anfangsbuchstaben des Namens. Sie liegen getrennt von deinen eigenen Wegpunkten und werden nicht in deinen Xaero-Dateien gespeichert.
 - **Kategorien ein- und ausschalten:** im Menü `/waypoints` unter „Kategorien“ - die Taste `J` und der Knopf „Server-Wegpunkte …“ in Xaeros Wegpunkt-Menü öffnen es. Ein eigener Bildschirm des Mods entfällt, es gibt nur dieses eine Menü. Die Auswahl speichert der Server - sie gilt auf jedem PC und lässt sich auch auf der Spielerseite im Web umschalten.

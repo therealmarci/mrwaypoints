@@ -5,6 +5,8 @@
 
 ## [Unveröffentlicht]
 
+## [0.1.0] - 2026-11-04
+
 ### Neu
 - **Einstellen im Browser:** Mit MRadmin (ab der Version mit „Konfiguration im Browser“) lässt sich die ganze `config.yml` unter **Plugins → MRwaypoints → Konfiguration** als Formular einstellen - jede Einstellung mit Erklärung auf Deutsch und Englisch, Speichern lädt MRwaypoints sofort neu. Die Datei ist gleich aufgebaut wie bei allen MRtechnology-Plugins (`general`, Funktionen, `updates`, `gui`) und bleibt von Hand bearbeitbar.
 - **Erste Version:** Server-Wegpunkte in Kategorien. Kategorien in `categories.yml` (Name pro Sprache, Farbe, Symbol, `players-create`, `max-per-player`, `visible`, `map`), vier Beispiel-Kategorien beim ersten Start.
