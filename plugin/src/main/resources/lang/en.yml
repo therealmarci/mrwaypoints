@@ -11,7 +11,7 @@
 # ==============================================================================
 
 # Do not change - tells the plugin which texts need renewing on updates.
-lang-version: 3
+lang-version: 4
 
 prefix: "<dark_gray>[<gold>MRwaypoints</gold>]</dark_gray> "
 
@@ -157,8 +157,8 @@ map-delete-confirm: "Really delete <name>?"
 map-create: "<category>: create waypoint here"
 map-create-label: "Name of the waypoint"
 map-outside: "This spot is outside the world."
-map-xaero-on: "in Xaero: on"
-map-xaero-off: "in Xaero: off"
+map-xaero-on: "Ingame: on"
+map-xaero-off: "Ingame: off"
 map-group: "Waypoints"
 map-create-one: "Create waypoint"
 map-category-label: "Category"

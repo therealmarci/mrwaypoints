@@ -283,6 +283,8 @@ final class MRadminModule implements AdminModule, WebModule {
 
     /** Groups, selections and symbols on the map came with MRadmin's API 9. */
     private static final int MAP_GROUP_API = 9;
+    /** Heights of markers on the map of the player page (Nether ceiling or below). */
+    private static final int MAP_HEIGHT_API = 10;
 
     /**
      * The map of the player's page (MRadmin's tab "Map"): one layer per category with all its waypoints, under the
@@ -298,6 +300,7 @@ final class MRadminModule implements AdminModule, WebModule {
         }
         MRadminService service = MRadminService.get();
         boolean grouped = service != null && service.apiVersion() >= MAP_GROUP_API;
+        boolean heights = service != null && service.apiVersion() >= MAP_HEIGHT_API;
         return plugin.messages().in(viewer.lang(), () -> {
             Messages m = plugin.messages();
             String lang = viewer.lang();
@@ -323,9 +326,14 @@ final class MRadminModule implements AdminModule, WebModule {
                     List<SelfMapLayer.Action> actions = grouped
                             ? actions(m, w, category, own, online, world, usable, max, lang)
                             : oldActions(m, w, own, online, world, max);
-                    markers.add(new SelfMapLayer.Marker(String.valueOf(w.id()), world.getKey().asString(), w.x(), w.z(),
-                            0, 0, w.name(), "", List.of(category.name(lang), w.x() + " " + w.y() + " " + w.z(),
-                            m.plain(own ? "map-own" : "map-by", "player", w.creatorName())), actions));
+                    List<String> details = List.of(category.name(lang), w.x() + " " + w.y() + " " + w.z(),
+                            m.plain(own ? "map-own" : "map-by", "player", w.creatorName()));
+                    // With API 10 the height: in the Nether MRadmin then shows it on the ceiling map or below.
+                    markers.add(heights
+                            ? new SelfMapLayer.Marker(String.valueOf(w.id()), world.getKey().asString(), w.x(), w.z(),
+                            0, 0, w.name(), "", details, actions, w.y())
+                            : new SelfMapLayer.Marker(String.valueOf(w.id()), world.getKey().asString(), w.x(), w.z(),
+                            0, 0, w.name(), "", details, actions));
                 }
                 List<SelfMapLayer.Action> here;
                 if (grouped) {
