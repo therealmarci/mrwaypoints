@@ -1,46 +1,38 @@
 ﻿# ==============================================================================
 #   MRwaypoints - Configuration
 # ==============================================================================
+#   Easiest way:     MRadmin web interface -> Plugins -> MRwaypoints -> Configuration
+#                    (saved and reloaded right away; this file stays editable by hand)
 #   After changes:   /mrwaypoints reload   (no restart needed)
 #   Waypoints:       /waypoints
 #   Help & docs:     https://mrtechnology.marcelr.at/docs/mrwaypoints/
 #
 #   The categories are in categories.yml (same folder) - or edited in MRadmin's web interface.
-#   Texts & messages: lang/de.yml or lang/en.yml (see "language" below).
+#   Texts & messages: lang/de.yml or lang/en.yml (see "general.language" below).
 #
 #   This file is UTF-8 encoded. If special characters (ä, ö, ü) look wrong,
 #   set the encoding in your editor to "UTF-8".
 # ==============================================================================
 
 # Do not change - used for automatic config updates.
-config-version: 1
-
-# Language of the texts (chat, menus, action bar). The texts are in plugins/MRwaypoints/lang/<language>.yml.
-#   auto = every player gets the language set in their Minecraft client:
-#          German (also Austria/Switzerland) -> de.yml, English -> en.yml, a language without a file -> fallback-language.
-#   de / en / ... = fixed language for all players.
-# The console is always English. Own language: copy a file (e.g. as fr.yml) and translate it - with "auto"
-# French players then get it automatically.
-language: auto
-
-# Language for players whose Minecraft language has no file of its own.
-fallback-language: en
-
-# Language of texts that are not meant for a single player: the web map (squaremap through MRadmin).
-server-language: en
+config-version: 8
 
 
 # ------------------------------------------------------------------------------
-#   1) GUIDE
+#   1) GENERAL
 # ------------------------------------------------------------------------------
-# A click on a waypoint in /waypoints shows the way in the action bar: an arrow and the distance.
-guide:
-  # How often the arrow is refreshed (in ticks, 20 = 1 second).
-  update-ticks: 5
-  # Within this many blocks the guide ends ("You have arrived").
-  arrive-distance: 5
-  # A short sound on arrival.
-  sound: true
+general:
+  # Language of the texts (chat, menus, action bar). The texts are in plugins/MRwaypoints/lang/<language>.yml.
+  #   auto = every player gets the language set in their Minecraft client:
+  #          German (also Austria/Switzerland) -> de.yml, English -> en.yml, a language without a file -> fallback-language.
+  #   de / en / ... = fixed language for all players.
+  # The console is always English. Own language: copy a file (e.g. as fr.yml) and translate it - with "auto"
+  # French players then get it automatically.
+  language: auto
+  # Language for players whose Minecraft language has no file of its own.
+  fallback-language: en
+  # Language of texts that are not meant for a single player (kept for all MR plugins alike; MRwaypoints has none yet).
+  server-language: en
 
 
 # ------------------------------------------------------------------------------
@@ -54,9 +46,122 @@ waypoints:
 
 
 # ------------------------------------------------------------------------------
-#   3) UPDATE CHECK
+#   3) GUIDE
 # ------------------------------------------------------------------------------
-update-checker:
+# A click on a waypoint in /waypoints shows the way in the action bar: an arrow and the distance.
+guide:
+  # How often the arrow is refreshed (in ticks, 20 = 1 second).
+  update-ticks: 5
+  # Within this many blocks the guide ends ("You have arrived").
+  arrive-distance: 5
+  # A short sound on arrival.
+  sound: true
+
+
+# ------------------------------------------------------------------------------
+#   4) MOD FOR XAERO'S MAP
+# ------------------------------------------------------------------------------
+# Players with the MRwaypoints mod (Fabric, needs Xaero's Minimap) see the server waypoints in Xaero's Minimap and
+# World Map and switch categories on and off in /waypoints -> Categories (the key J and a button in Xaero's waypoint menu
+# open /waypoints). Their choice is saved on the server (players.yml). Without the mod, menu and guide work as usual.
+mod:
+  # Oldest version of the mod that is still allowed (e.g. "0.2.1", empty = any compatible version).
+  # Which mod versions fit the plugin in principle is built into the plugin (protocol version) - here you
+  # can additionally lock out older versions, e.g. because of a bug in the mod.
+  minimum-version: ""
+  # Where players download the mod (link in the notices).
+  download-url: "https://mrtechnology.marcelr.at/download/mrwaypoints/"
+
+
+# ------------------------------------------------------------------------------
+#   5) VIEW IN XAERO'S MAP (players with the mod)
+# ------------------------------------------------------------------------------
+# Every player sets in /waypoints -> Settings how far and where they see the server waypoints (permission
+# mrwaypoints.settings, saved per player in players.yml). These are the choices and the defaults.
+view:
+  # Ranges to choose from, in chunks to every side of the player, e.g. 10 = 10 chunks (160 blocks) in each direction
+  # (0 = unlimited). Only applies in the world and on the minimap - Xaero's own limit for waypoints in the world
+  # applies on top.
+  ranges: [10, 20, 50, 100, 0]
+  # Default range for players who did not change anything (in chunks like above, 0 = unlimited).
+  default-range: 0
+  # Where the waypoints show by default:
+  #   everywhere = in the world, on the minimap and on Xaero's World Map
+  #   world-map  = only on Xaero's World Map
+  default-display: everywhere
+  # Waypoints beyond the distance still show on Xaero's World Map (default for players).
+  default-far-on-world-map: true
+
+
+# ------------------------------------------------------------------------------
+#   6) DISCORD LOGS
+# ------------------------------------------------------------------------------
+# Create a webhook: Discord channel -> Edit Channel -> Integrations -> Webhooks
+#                   -> New Webhook -> Copy Webhook URL.
+# The texts of the events are in the language file (lang/<language>.yml, section discord).
+# An event with "enabled: false" or an empty text is not sent.
+# With MRadmin every event also goes into the log of its web interface - even while Discord is off.
+# Not working? -> /mrwaypoints discord shows the status, /mrwaypoints discord test sends a test message.
+discord:
+  enabled: false
+  # Full URL in quotes, e.g. "https://discord.com/api/webhooks/123456/abcdef"
+  webhook-url: ""
+  # Without a webhook of its own (webhook-url empty): true = send the events to MRadmin's Discord log instead
+  # (needs MRadmin with its Discord log set up).
+  use-mradmin-webhook: false
+  # Name and avatar of the webhook (empty = settings from Discord).
+  username: "MRwaypoints"
+  avatar-url: ""
+  # true = coloured embeds, false = plain text messages.
+  use-embeds: true
+  # Footer of the embeds, e.g. the server name (empty = none).
+  footer: "Minecraft-Server"
+  events:
+    waypoint-created:
+      enabled: true
+      color: "#2ECC71"
+    waypoint-renamed:
+      enabled: true
+      color: "#3498DB"
+    waypoint-moved:
+      enabled: true
+      color: "#3498DB"
+    waypoint-relocated:
+      enabled: true
+      color: "#3498DB"
+    waypoint-deleted:
+      enabled: true
+      color: "#E74C3C"
+    waypoints-bulk-moved:
+      enabled: true
+      color: "#3498DB"
+    waypoints-bulk-deleted:
+      enabled: true
+      color: "#E74C3C"
+    category-created:
+      enabled: true
+      color: "#9B59B6"
+    category-changed:
+      enabled: true
+      color: "#9B59B6"
+    category-deleted:
+      enabled: true
+      color: "#C0392B"
+    category-order:
+      enabled: true
+      color: "#9B59B6"
+    teleport:
+      enabled: true
+      color: "#1ABC9C"
+    admin-reload:
+      enabled: true
+      color: "#3498DB"
+
+
+# ------------------------------------------------------------------------------
+#   7) UPDATES
+# ------------------------------------------------------------------------------
+updates:
   # Look for new versions on startup and regularly afterwards.
   # If a newer version is available, a notice appears in the console.
   enabled: true
@@ -71,7 +176,7 @@ update-checker:
 
 
 # ------------------------------------------------------------------------------
-#   4) MENUS
+#   8) MENUS
 # ------------------------------------------------------------------------------
 gui:
   # How often open menus are refreshed (in ticks, 20 = 1 second) - distances stay up to date.

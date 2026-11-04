@@ -1,0 +1,14 @@
+{
+  "key.category.mrwaypoints.main": "MRwaypoints",
+  "key.mrwaypoints.create": "Create waypoint here",
+  "key.mrwaypoints.toggle-all": "Server waypoints on/off",
+  "key.mrwaypoints.menu": "Waypoint menu (/waypoints)",
+  "mrwaypoints.button.xaero": "Server waypoints …",
+  "mrwaypoints.message.no-server": "This server has no MRwaypoints.",
+  "mrwaypoints.message.too-old": "Your MRwaypoints mod is too old for this server - please update it.",
+  "mrwaypoints.message.too-new": "Your MRwaypoints mod is newer than the plugin on the server - the team has to update it.",
+  "mrwaypoints.message.refused": "MRwaypoints on the server does not fit this mod.",
+  "mrwaypoints.message.all-hidden": "Server waypoints hidden in Xaero (press again: back on).",
+  "mrwaypoints.message.all-shown": "Server waypoints shown in Xaero again.",
+  "mrwaypoints.message.incompatible": "MRwaypoints %s on the server does not fit this mod."
+}

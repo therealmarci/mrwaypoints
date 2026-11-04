@@ -11,7 +11,7 @@
 # ==============================================================================
 
 # Do not change - tells the plugin which texts need renewing on updates.
-lang-version: 1
+lang-version: 4
 
 prefix: "<dark_gray>[<gold>MRwaypoints</gold>]</dark_gray> "
 
@@ -21,6 +21,7 @@ players-only: "<prefix><red>Only players can use this command."
 help-header: "<prefix><gray>Commands:"
 help-waypoints: "<gold>/waypoints [stop]</gold> <dark_gray>- <gray>all waypoints, end the guide"
 help-reload: "<gold>/mrwaypoints reload</gold> <dark_gray>- <gray>reload config, categories and texts"
+help-discord: "<gold>/mrwaypoints discord [test]</gold> <dark_gray>- <gray>check the Discord log"
 help-version: "<gold>/mrwaypoints version</gold> <dark_gray>- <gray>version and updates"
 reloaded: "<prefix><hover:show_text:'<gray><categories> categories, <waypoints> waypoints'><green>Reloaded</hover>"
 
@@ -39,6 +40,7 @@ guide-down: " <dark_gray>▼ <blocks>"
 # --- Create and edit ---------------------------------------------------------
 create-no-permission: "<prefix><red>You may not create waypoints in <white><category></white>."
 create-limit: "<prefix><hover:show_text:'<gray>At most <max> own waypoints per player - delete an old one'><red>Limit reached in <white><category></white></hover>"
+create-wrong-world: "<prefix><hover:show_text:'<gray>This category is only for certain worlds'><red><white><category></white> is not available in this world</hover>"
 created: "<prefix><hover:show_text:'<gray><category> · <x> <y> <z>'><green>Waypoint <white><name></white> created</hover>"
 renamed: "<prefix><hover:show_text:'<gray>before: <old>'><green>Renamed to <white><name></white></hover>"
 moved: "<prefix><hover:show_text:'<gray>new: <x> <y> <z>'><green><white><name></white> is here now</hover>"
@@ -52,13 +54,21 @@ name-taken: "<prefix><red>There already is <white><name></white> in this categor
 
 # --- Menus -------------------------------------------------------------------
 gui-main-title: "<dark_gray>Waypoints"
-gui-category-lore:
-  - "<gray><count> waypoints"
+gui-mine-name: "<aqua>My waypoints"
+gui-mine-lore:
+  - "<gray><count> in <white><world></white>"
   - "<yellow>Click: open"
-gui-no-categories: "<red>No categories"
-gui-no-categories-lore:
-  - "<gray>The team creates them in categories.yml"
-  - "<gray>or in MRadmin."
+gui-create-name: "<green>Create waypoint"
+gui-create-here-lore:
+  - "<gray>At your position, name and category"
+  - "<gray>in the dialog <dark_gray>(<count> categories free)"
+gui-create-none-lore:
+  - "<gray>No category free:"
+  - "<gray>no permission or limit reached."
+gui-all-name: "<gold>All waypoints"
+gui-all-lore:
+  - "<gray><count> in <white><world></white>"
+  - "<yellow>Click: open"
 gui-guide-name: "<gold>Guide: <white><name>"
 gui-guide-lore:
   - "<yellow>Click: end"
@@ -66,23 +76,39 @@ gui-close: "<red>Close"
 gui-back: "<gray>Back"
 gui-previous: "<gray>Previous page <dark_gray>(<page>/<pages>)"
 gui-next: "<gray>Next page <dark_gray>(<page>/<pages>)"
-gui-category-title: "<dark_gray>Waypoints · <category>"
-gui-category-empty: "<gray>No waypoints yet"
-gui-category-empty-lore:
-  - "<gray>Create the first one below,"
-  - "<gray>if you may here."
-gui-create: "<green>New waypoint here"
-gui-create-lore:
-  - "<gray>At your position, name in the dialog"
-gui-create-limit-lore:
-  - "<dark_gray>Your waypoints here: <used>/<max>"
-gui-create-full: "<gray>New waypoint here"
-gui-create-full-lore:
-  - "<red>Limit reached <dark_gray>(<max>)"
-  - "<gray>Delete one of yours to make room."
+gui-mine-title: "<dark_gray>My waypoints · <world>"
+gui-all-title: "<dark_gray>All waypoints · <world>"
+gui-list-info: "<white><count> waypoints <gray>in <white><world>"
+gui-list-info-lore:
+  - "<gray>Category: <white><category>"
+  - "<gray>Sorting: <white><sort>"
+  - "<gray>Search: <white><search>"
+gui-list-empty: "<gray>No waypoints"
+gui-list-empty-lore:
+  - "<gray>There are none in this world yet."
+gui-list-empty-mine-lore:
+  - "<gray>You have not created any here -"
+  - "<gray>go back and \"Create waypoint\"."
+gui-list-empty-filtered-lore:
+  - "<gray>Nothing matches the filters."
+  - "<gray>Right-click a filter to reset it."
+gui-filter-category: "<aqua>Category: <white><category>"
+gui-filter-category-lore:
+  - "<yellow>Click: next · right-click: all"
+gui-filter-all: "all"
+gui-sort: "<aqua>Sorting: <white><sort>"
+gui-sort-lore:
+  - "<yellow>Click: change · right-click: distance"
+gui-sort-distance: "distance"
+gui-sort-name: "name"
+gui-sort-newest: "newest first"
+gui-search: "<aqua>Search: <white><search>"
+gui-search-lore:
+  - "<yellow>Click: search term · right-click: clear"
+gui-search-none: "-"
 gui-waypoint-near: "<gray><distance> m away <dark_gray>· <x> <y> <z>"
-gui-waypoint-far: "<gray>in <white><world></white> <dark_gray>· <x> <y> <z>"
-gui-waypoint-creator: "<dark_gray>by <player>"
+gui-waypoint-category: "<dark_gray><category>"
+gui-waypoint-category-creator: "<dark_gray><category> · by <player>"
 gui-waypoint-guide: "<yellow>Click: guide"
 gui-waypoint-teleport: "<yellow>Shift-click: teleport"
 gui-waypoint-edit: "<yellow>Right-click: edit"
@@ -103,14 +129,107 @@ gui-confirm: "<red>Yes, delete"
 gui-cancel: "<gray>Cancel"
 
 # --- Dialogs -----------------------------------------------------------------
-dialog-create-title: "New waypoint · <category>"
-dialog-create-hint: "The waypoint goes to your position. At most <max> characters."
+dialog-create-title: "Create waypoint"
+dialog-create-hint: "It goes to your position (<world> <x> <y> <z>). Name at most <max> characters."
+dialog-name-label: "Name"
+dialog-category-label: "Category"
 dialog-rename-title: "Rename <name>"
 dialog-rename-hint: "At most <max> characters."
-dialog-name-label: "Name"
+dialog-rename-label: "New name"
+dialog-search-title: "Search waypoints"
+dialog-search-hint: "Part of the name, empty = all."
+dialog-search-label: "Search"
 dialog-save: "Save"
 dialog-cancel: "Cancel"
+create-none: "<prefix><hover:show_text:'<gray>No permission or limit reached'><red>You cannot create in any category right now</hover>"
 
+# --- MRadmin: dashboard, player page ------------------------------------------
+admin-summary:
+  - "<gray><waypoints> waypoints in <categories> categories"
+# Map of the player page (/web, tab "Map") - plain text, no MiniMessage. Placeholders: <name> <max> <player> <category>
+map-own: "by you"
+map-by: "by <player>"
+map-guide: "Start the guide in game"
+map-guide-offline: "The guide only works while you are online in this world."
+map-rename: "Rename"
+map-rename-label: "New name"
+map-delete: "Delete"
+map-delete-confirm: "Really delete <name>?"
+map-create: "<category>: create waypoint here"
+map-create-label: "Name of the waypoint"
+map-outside: "This spot is outside the world."
+map-xaero-on: "Ingame: on"
+map-xaero-off: "Ingame: off"
+map-group: "Waypoints"
+map-create-one: "Create waypoint"
+map-category-label: "Category"
+map-edit: "Edit waypoint"
+map-delete-one: "Delete waypoint"
+self-not-found: "This waypoint does not exist any more."
+self-not-yours: "You can only change your own waypoints here."
+self-name-empty: "The name must not be empty."
+self-name-too-long: "The name is too long (at most <max> characters)."
+self-name-taken: "There already is <name> in this category."
+self-create-no-permission: "You may not create waypoints in this category."
+self-create-limit: "Limit reached - at most <max> own waypoints in this category."
+self-create-wrong-world: "This category is not available in this world."
+
+# --- Mod for Xaero's map -------------------------------------------------------
+mod-download-label: "<aqua><u>[Download]</u></aqua>"
+mod-too-old: "<prefix><hover:show_text:'<gray>Your MRwaypoints mod <version> is too old for this server - waypoints do not show in Xaero'><gold>Mod update needed</hover> <download>"
+mod-too-new: "<prefix><hover:show_text:'<gray>Your MRwaypoints mod <version> is newer than the plugin on the server - the team has to update it'><gold>Mod does not fit the server</hover>"
+gui-categories-name: "<aqua>Categories"
+gui-categories-lore:
+  - "<gray>Which ones show in Xaero's map"
+  - "<dark_gray><on>/<total> on · also with the key J"
+gui-categories-title: "<dark_gray>Waypoints · Categories"
+gui-category-lore:
+  - "<gray>In Xaero: <state>"
+  - "<dark_gray><count> waypoints · click: switch"
+gui-category-only: "<dark_gray>Only in: <worlds>"
+gui-categories-all-on: "<green>All on"
+gui-categories-all-off: "<red>All off"
+gui-categories-info: "<aqua>Categories in Xaero <dark_gray>· <white><on>/<total> on"
+gui-categories-info-lore:
+  - "<gray>A click on symbol or state switches it"
+  - "<dark_gray>applies on every PC and on the web map"
+gui-category-shown: "<green>✔ Shown <dark_gray>· <name>"
+gui-category-hidden: "<red>✖ Hidden <dark_gray>· <name>"
+gui-category-switch-lore:
+  - "<dark_gray>Click: switch"
+gui-keys-name: "<aqua>Key bindings"
+gui-keys-lore:
+  - "<gray>Set the keys of MRwaypoints"
+  - "<dark_gray>opens Minecraft's controls"
+# --- Settings (Xaero's map) --------------------------------------------------
+gui-settings-name: "<aqua>Settings"
+gui-settings-lore:
+  - "<gray>Range and display in Xaero's map"
+gui-settings-title: "<dark_gray>Waypoints · Settings"
+gui-settings-nomod-name: "<yellow>Only with the mod"
+gui-settings-nomod-lore:
+  - "<gray>Applies to Xaero's map with the MRwaypoints mod"
+  - "<dark_gray>Menu and guide stay the same"
+gui-range-name: "<aqua>Range: <white><range>"
+gui-range-lore:
+  - "<gray>This far in the world and on the minimap"
+  - "<dark_gray>Left click: farther · right click: closer"
+gui-range-unlimited: "unlimited"
+gui-range-chunks: "<count> chunks in every direction"
+gui-display-name: "<aqua>Display: <white><display>"
+gui-display-lore:
+  - "<gray>Where the server waypoints show"
+  - "<dark_gray>Click: switch"
+gui-display-everywhere: "world, minimap and World Map"
+gui-display-world-map: "World Map only"
+gui-far-name: "<aqua>Far ones on the World Map: <state>"
+gui-far-lore:
+  - "<gray>Beyond the range still on the World Map"
+  - "<dark_gray>Click: switch"
+gui-far-unlimited-lore:
+  - "<gray>Only with a limited range"
+gui-state-on: "<green>on"
+gui-state-off: "<red>off"
 # --- Version & updates -------------------------------------------------------
 version: "<prefix><gray>MRwaypoints <white>v<version></white> <dark_gray>(MC <mc>)</dark_gray> by <white><author></white>"
 version-latest: "<prefix><green>You are using the latest version."
@@ -124,3 +243,43 @@ update-reason-disabled: "update check is disabled"
 update-reason-not-found: "project not found (HTTP 404) - not published yet?"
 update-reason-no-release: "no published version found"
 update-reason-no-repository: "no GitHub repository set"
+
+# --- Discord -----------------------------------------------------------------
+discord-status-active: "<prefix><green>Discord active <gray>(<events>/<total> events)"
+discord-status-mradmin: "<prefix><green>Discord via MRadmin's webhook <gray>(<events>/<total> events)"
+discord-status-inactive: "<prefix><red>Discord webhook inactive: <white><reason>"
+discord-status-last: "<prefix><gray>Last delivery: <white><result>"
+discord-status-never: "nothing sent since startup"
+discord-test-hint: "<prefix><gray>Test: <white>/mrwaypoints discord test"
+discord-test-sending: "<prefix><gray>Sending test message to Discord ..."
+discord-test-ok: "<prefix><green>✔ The test message arrived in Discord."
+discord-test-failed: "<prefix><red>✘ Test message failed: <white><reason>"
+discord-reason-disabled: "discord.enabled is false"
+discord-reason-no-url: "discord.webhook-url is empty"
+discord-reason-no-mradmin: "MRadmin is not running (discord.use-mradmin-webhook)"
+discord-reason-bad-url: "discord.webhook-url is not a Discord webhook URL (must start with https://discord.com/api/webhooks/)"
+discord-reason-invalid-url: "discord.webhook-url contains invalid characters (spaces? quotes?)"
+discord-result-ok: "OK (HTTP <status>) at <time>"
+discord-result-error: "ERROR at <time>: <error>"
+discord-error-400: "Discord rejected the message (e.g. invalid name/avatar or text too long)."
+discord-error-401: "Webhook token invalid."
+discord-error-404: "Webhook does not exist (deleted? URL copied incorrectly?)."
+discord-error-rate-limit: "Discord rate limit, message dropped"
+discord-error-interrupted: "interrupted"
+
+# Discord log texts (Discord markdown). Placeholders: {player} {name} {old} {category} {world} {x} {y} {z} {count} {admin}. On/off and colour are set in config.yml.
+discord:
+  test-message: "🔧 Test message from MRwaypoints - the webhook works!"
+  waypoint-created: "📍 **{player}** created the waypoint **{name}** ({category}) in **{world}** at {x} {y} {z}."
+  waypoint-renamed: "✏️ **{player}** renamed the waypoint **{old}** to **{name}** ({category})."
+  waypoint-moved: "🗂️ **{player}** moved the waypoint **{name}** into the category **{category}**."
+  waypoint-relocated: "📌 **{player}** moved the waypoint **{name}** ({category}) to {x} {y} {z} in **{world}**."
+  waypoint-deleted: "🗑️ **{player}** deleted the waypoint **{name}** ({category}) in **{world}**."
+  waypoints-bulk-moved: "🗂️ **{player}** moved **{count}** waypoints into the category **{category}**."
+  waypoints-bulk-deleted: "🗑️ **{player}** deleted **{count}** waypoints."
+  category-created: "🆕 **{player}** created the category **{category}**."
+  category-changed: "🛠️ **{player}** changed the category **{category}**."
+  category-deleted: "🗑️ **{player}** deleted the category **{category}**."
+  category-order: "↕️ **{player}** changed the order of the categories."
+  teleport: "🌀 **{player}** teleported to the waypoint **{name}** ({category}) in **{world}**."
+  admin-reload: "🔄 **{admin}** reloaded the MRwaypoints configuration."

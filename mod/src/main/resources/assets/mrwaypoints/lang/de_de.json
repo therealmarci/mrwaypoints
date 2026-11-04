@@ -1,0 +1,14 @@
+{
+  "key.category.mrwaypoints.main": "MRwaypoints",
+  "key.mrwaypoints.create": "Wegpunkt hier erstellen",
+  "key.mrwaypoints.toggle-all": "Server-Wegpunkte ein/aus",
+  "key.mrwaypoints.menu": "Wegpunkt-Menü (/waypoints)",
+  "mrwaypoints.button.xaero": "Server-Wegpunkte …",
+  "mrwaypoints.message.no-server": "Dieser Server hat kein MRwaypoints.",
+  "mrwaypoints.message.too-old": "Dein MRwaypoints-Mod ist zu alt für diesen Server - bitte aktualisieren.",
+  "mrwaypoints.message.too-new": "Dein MRwaypoints-Mod ist neuer als das Plugin auf dem Server - das Team muss es aktualisieren.",
+  "mrwaypoints.message.refused": "MRwaypoints auf dem Server passt nicht zu diesem Mod.",
+  "mrwaypoints.message.all-hidden": "Server-Wegpunkte in Xaero ausgeblendet (Taste nochmal: wieder an).",
+  "mrwaypoints.message.all-shown": "Server-Wegpunkte in Xaero wieder eingeblendet.",
+  "mrwaypoints.message.incompatible": "MRwaypoints %s auf dem Server passt nicht zu diesem Mod."
+}

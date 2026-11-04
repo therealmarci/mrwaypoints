@@ -54,5 +54,5 @@ body:
     id: config
     attributes:
       label: Geänderte Config-Werte (optional)
-      description: Nur die Werte, die du gegenüber dem Standard geändert hast.
+      description: Nur die Werte, die du gegenüber dem Standard geändert hast. Keine Passwörter, Tokens oder Webhook-URLs posten!
       render: yaml

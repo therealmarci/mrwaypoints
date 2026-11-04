@@ -5,6 +5,7 @@ import at.marcelr.mrwaypoints.util.TitleWidth;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -54,6 +55,22 @@ public abstract class Menu implements InventoryHolder {
         actions.clear();
         inventory.clear();
         draw();
+        frame();
+    }
+
+    /**
+     * The same frame for every menu: free places grey glass, the bottom row (navigation) black - so the buttons stand
+     * out and every menu looks alike.
+     */
+    private void frame() {
+        int size = inventory.getSize();
+        for (int slot = 0; slot < size; slot++) {
+            if (inventory.getItem(slot) != null) {
+                continue;
+            }
+            Material glass = slot >= size - 9 ? Material.BLACK_STAINED_GLASS_PANE : Material.GRAY_STAINED_GLASS_PANE;
+            inventory.setItem(slot, Items.pane(glass));
+        }
     }
 
     public final void open() {
@@ -68,15 +85,6 @@ public abstract class Menu implements InventoryHolder {
     protected void set(int slot, ItemStack item, Consumer<ClickType> action) {
         inventory.setItem(slot, item);
         actions.put(slot, action);
-    }
-
-    /** Fills all empty slots of a row with the decorative pane. */
-    protected void fillRow(int row) {
-        for (int slot = row * 9; slot < row * 9 + 9; slot++) {
-            if (inventory.getItem(slot) == null) {
-                inventory.setItem(slot, Items.filler());
-            }
-        }
     }
 
     final void click(int slot, ClickType type) {

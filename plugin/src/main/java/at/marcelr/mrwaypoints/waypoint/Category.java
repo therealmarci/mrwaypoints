@@ -2,6 +2,7 @@ package at.marcelr.mrwaypoints.waypoint;
 
 import org.bukkit.Material;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -17,10 +18,11 @@ import java.util.Map;
  *                       mrwaypoints.create.&lt;id&gt;
  * @param maxPerPlayer   waypoints one player may create here, 0 = no limit (the team with manage is never limited)
  * @param visible        shown by default in Xaero's map (players switch categories on and off with the mod)
- * @param onMap          shown on the web map (squaremap through MRadmin) - it is public
+ * @param onMap          shown on the map of the player page in MRadmin
+ * @param worlds         names of the worlds the category is for (e.g. only world_nether), empty = every world
  */
 public record Category(String id, Map<String, String> names, int color, Material icon, boolean playersCreate,
-                       int maxPerPlayer, boolean visible, boolean onMap) {
+                       int maxPerPlayer, boolean visible, boolean onMap, List<String> worlds) {
 
     /** Ids allowed for categories (they become part of permissions and file keys). */
     public static boolean validId(String id) {
@@ -37,6 +39,11 @@ public record Category(String id, Map<String, String> names, int color, Material
             name = names.values().stream().filter(n -> n != null && !n.isBlank()).findFirst().orElse(id);
         }
         return name;
+    }
+
+    /** Whether the category is for this world (by name, case does not matter); with no worlds set for every one. */
+    public boolean allows(String worldName) {
+        return worlds.isEmpty() || worlds.stream().anyMatch(w -> w.equalsIgnoreCase(worldName));
     }
 
     /** "#RRGGBB" */

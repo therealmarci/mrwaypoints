@@ -11,7 +11,7 @@
 # ==============================================================================
 
 # Nicht ändern - damit erkennt das Plugin bei Updates, welche Texte erneuert werden müssen.
-lang-version: 1
+lang-version: 4
 
 prefix: "<dark_gray>[<gold>MRwaypoints</gold>]</dark_gray> "
 
@@ -21,6 +21,7 @@ players-only: "<prefix><red>Dieser Befehl kann nur von Spielern genutzt werden."
 help-header: "<prefix><gray>Befehle:"
 help-waypoints: "<gold>/waypoints [stop]</gold> <dark_gray>- <gray>alle Wegpunkte, Wegweiser beenden"
 help-reload: "<gold>/mrwaypoints reload</gold> <dark_gray>- <gray>Config, Kategorien und Texte neu laden"
+help-discord: "<gold>/mrwaypoints discord [test]</gold> <dark_gray>- <gray>Discord-Log prüfen"
 help-version: "<gold>/mrwaypoints version</gold> <dark_gray>- <gray>Version und Updates"
 reloaded: "<prefix><hover:show_text:'<gray><categories> Kategorien, <waypoints> Wegpunkte'><green>Neu geladen</hover>"
 
@@ -39,6 +40,7 @@ guide-down: " <dark_gray>▼ <blocks>"
 # --- Anlegen und Bearbeiten --------------------------------------------------
 create-no-permission: "<prefix><red>In <white><category></white> darfst du keine Wegpunkte anlegen."
 create-limit: "<prefix><hover:show_text:'<gray>Höchstens <max> eigene Wegpunkte pro Spieler - lösche einen alten'><red>Limit in <white><category></white> erreicht</hover>"
+create-wrong-world: "<prefix><hover:show_text:'<gray>Diese Kategorie gibt es nur in bestimmten Welten'><red><white><category></white> gibt es in dieser Welt nicht</hover>"
 created: "<prefix><hover:show_text:'<gray><category> · <x> <y> <z>'><green>Wegpunkt <white><name></white> angelegt</hover>"
 renamed: "<prefix><hover:show_text:'<gray>vorher: <old>'><green>Umbenannt in <white><name></white></hover>"
 moved: "<prefix><hover:show_text:'<gray>neu: <x> <y> <z>'><green><white><name></white> liegt jetzt hier</hover>"
@@ -52,13 +54,21 @@ name-taken: "<prefix><red>In dieser Kategorie gibt es <white><name></white> scho
 
 # --- Menüs ------------------------------------------------------------------
 gui-main-title: "<dark_gray>Wegpunkte"
-gui-category-lore:
-  - "<gray><count> Wegpunkte"
+gui-mine-name: "<aqua>Meine Wegpunkte"
+gui-mine-lore:
+  - "<gray><count> in <white><world></white>"
   - "<yellow>Klick: öffnen"
-gui-no-categories: "<red>Keine Kategorien"
-gui-no-categories-lore:
-  - "<gray>Das Team legt sie in categories.yml"
-  - "<gray>oder in MRadmin an."
+gui-create-name: "<green>Wegpunkt erstellen"
+gui-create-here-lore:
+  - "<gray>An deiner Position, Name und Kategorie"
+  - "<gray>im Dialog <dark_gray>(<count> Kategorien frei)"
+gui-create-none-lore:
+  - "<gray>In keiner Kategorie frei:"
+  - "<gray>keine Berechtigung oder Limit erreicht."
+gui-all-name: "<gold>Alle Wegpunkte"
+gui-all-lore:
+  - "<gray><count> in <white><world></white>"
+  - "<yellow>Klick: öffnen"
 gui-guide-name: "<gold>Wegweiser: <white><name>"
 gui-guide-lore:
   - "<yellow>Klick: beenden"
@@ -66,23 +76,39 @@ gui-close: "<red>Schließen"
 gui-back: "<gray>Zurück"
 gui-previous: "<gray>Vorherige Seite <dark_gray>(<page>/<pages>)"
 gui-next: "<gray>Nächste Seite <dark_gray>(<page>/<pages>)"
-gui-category-title: "<dark_gray>Wegpunkte · <category>"
-gui-category-empty: "<gray>Noch keine Wegpunkte"
-gui-category-empty-lore:
-  - "<gray>Leg unten den ersten an,"
-  - "<gray>falls du hier darfst."
-gui-create: "<green>Neuer Wegpunkt hier"
-gui-create-lore:
-  - "<gray>An deiner Position, Name im Dialog"
-gui-create-limit-lore:
-  - "<dark_gray>Deine Wegpunkte hier: <used>/<max>"
-gui-create-full: "<gray>Neuer Wegpunkt hier"
-gui-create-full-lore:
-  - "<red>Limit erreicht <dark_gray>(<max>)"
-  - "<gray>Lösch einen eigenen, um Platz zu machen."
+gui-mine-title: "<dark_gray>Meine Wegpunkte · <world>"
+gui-all-title: "<dark_gray>Alle Wegpunkte · <world>"
+gui-list-info: "<white><count> Wegpunkte <gray>in <white><world>"
+gui-list-info-lore:
+  - "<gray>Kategorie: <white><category>"
+  - "<gray>Sortierung: <white><sort>"
+  - "<gray>Suche: <white><search>"
+gui-list-empty: "<gray>Keine Wegpunkte"
+gui-list-empty-lore:
+  - "<gray>In dieser Welt gibt es noch keine."
+gui-list-empty-mine-lore:
+  - "<gray>Du hast hier noch keine angelegt -"
+  - "<gray>zurück und „Wegpunkt erstellen“."
+gui-list-empty-filtered-lore:
+  - "<gray>Nichts passt zu den Filtern."
+  - "<gray>Rechtsklick auf einen Filter setzt ihn zurück."
+gui-filter-category: "<aqua>Kategorie: <white><category>"
+gui-filter-category-lore:
+  - "<yellow>Klick: nächste · Rechtsklick: alle"
+gui-filter-all: "alle"
+gui-sort: "<aqua>Sortierung: <white><sort>"
+gui-sort-lore:
+  - "<yellow>Klick: wechseln · Rechtsklick: Entfernung"
+gui-sort-distance: "Entfernung"
+gui-sort-name: "Name"
+gui-sort-newest: "neueste zuerst"
+gui-search: "<aqua>Suche: <white><search>"
+gui-search-lore:
+  - "<yellow>Klick: Suchbegriff · Rechtsklick: löschen"
+gui-search-none: "-"
 gui-waypoint-near: "<gray><distance> m entfernt <dark_gray>· <x> <y> <z>"
-gui-waypoint-far: "<gray>in <white><world></white> <dark_gray>· <x> <y> <z>"
-gui-waypoint-creator: "<dark_gray>von <player>"
+gui-waypoint-category: "<dark_gray><category>"
+gui-waypoint-category-creator: "<dark_gray><category> · von <player>"
 gui-waypoint-guide: "<yellow>Klick: Wegweiser"
 gui-waypoint-teleport: "<yellow>Shift-Klick: teleportieren"
 gui-waypoint-edit: "<yellow>Rechtsklick: bearbeiten"
@@ -103,14 +129,107 @@ gui-confirm: "<red>Ja, löschen"
 gui-cancel: "<gray>Abbrechen"
 
 # --- Dialoge ----------------------------------------------------------------
-dialog-create-title: "Neuer Wegpunkt · <category>"
-dialog-create-hint: "Der Wegpunkt kommt an deine Position. Höchstens <max> Zeichen."
+dialog-create-title: "Wegpunkt erstellen"
+dialog-create-hint: "Er kommt an deine Position (<world> <x> <y> <z>). Name höchstens <max> Zeichen."
+dialog-name-label: "Name"
+dialog-category-label: "Kategorie"
 dialog-rename-title: "<name> umbenennen"
 dialog-rename-hint: "Höchstens <max> Zeichen."
-dialog-name-label: "Name"
+dialog-rename-label: "Neuer Name"
+dialog-search-title: "Wegpunkte suchen"
+dialog-search-hint: "Teil des Namens, leer = alle."
+dialog-search-label: "Suche"
 dialog-save: "Speichern"
 dialog-cancel: "Abbrechen"
+create-none: "<prefix><hover:show_text:'<gray>Keine Berechtigung oder Limit erreicht'><red>In keiner Kategorie kannst du gerade anlegen</hover>"
 
+# --- MRadmin: Dashboard, Spielerseite -------------------------------
+admin-summary:
+  - "<gray><waypoints> Wegpunkte in <categories> Kategorien"
+# Karte der Spielerseite (/web, Tab „Karte“) - reiner Text, kein MiniMessage. Platzhalter: <name> <max> <player> <category>
+map-own: "von dir"
+map-by: "von <player>"
+map-guide: "Wegweiser im Spiel starten"
+map-guide-offline: "Der Wegweiser geht nur, während du in dieser Welt online bist."
+map-rename: "Umbenennen"
+map-rename-label: "Neuer Name"
+map-delete: "Löschen"
+map-delete-confirm: "<name> wirklich löschen?"
+map-create: "<category>: Wegpunkt hier erstellen"
+map-create-label: "Name des Wegpunkts"
+map-outside: "Diese Stelle liegt außerhalb der Welt."
+map-xaero-on: "Ingame: an"
+map-xaero-off: "Ingame: aus"
+map-group: "Wegpunkte"
+map-create-one: "Wegpunkt erstellen"
+map-category-label: "Kategorie"
+map-edit: "Wegpunkt bearbeiten"
+map-delete-one: "Wegpunkt löschen"
+self-not-found: "Diesen Wegpunkt gibt es nicht mehr."
+self-not-yours: "Nur eigene Wegpunkte kannst du hier ändern."
+self-name-empty: "Der Name darf nicht leer sein."
+self-name-too-long: "Der Name ist zu lang (höchstens <max> Zeichen)."
+self-name-taken: "In dieser Kategorie gibt es <name> schon."
+self-create-no-permission: "In dieser Kategorie darfst du keine Wegpunkte anlegen."
+self-create-limit: "Limit erreicht - höchstens <max> eigene Wegpunkte in dieser Kategorie."
+self-create-wrong-world: "Diese Kategorie gibt es in dieser Welt nicht."
+
+# --- Mod für Xaero's Karte -----------------------------------------------------
+mod-download-label: "<aqua><u>[Download]</u></aqua>"
+mod-too-old: "<prefix><hover:show_text:'<gray>Dein MRwaypoints-Mod <version> ist zu alt für diesen Server - Wegpunkte erscheinen nicht in Xaero'><gold>Mod-Update nötig</hover> <download>"
+mod-too-new: "<prefix><hover:show_text:'<gray>Dein MRwaypoints-Mod <version> ist neuer als das Plugin auf dem Server - das Team muss es aktualisieren'><gold>Mod passt nicht zum Server</hover>"
+gui-categories-name: "<aqua>Kategorien"
+gui-categories-lore:
+  - "<gray>Welche in Xaero's Karte erscheinen"
+  - "<dark_gray><on>/<total> an · auch mit der Taste J"
+gui-categories-title: "<dark_gray>Wegpunkte · Kategorien"
+gui-category-lore:
+  - "<gray>In Xaero: <state>"
+  - "<dark_gray><count> Wegpunkte · Klick: umschalten"
+gui-category-only: "<dark_gray>Nur in: <worlds>"
+gui-categories-all-on: "<green>Alle an"
+gui-categories-all-off: "<red>Alle aus"
+gui-categories-info: "<aqua>Kategorien in Xaero <dark_gray>· <white><on>/<total> an"
+gui-categories-info-lore:
+  - "<gray>Klick auf Symbol oder Status schaltet um"
+  - "<dark_gray>gilt auf jedem PC und auf der Karte im Web"
+gui-category-shown: "<green>✔ Sichtbar <dark_gray>· <name>"
+gui-category-hidden: "<red>✖ Ausgeblendet <dark_gray>· <name>"
+gui-category-switch-lore:
+  - "<dark_gray>Klick: umschalten"
+gui-keys-name: "<aqua>Tastenbelegung"
+gui-keys-lore:
+  - "<gray>Tasten von MRwaypoints festlegen"
+  - "<dark_gray>öffnet Minecrafts Steuerung"
+# --- Einstellungen (Xaero's Karte) -------------------------------------------
+gui-settings-name: "<aqua>Einstellungen"
+gui-settings-lore:
+  - "<gray>Sichtweite und Anzeige in Xaero's Karte"
+gui-settings-title: "<dark_gray>Wegpunkte · Einstellungen"
+gui-settings-nomod-name: "<yellow>Nur mit dem Mod"
+gui-settings-nomod-lore:
+  - "<gray>Gilt für Xaero's Karte mit dem MRwaypoints-Mod"
+  - "<dark_gray>Menü und Wegweiser bleiben gleich"
+gui-range-name: "<aqua>Sichtweite: <white><range>"
+gui-range-lore:
+  - "<gray>So weit in der Welt und auf der Minimap"
+  - "<dark_gray>Linksklick: weiter · Rechtsklick: näher"
+gui-range-unlimited: "unbegrenzt"
+gui-range-chunks: "<count> Chunks in jede Richtung"
+gui-display-name: "<aqua>Anzeige: <white><display>"
+gui-display-lore:
+  - "<gray>Wo die Server-Wegpunkte erscheinen"
+  - "<dark_gray>Klick: umschalten"
+gui-display-everywhere: "Welt, Minimap und Weltkarte"
+gui-display-world-map: "nur Weltkarte"
+gui-far-name: "<aqua>Entfernte auf der Weltkarte: <state>"
+gui-far-lore:
+  - "<gray>Außerhalb der Sichtweite trotzdem auf der Weltkarte"
+  - "<dark_gray>Klick: umschalten"
+gui-far-unlimited-lore:
+  - "<gray>Nur bei begrenzter Sichtweite"
+gui-state-on: "<green>an"
+gui-state-off: "<red>aus"
 # --- Version & Updates -------------------------------------------------------
 version: "<prefix><gray>MRwaypoints <white>v<version></white> <dark_gray>(MC <mc>)</dark_gray> von <white><author></white>"
 version-latest: "<prefix><green>Du nutzt die aktuellste Version."
@@ -124,3 +243,43 @@ update-reason-disabled: "Update-Check ist deaktiviert"
 update-reason-not-found: "Projekt nicht gefunden (HTTP 404) - noch nicht veröffentlicht?"
 update-reason-no-release: "Keine veröffentlichte Version gefunden"
 update-reason-no-repository: "Kein GitHub-Repository hinterlegt"
+
+# --- Discord -----------------------------------------------------------------
+discord-status-active: "<prefix><green>Discord aktiv <gray>(<events>/<total> Events)"
+discord-status-mradmin: "<prefix><green>Discord über MRadmins Webhook <gray>(<events>/<total> Events)"
+discord-status-inactive: "<prefix><red>Discord-Webhook inaktiv: <white><reason>"
+discord-status-last: "<prefix><gray>Letzter Versand: <white><result>"
+discord-status-never: "seit dem Start noch nichts gesendet"
+discord-test-hint: "<prefix><gray>Test: <white>/mrwaypoints discord test"
+discord-test-sending: "<prefix><gray>Sende Testnachricht an Discord ..."
+discord-test-ok: "<prefix><green>✔ Testnachricht ist in Discord angekommen."
+discord-test-failed: "<prefix><red>✘ Testnachricht fehlgeschlagen: <white><reason>"
+discord-reason-disabled: "discord.enabled ist false"
+discord-reason-no-url: "discord.webhook-url ist leer"
+discord-reason-no-mradmin: "MRadmin läuft nicht (discord.use-mradmin-webhook)"
+discord-reason-bad-url: "discord.webhook-url ist keine Discord-Webhook-URL (muss mit https://discord.com/api/webhooks/ beginnen)"
+discord-reason-invalid-url: "discord.webhook-url enthält ungültige Zeichen (Leerzeichen? Anführungszeichen?)"
+discord-result-ok: "OK (HTTP <status>) um <time>"
+discord-result-error: "FEHLER um <time>: <error>"
+discord-error-400: "Discord lehnt die Nachricht ab (z.B. ungültiger Name/Avatar oder zu langer Text)."
+discord-error-401: "Webhook-Token ungültig."
+discord-error-404: "Webhook existiert nicht (gelöscht? URL falsch kopiert?)."
+discord-error-rate-limit: "Rate-Limit von Discord, Nachricht verworfen"
+discord-error-interrupted: "unterbrochen"
+
+# Texte der Discord-Logs (Markdown wie in Discord). Platzhalter: {player} {name} {old} {category} {world} {x} {y} {z} {count} {admin}. An/aus und Farbe stehen in der config.yml.
+discord:
+  test-message: "🔧 Testnachricht von MRwaypoints - der Webhook funktioniert!"
+  waypoint-created: "📍 **{player}** hat den Wegpunkt **{name}** ({category}) in **{world}** bei {x} {y} {z} angelegt."
+  waypoint-renamed: "✏️ **{player}** hat den Wegpunkt **{old}** in **{name}** umbenannt ({category})."
+  waypoint-moved: "🗂️ **{player}** hat den Wegpunkt **{name}** in die Kategorie **{category}** verschoben."
+  waypoint-relocated: "📌 **{player}** hat den Wegpunkt **{name}** ({category}) nach {x} {y} {z} in **{world}** versetzt."
+  waypoint-deleted: "🗑️ **{player}** hat den Wegpunkt **{name}** ({category}) in **{world}** gelöscht."
+  waypoints-bulk-moved: "🗂️ **{player}** hat **{count}** Wegpunkte in die Kategorie **{category}** verschoben."
+  waypoints-bulk-deleted: "🗑️ **{player}** hat **{count}** Wegpunkte gelöscht."
+  category-created: "🆕 **{player}** hat die Kategorie **{category}** angelegt."
+  category-changed: "🛠️ **{player}** hat die Kategorie **{category}** geändert."
+  category-deleted: "🗑️ **{player}** hat die Kategorie **{category}** gelöscht."
+  category-order: "↕️ **{player}** hat die Reihenfolge der Kategorien geändert."
+  teleport: "🌀 **{player}** hat sich zum Wegpunkt **{name}** ({category}) in **{world}** teleportiert."
+  admin-reload: "🔄 **{admin}** hat die MRwaypoints-Konfiguration neu geladen."

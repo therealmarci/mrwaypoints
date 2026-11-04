@@ -24,9 +24,11 @@ final class Items {
         return new Items(new ItemStack(material));
     }
 
-
-    static ItemStack filler() {
-        return of(Material.GRAY_STAINED_GLASS_PANE).name(Component.text(" ")).build();
+    /** A glass pane without a name (the frame of the menus, a coloured status). */
+    static ItemStack pane(Material material) {
+        ItemStack item = of(material).name(Component.text(" ")).build();
+        item.editMeta(meta -> meta.setHideTooltip(true));
+        return item;
     }
 
     Items name(Component name) {

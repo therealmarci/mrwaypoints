@@ -1,0 +1,76 @@
+plugins {
+	id 'net.fabricmc.fabric-loom' version "${loom_version}"
+}
+
+// Eigene Version, unabhängig vom Plugin: veröffentlicht wird "mod-mc<minecraft>-v<version>" (Tag), z.B.
+// mod-mc26.3-v0.1.0; die JAR heißt MRwaypoints-mod-mc26.3-v0.1.0.jar. Siehe docs/RELEASES.md.
+def modVersion = project.version.toString()
+version = "mc${project.minecraft_version}-v${modVersion}"
+base {
+	archivesName = 'MRwaypoints-mod'
+}
+
+repositories {
+	// Xaero's Minimap (nur zum Kompilieren - beim Spieler ist sie installiert). Keine offizielle API: der Mod nutzt
+	// Xaeros Ablage für Wegpunkte anderer Mods, alles in XaeroBridge gekapselt.
+	maven { url = "https://chocolateminecraft.com/maven" }
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+	compileOnly "xaero.minimap:xaerominimap-fabric-${project.minecraft_version}:${project.xaero_minimap_version}"
+	compileOnly "xaero.lib:xaerolib-fabric-${project.minecraft_version}:${project.xaero_lib_version}"
+}
+
+processResources {
+	// Deutsch auch für Österreich und die Schweiz (sonst bekämen sie Englisch) - wie das Plugin: alles mit "de" -> Deutsch.
+	from("src/main/resources/assets/mrwaypoints/lang/de_de.json") {
+		into("assets/mrwaypoints/lang")
+		rename { "de_at.json" }
+	}
+	from("src/main/resources/assets/mrwaypoints/lang/de_de.json") {
+		into("assets/mrwaypoints/lang")
+		rename { "de_ch.json" }
+	}
+	def props = [version: "${modVersion}+mc${project.minecraft_version}", minecraft: project.minecraft_version,
+				 loader: project.loader_version]
+	inputs.properties props
+	filesMatching("fabric.mod.json") {
+		expand props
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.encoding = 'UTF-8'
+	it.options.release = 25
+}
+
+java {
+	sourceCompatibility = JavaVersion.VERSION_25
+	targetCompatibility = JavaVersion.VERSION_25
+}
+
+jar {
+	from(rootProject.file('../LICENSE')) {
+		rename { "LICENSE_MRtechnology" }
+	}
+}
+
+// Beide Sprachdateien müssen dieselben Texte haben, sonst sieht eine Sprache Schlüssel statt Text.
+tasks.register('checkLanguages') {
+	def langDir = file('src/main/resources/assets/mrwaypoints/lang')
+	inputs.dir langDir
+	doLast {
+		def slurper = new groovy.json.JsonSlurper()
+		def de = slurper.parse(new File(langDir, 'de_de.json'), 'UTF-8').keySet()
+		def en = slurper.parse(new File(langDir, 'en_us.json'), 'UTF-8').keySet()
+		def missingEn = de - en
+		def missingDe = en - de
+		if (missingEn || missingDe) {
+			throw new GradleException("Sprachdateien unterschiedlich - fehlt in en_us: ${missingEn}, fehlt in de_de: ${missingDe}")
+		}
+	}
+}
+tasks.named('check') { dependsOn 'checkLanguages' }

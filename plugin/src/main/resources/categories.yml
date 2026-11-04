@@ -13,7 +13,9 @@
 #                    false = only with mrwaypoints.create.<id> (e.g. the team)
 #   max-per-player   waypoints one player may create here, 0 = no limit (the team with manage has none)
 #   visible          shown by default in Xaero's map (players switch categories on and off with the mod)
-#   map              shown on the web map (squaremap through MRadmin) - the web map is public
+#   map              shown on the map of the player page in MRadmin (tab "Map", only signed-in players)
+#   worlds           only in these worlds (names as in /mv list or the server folder, e.g. [world_nether]),
+#                    left out or [] = every world. Elsewhere the category cannot be used and does not show.
 # ==============================================================================
 categories:
   spawn:

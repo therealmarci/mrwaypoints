@@ -22,10 +22,14 @@ public final class WaypointPerms {
 
     public static final String PLAYER = "mrwaypoints.player";
     public static final String USE = "mrwaypoints.use";
+    public static final String SETTINGS = "mrwaypoints.settings";
     public static final String CREATE = "mrwaypoints.create.";
     public static final String MANAGE = "mrwaypoints.manage.";
     public static final String TELEPORT = "mrwaypoints.teleport";
+    public static final String VIEW = "mrwaypoints.admin.view";
+    public static final String CATEGORIES = "mrwaypoints.admin.categories";
     public static final String RELOAD = "mrwaypoints.admin.reload";
+    public static final String DISCORD = "mrwaypoints.admin.discord";
     public static final String VERSION = "mrwaypoints.version";
 
     /** Category ids registered so far (to remove the ones of deleted categories). */

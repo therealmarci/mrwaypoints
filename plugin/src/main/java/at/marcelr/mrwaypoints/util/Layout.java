@@ -1,37 +1,12 @@
 package at.marcelr.mrwaypoints.util;
 
+import java.util.Arrays;
+import java.util.List;
+
 /** Slot layouts of the menus - symmetric, without Bukkit so they can be tested. */
 public final class Layout {
 
-    /** The 21 content slots of the main menu: three rows of seven. */
-    public static final int[] CONTENT = {10, 11, 12, 13, 14, 15, 16, 19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 33, 34};
-
     private Layout() {
-    }
-
-    /**
-     * The first {@code count} content slots, each row symmetric around its middle: an odd number uses the middle
-     * slots, an even number leaves the middle one free (four = two left, two right of it).
-     */
-    public static int[] centered(int count) {
-        int shown = Math.min(count, CONTENT.length);
-        int[] slots = new int[shown];
-        int i = 0;
-        for (int row = 0; row < 3 && i < shown; row++) {
-            int inRow = Math.min(7, shown - i);
-            int middle = row * 9 + 13;
-            int half = inRow / 2;
-            for (int k = half; k >= 1; k--) {
-                slots[i++] = middle - k;
-            }
-            if (inRow % 2 == 1) {
-                slots[i++] = middle;
-            }
-            for (int k = 1; k <= half; k++) {
-                slots[i++] = middle + k;
-            }
-        }
-        return slots;
     }
 
     /** Up to five buttons in the middle row of a three-row menu, symmetric around its centre (13). */
@@ -42,6 +17,32 @@ public final class Layout {
             case 3 -> new int[]{11, 13, 15};
             case 4 -> new int[]{10, 12, 14, 16};
             default -> new int[]{11, 12, 13, 14, 15};
+        };
+    }
+
+    /**
+     * The next (or previous) of a list of choices, in its order, going round. A value that is not in the list (config
+     * changed) starts at the first choice.
+     */
+    public static int step(List<Integer> choices, int current, boolean forward) {
+        int index = choices.indexOf(current);
+        if (index < 0) {
+            return choices.getFirst();
+        }
+        return choices.get(Math.floorMod(index + (forward ? 1 : -1), choices.size()));
+    }
+
+    /**
+     * Columns (0-8) for up to seven buttons in one row, symmetric around the middle (4): up to four spaced out, five
+     * and seven side by side, six with a gap in the middle.
+     */
+    public static int[] columns(int count) {
+        return switch (count) {
+            case 0 -> new int[0];
+            case 1, 2, 3, 4 -> Arrays.stream(row(count)).map(slot -> slot - 9).toArray();
+            case 5 -> new int[]{2, 3, 4, 5, 6};
+            case 6 -> new int[]{1, 2, 3, 5, 6, 7};
+            default -> new int[]{1, 2, 3, 4, 5, 6, 7};
         };
     }
 

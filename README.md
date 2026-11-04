@@ -1,16 +1,25 @@
 # MRwaypoints
 
-**Gemeinsame Wegpunkte für deinen Server:** Das Team legt Kategorien fest (Spawn, Shops, Farmen …), Spieler und Team tragen dort Wegpunkte ein - und jeder findet sie im Spiel über ein Menü mit Wegweiser, in Xaero's Minimap und World Map und auf der Webkarte.
+**Gemeinsame Wegpunkte für deinen Server:** Das Team legt Kategorien fest (Spawn, Shops, Farmen …), Spieler und Team tragen dort Wegpunkte ein - und jeder findet sie im Spiel über ein Menü mit Wegweiser, in Xaero's Minimap und World Map und auf der Karte der Spielerseite (mit MRadmin).
 
 **[⬇ Download](https://mrtechnology.marcelr.at/download/mrwaypoints/)** · **[📖 Anleitung online](https://mrtechnology.marcelr.at/docs/mrwaypoints/)** · **[🐞 Fehler melden](https://mrtechnology.marcelr.at/report/mrwaypoints/)**
 
 > [!NOTE]
-> MRwaypoints ist **in Entwicklung**. Fertig ist das Plugin mit Menü und Wegweiser. Der Client-Mod für Xaero's Karten, die Seiten in der MRadmin-Weboberfläche und die Ebene auf der Webkarte folgen.
+> MRwaypoints ist eine **Vorabversion**. Rückmeldungen gern über [Fehler melden](https://mrtechnology.marcelr.at/report/mrwaypoints/).
+
+MRwaypoints besteht aus **zwei Teilen** - beide gibt es auf der [Download-Seite](https://mrtechnology.marcelr.at/download/mrwaypoints/):
+
+| Teil | Wer braucht ihn | Wohin |
+|---|---|---|
+| **Plugin** (`MRwaypoints-mc26.3-v….jar`) | der Server | Paper 26.3, Java 25 → Ordner `plugins/` |
+| **Client-Mod** (`MRwaypoints-mod-mc26.3-v….jar`) | Spieler, die die Wegpunkte in Xaero's Karten sehen wollen | Fabric 26.3 mit [Fabric API](https://modrinth.com/mod/fabric-api) und [Xaero's Minimap](https://modrinth.com/mod/xaeros-minimap) → Ordner `mods/` |
+
+Spieler **ohne** Mod nutzen Menü und Wegweiser ganz normal. Plugin und Mod haben eigene Versionen.
 
 | Auf einen Blick | |
 |---|---|
 | Server | Paper 26.3 (oder ein Fork wie Purpur), Java 25 |
-| Client | nichts nötig - für Xaero's Karten später der MRwaypoints-Mod (Fabric) |
+| Client | nichts nötig - für Xaero's Karten der MRwaypoints-Mod (Fabric Loader + Fabric API + Xaero's Minimap) |
 | Benötigt | nichts - LuckPerms empfohlen, MRadmin optional |
 | Sprachen | Deutsch, Englisch - jeder Spieler automatisch in der Sprache seines Minecraft-Clients |
 | Status | Vorabversion (0.x) |
@@ -18,7 +27,7 @@
 ## Was kann MRwaypoints?
 - **Kategorien vom Team:** Name pro Sprache, Farbe, Symbol, wer darin Wegpunkte anlegen darf und wie viele pro Spieler.
 - **Wegpunkte auf dem Server gespeichert:** Jeder sieht dieselben - anders als private Wegpunkte in Xaero, die nur auf deinem PC liegen.
-- **Menü `/waypoints` für alle:** Kategorien, Wegpunkte nach Entfernung sortiert, neue Wegpunkte an der eigenen Position anlegen.
+- **Menü `/waypoints` für alle:** meine Wegpunkte, alle Wegpunkte (mit Filter nach Kategorie, Sortierung und Suche), neue Wegpunkte an der eigenen Position anlegen - immer für die Dimension, in der du bist.
 - **Wegweiser:** Ein Klick auf einen Wegpunkt zeigt in der Actionbar einen Pfeil, die Entfernung und den Höhenunterschied - ohne Mod.
 - **Teleport** nur fürs Team (Admins).
 
@@ -39,19 +48,53 @@
 ---
 
 ## Für Spieler
-**`/waypoints`** (auch `/wegpunkte`) öffnet die Kategorien. Darin:
+**`/waypoints`** (auch `/waypoint`, `/wegpunkte`) öffnet ein kleines Menü mit drei Knöpfen. Alles darin gilt für die **Welt bzw. Dimension, in der du gerade bist** - Wegpunkte im Nether siehst du im Nether.
+
+| Knopf | Was passiert |
+|---|---|
+| **Meine Wegpunkte** | deine eigenen Wegpunkte hier |
+| **Wegpunkt erstellen** | ein Dialog mit Name und Kategorie - nur Kategorien, in denen du gerade anlegen darfst (mit „genutzt/Limit“). Der Wegpunkt kommt an deine Position. Grau, wenn du nirgends darfst. |
+| **Alle Wegpunkte** | alle Server-Wegpunkte hier |
+| Mitte: **Wegweiser** | nur wenn einer läuft - Klick beendet ihn |
+| unten: **Kategorien** · **Einstellungen** · **Schließen** | **Kategorien** (nur mit dem Mod): welche Kategorien in Xaero erscheinen; **Einstellungen**: Sichtweite und Anzeige in Xaero (siehe unten) |
+
+In den Listen:
 
 | Aktion | Was passiert |
 |---|---|
-| **Klick** auf einen Wegpunkt | Wegweiser in der Actionbar: Pfeil in Blickrichtung, Entfernung, ▲/▼ Höhenunterschied. Endet bei Ankunft, mit `/waypoints stop` oder oben im Menü. |
+| **Klick** auf einen Wegpunkt | Wegweiser in der Actionbar: Pfeil in Blickrichtung, Entfernung, ▲/▼ Höhenunterschied. Endet bei Ankunft, mit `/waypoints stop` oder oben im Startmenü. |
 | **Rechtsklick** auf einen eigenen Wegpunkt | Bearbeiten: umbenennen, an die eigene Position verschieben, löschen |
-| **Neuer Wegpunkt hier** (unten in der Mitte) | Legt einen Wegpunkt an deiner Position an, den Namen gibst du im Dialog ein. Nur in Kategorien, in denen du darfst - mit Anzeige, wie viele du dort schon hast. |
+| unten **Kategorie** · **Sortierung** · **Suche** | Filter: Klick wechselt (Kategorie: nächste, Sortierung: Entfernung → Name → neueste), Suche per Dialog - **Rechtsklick setzt den Filter zurück**. Oben in der Mitte steht, was gerade gefiltert ist. |
 
-Liegt ein Wegpunkt in einer anderen Welt, zeigt der Wegweiser, in welcher. Private Wegpunkte legst du wie gewohnt direkt in Xaero's Minimap an - sie bleiben auf deinem PC.
+Private Wegpunkte legst du wie gewohnt direkt in Xaero's Minimap an - sie bleiben auf deinem PC.
+
+### In Xaero's Minimap und World Map (mit Mod)
+1. **Fabric API**, **Xaero's Minimap** (und gern Xaero's World Map) und den **[MRwaypoints-Mod](https://mrtechnology.marcelr.at/download/mrwaypoints/)** (Zeile „Fabric-Mod (Client)“) in den Ordner `mods/` legen.
+2. Auf den Server gehen - die Server-Wegpunkte erscheinen von selbst auf der Minimap, im Spiel und auf der World Map, in der Farbe ihrer Kategorie. Sie liegen getrennt von deinen eigenen Xaero-Wegpunkten.
+3. **Ein Menü für alles:** Die Taste **`J`** (änderbar unter Optionen → Steuerung → MRwaypoints) und der Knopf **„Server-Wegpunkte …“** in Xaeros Wegpunkt-Menü öffnen `/waypoints`. Dort schaltest du unter **Kategorien** ein und aus, welche Kategorien in Xaero erscheinen (Klick pro Kategorie, „Alle an“ / „Alle aus“). Deine Auswahl speichert der Server - sie gilt auf jedem PC und auch auf der Spielerseite im Web.
+4. **Tasten** (Optionen → Steuerung → MRwaypoints, schneller über `/waypoints` → Einstellungen → Tastenbelegung): nur `J` ist vorbelegt, die anderen legst du selbst fest, damit nichts mit Xaero oder anderen Mods kollidiert.
+
+   | Taste | Was passiert |
+   |---|---|
+   | Wegpunkt-Menü (`J`) | `/waypoints` |
+   | Wegpunkt hier erstellen | der Dialog mit Name und Kategorie - wie im Menü |
+   | Server-Wegpunkte ein/aus | alle Server-Wegpunkte in Xaero aus- und wieder einblenden (nur auf diesem PC, deine Auswahl pro Kategorie bleibt) |
+
+5. **Sichtweite und Anzeige:** In `/waypoints` → **Einstellungen** legst du fest, wie du die Server-Wegpunkte siehst. Der Server speichert das für dich. Der Knopf **Tastenbelegung** dort öffnet Minecrafts Steuerung, um die Tasten von MRwaypoints festzulegen.
+
+   | Einstellung | Was sie tut |
+   |---|---|
+   | **Sichtweite** | wie weit um dich die Wegpunkte im Spiel und auf der Minimap erscheinen: 10, 20, 50 oder 100 Chunks in jede Richtung oder unbegrenzt (Linksklick weiter, Rechtsklick näher; die Stufen legt der Server fest). Xaeros eigene Grenze für Wegpunkte im Spiel gilt zusätzlich. |
+   | **Anzeige** | „Welt, Minimap und Weltkarte“ oder „nur Weltkarte“ |
+   | **Entfernte auf der Weltkarte** | Wegpunkte außerhalb der Sichtweite trotzdem auf der World Map zeigen (nur bei begrenzter Sichtweite) |
+
+   > [!NOTE]
+   > Xaero zeigt einen Wegpunkt im Spiel und auf der Minimap immer gemeinsam - „nur Minimap“ oder „nur im Spiel“ gibt es pro Wegpunkt nicht. Dafür hat Xaero eigene Einstellungen, die dann für alle Wegpunkte gelten.
 
 ## Für Server-Admins
 
 ### Kategorien
+Am bequemsten in der MRadmin-Weboberfläche (Seite **Wegpunkte**, `mrwaypoints.admin.categories`) - ohne MRadmin direkt in der Datei.
 In `plugins/MRwaypoints/categories.yml`, danach `/mrwaypoints reload`:
 
 | Schlüssel | Bedeutung |
@@ -62,10 +105,11 @@ In `plugins/MRwaypoints/categories.yml`, danach `/mrwaypoints reload`:
 | `icon` | Item im Menü, z.B. `EMERALD` |
 | `players-create` | `true` = jeder Spieler (`mrwaypoints.player`) darf hier anlegen, `false` = nur mit `mrwaypoints.create.<id>` |
 | `max-per-player` | so viele eigene Wegpunkte pro Spieler, `0` = unbegrenzt (wer `mrwaypoints.manage.<id>` hat, ist nie begrenzt) |
-| `visible` | in Xaero's Karte standardmäßig eingeblendet (Spieler schalten Kategorien mit dem Mod um) - *kommt mit dem Mod* |
-| `map` | auf der Webkarte zeigen (die ist öffentlich) - *kommt mit der MRadmin-Anbindung* |
+| `visible` | in Xaero's Karte standardmäßig eingeblendet - jeder Spieler schaltet es für sich um (Mod oder Karte auf der Spielerseite) |
+| `map` | als eigene Ebene auf der Karte der Spielerseite zeigen (Tab „Karte“ in MRadmin, nur für angemeldete Spieler) |
+| `worlds` | nur in diesen Welten, z.B. `[world_nether]` für einen Nether-Highway (Namen wie im Server-Ordner bzw. `/mv list`). Weglassen = alle Welten. In anderen Welten kann man dort nichts anlegen und die Kategorie erscheint weder im Menü noch in Xaero noch auf der Karte. |
 
-Mitgeliefert sind **Spawn & Warps** (nur Team), **Shops** (Spieler, je 3), **Farmen** (Spieler, je 5, nicht auf der Webkarte) und **Sehenswürdigkeiten** (Spieler, je 3).
+Mitgeliefert sind **Spawn & Warps** (nur Team), **Shops** (Spieler, je 3), **Farmen** (Spieler, je 5, nicht auf der Karte) und **Sehenswürdigkeiten** (Spieler, je 3).
 
 > [!WARNING]
 > Löschst du eine Kategorie aus der Datei, verschwinden ihre Wegpunkte aus den Menüs, bleiben aber in `waypoints.yml`. Mit derselben id kommen sie zurück.
@@ -74,9 +118,10 @@ Mitgeliefert sind **Spawn & Warps** (nur Team), **Shops** (Spieler, je 3), **Far
 
 | Befehl | Was er tut | Permission |
 |---|---|---|
-| `/waypoints` (`/wegpunkte`, `/wps`) | Menü mit allen Wegpunkten | `mrwaypoints.use` |
+| `/waypoints` (`/waypoint`, `/wegpunkte`, `/wegpunkt`, `/wps`) | Menü mit allen Wegpunkten | `mrwaypoints.use` |
 | `/waypoints stop` | Wegweiser beenden | `mrwaypoints.use` |
 | `/mrwaypoints reload` | Config, Kategorien und Texte neu laden | `mrwaypoints.admin.reload` |
+| `/mrwaypoints discord [test]` | Status des Discord-Logs · Testnachricht senden | `mrwaypoints.admin.discord` |
 | `/mrwaypoints version` | Version und Update-Status | `mrwaypoints.version` |
 
 ### Permissions
@@ -84,10 +129,10 @@ Am einfachsten vergibst du die **Gruppen** - sie sind in allen MRtechnology-Plug
 
 | Gruppe | Enthält |
 |---|---|
-| `mrwaypoints.player` | `/waypoints` mit Wegweiser, anlegen in Kategorien mit `players-create: true`, `/mrwaypoints version` |
-| `mrwaypoints.groups.support` | Spieler + die Wegpunkte-Seite in MRadmin ansehen *(kommt)* |
+| `mrwaypoints.player` | `/waypoints` mit Wegweiser und eigenen Einstellungen für Xaero, anlegen in Kategorien mit `players-create: true`, `/mrwaypoints version` |
+| `mrwaypoints.groups.support` | Spieler + MRwaypoints im MRadmin-Dashboard und die Seite **Wegpunkte** im Web ansehen |
 | `mrwaypoints.groups.staff` | Support + in **jeder** Kategorie anlegen, **alle** Wegpunkte bearbeiten und löschen, ohne Limit |
-| `mrwaypoints.groups.admin` | Alles: Staff + zu Wegpunkten teleportieren, Kategorien im Web verwalten *(kommt)*, Reload, Update-Hinweis |
+| `mrwaypoints.groups.admin` | Alles: Staff + zu Wegpunkten teleportieren, Kategorien im Web verwalten, Reload, Discord-Log, Update-Hinweis |
 
 <details>
 <summary>Alle einzelnen Permissions</summary>
@@ -97,13 +142,15 @@ Standard ist `op`, die Rechte pro Kategorie haben standardmäßig niemand (sie k
 | Permission | Wofür |
 |---|---|
 | `mrwaypoints.use` | `/waypoints` |
+| `mrwaypoints.settings` | `/waypoints` → Einstellungen: Sichtweite und Anzeige in Xaero (mit Mod) |
 | `mrwaypoints.version` | `/mrwaypoints version` |
 | `mrwaypoints.create.<kategorie>` · `mrwaypoints.create.*` | Wegpunkte in einer bzw. allen Kategorien anlegen |
 | `mrwaypoints.manage.<kategorie>` · `mrwaypoints.manage.*` | alle Wegpunkte einer bzw. aller Kategorien bearbeiten und löschen, ohne Limit |
 | `mrwaypoints.teleport` | Shift-Klick im Menü: teleportieren |
-| `mrwaypoints.admin.view` | Wegpunkte-Seite in der MRadmin-Weboberfläche *(kommt)* |
-| `mrwaypoints.admin.categories` | Kategorien im Web anlegen, ändern, löschen *(kommt)* |
+| `mrwaypoints.admin.view` | MRwaypoints im MRadmin-Dashboard, Seite **Wegpunkte** in der Weboberfläche |
+| `mrwaypoints.admin.categories` | Kategorien im Web anlegen, ändern, sortieren, löschen |
 | `mrwaypoints.admin.reload` | `/mrwaypoints reload` |
+| `mrwaypoints.admin.discord` | `/mrwaypoints discord [test]` |
 | `mrwaypoints.admin.update` | Update-Hinweis beim Betreten des Servers |
 
 Eigene Wegpunkte darf jeder Ersteller immer umbenennen, verschieben und löschen.
@@ -113,16 +160,33 @@ Eigene Wegpunkte darf jeder Ersteller immer umbenennen, verschieben und löschen
 > Shops nur für VIPs? `players-create: false` setzen und `/lp group vip permission set mrwaypoints.create.shops true`.
 
 ### Konfiguration
-Alles steht kommentiert in `plugins/MRwaypoints/config.yml`. Änderungen übernimmst du mit `/mrwaypoints reload`.
+Am einfachsten im Browser: Mit **MRadmin** (ab der Version mit „Konfiguration im Browser“) unter **Plugins → MRwaypoints → Konfiguration** - jede Einstellung mit Erklärung, Speichern lädt MRwaypoints sofort neu (Permission `mradmin.config`). Alles steht außerdem kommentiert in `plugins/MRwaypoints/config.yml`; Änderungen von Hand übernimmst du mit `/mrwaypoints reload`.
 
 | Abschnitt | Wofür |
 |---|---|
-| `language` · `fallback-language` · `server-language` | Sprachen - jeder Spieler automatisch in seiner |
-| `guide` | Wegweiser: wie oft der Pfeil aktualisiert (`update-ticks`), ab wie vielen Blöcken „angekommen“ (`arrive-distance`), Ton |
+| `general` | Sprachen (`language`, `fallback-language`, `server-language`) - jeder Spieler automatisch in seiner |
 | `waypoints` | längster Name (`max-name-length`) |
-| `update-checker` · `gui` | Update-Hinweise, Menüs |
+| `guide` | Wegweiser: wie oft der Pfeil aktualisiert (`update-ticks`), ab wie vielen Blöcken „angekommen“ (`arrive-distance`), Ton |
+| `mod` | Mod für Xaero: Mindestversion (`minimum-version`), Download-Link |
+| `view` | Einstellungen der Spieler für Xaero: wählbare Sichtweiten in Chunks (`ranges`: Chunks in jede Richtung um den Spieler, `0` = unbegrenzt) und Standards (`default-range`, `default-display` `everywhere`/`world-map`, `default-far-on-world-map`) |
+| `discord` | Discord-Log: Webhook, eigener oder MRadmins (`use-mradmin-webhook`), welche Ereignisse in welcher Farbe |
+| `updates` · `gui` | Update-Hinweise, Menüs |
 
 **Texte:** Alle Texte stehen in `plugins/MRwaypoints/lang/<sprache>.yml`, die Namen der Kategorien in `categories.yml`. Die Konsole ist immer Englisch.
+
+### Discord-Log
+MRwaypoints meldet in einen Discord-Kanal, wenn Wegpunkte angelegt, umbenannt, in eine andere Kategorie verschoben, versetzt oder gelöscht werden (auch mehrere auf einmal im Web), wenn Kategorien angelegt, geändert, gelöscht oder umsortiert werden, wenn sich ein Admin zu einem Wegpunkt teleportiert und wenn jemand neu lädt - egal ob im Spiel, auf der Seite **Wegpunkte** oder auf der Karte der Spielerseite.
+
+1. In Discord: **Kanal bearbeiten → Integrationen → Webhooks → Neuer Webhook** und die **Webhook-URL kopieren**.
+2. In der Config `discord.enabled: true` setzen und die URL bei `webhook-url` eintragen.
+3. `/mrwaypoints reload`, dann mit **`/mrwaypoints discord test`** prüfen.
+
+Unter `discord.events` legst du pro Ereignis fest, ob es gesendet wird und in welcher Farbe (z.B. `waypoint-created`, `waypoint-deleted`, `category-changed`, `teleport`). Die Texte stehen in der Sprachdatei unter `discord`, Kategorien heißen dort wie in `general.server-language`.
+
+> [!TIP]
+> **Kein eigener Webhook?** Mit MRadmin geht es auch über dessen Discord-Log: `discord.enabled: true`, `webhook-url` leer lassen und `discord.use-mradmin-webhook: true` setzen.
+>
+> Mit MRadmin steht jedes Ereignis außerdem im **Protokoll** der Weboberfläche (bis zu 14 Tage) - auch wenn Discord aus ist.
 
 ---
 
@@ -131,15 +195,18 @@ MRwaypoints läuft **allein**. Zusammen mit anderen MRtechnology-Plugins kann es
 
 | Funktion | Braucht |
 |---|---|
-| Wegpunkte-Seite fürs Team und Kategorien im Web verwalten *(kommt)* | MRadmin |
-| Wegpunkte auf der Spielerseite (`/web`) *(kommt)* | MRadmin |
-| Kategorien als Ebenen auf der Webkarte *(kommt)* | MRadmin + squaremap |
-| Kategorien in Xaero's Minimap und World Map ein- und ausblenden *(kommt)* | MRwaypoints-Mod + Xaero's Minimap |
+| Seite **Wegpunkte** fürs Team: Kategorien anlegen, ändern, sortieren, löschen (`mrwaypoints.admin.categories`), alle Wegpunkte umbenennen, in eine andere Kategorie verschieben, löschen (`mrwaypoints.manage.*`) | MRadmin |
+| Tab **Karte** auf der Spielerseite (`/web`): eine Ebene pro Kategorie mit `map: true`; Rechtsklick auf eine freie Stelle: „Wegpunkt erstellen“ mit Name und Kategorie (Höhe = Boden an der Stelle), auf eigene „Wegpunkt bearbeiten“ (Name, Kategorie) und „Wegpunkt löschen“, auf jeden den Wegweiser im Spiel starten; „in Xaero: an/aus“ pro Kategorie | MRadmin |
+| Knopf im MRadmin-Dashboard (öffnet `/waypoints`) | MRadmin |
+| Ereignisse im **Protokoll** der MRadmin-Weboberfläche, Discord-Log über MRadmins Webhook (`discord.use-mradmin-webhook`) | MRadmin |
+| Wegpunkte in Xaero's Minimap und World Map, Kategorien ein- und ausblenden | MRwaypoints-Mod + Xaero's Minimap |
 
 ## Häufige Fragen
 **Ein Spieler kann keinen Wegpunkt anlegen.** In der Kategorie braucht er `mrwaypoints.create.<kategorie>` - oder die Kategorie hat `players-create: true` und er hat `mrwaypoints.player`. Ist das Limit (`max-per-player`) erreicht, wird der Knopf grau.
 
-**Brauchen Spieler einen Mod?** Nein. Menü und Wegweiser funktionieren mit jedem Client. Der Mod (kommt) bringt die Wegpunkte zusätzlich in Xaero's Karten.
+**Brauchen Spieler einen Mod?** Nein. Menü und Wegweiser funktionieren mit jedem Client. Der Mod bringt die Wegpunkte zusätzlich in Xaero's Karten.
+
+**Mit Mod erscheinen keine Wegpunkte in Xaero.** Ist die Kategorie für dich eingeschaltet (`/waypoints` → Kategorien)? Ist Xaero's **Minimap** installiert (die World Map allein reicht nicht)? Im Client-Log steht „Connected to MRwaypoints …“ bzw. bei einer nicht unterstützten Xaero-Version eine Fehlermeldung.
 
 ## Lizenz
 MRwaypoints steht unter der **[MRtechnology Lizenz](LICENSE)** (source-available, nicht Open Source). Kurz gesagt:
@@ -157,4 +224,5 @@ Die Nutzung erfolgt auf eigenes Risiko - leg vor Updates eine Sicherung an. Maß
 | Ordner | Inhalt | Bauen |
 |---|---|---|
 | `plugin/` | Paper-Plugin (Java 25, Gradle) - [CHANGELOG](plugin/CHANGELOG.md) | `cd plugin && ./gradlew build` |
-| `docs/` | [Technische Doku](docs/DOKUMENTATION.md), [Releases](docs/RELEASES.md) | |
+| `mod/` | Fabric-Mod (Java 25, Fabric Loom) - [CHANGELOG](mod/CHANGELOG.md) | `cd mod && ./gradlew build` |
+| `docs/` | [Technische Doku](docs/DOKUMENTATION.md), [Kompatibilität](docs/COMPATIBILITY.md), [Releases](docs/RELEASES.md) | |
