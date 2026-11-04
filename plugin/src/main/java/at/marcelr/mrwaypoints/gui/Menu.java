@@ -59,8 +59,8 @@ public abstract class Menu implements InventoryHolder {
     }
 
     /**
-     * The same frame for every menu: free places grey glass, the bottom row (navigation) black, the top corners in
-     * the colour of MRwaypoints - so the buttons stand out and every menu looks alike.
+     * The same frame for every menu: free places grey glass, the bottom row (navigation) black - so the buttons stand
+     * out and every menu looks alike.
      */
     private void frame() {
         int size = inventory.getSize();
@@ -68,8 +68,7 @@ public abstract class Menu implements InventoryHolder {
             if (inventory.getItem(slot) != null) {
                 continue;
             }
-            Material glass = slot >= size - 9 ? Material.BLACK_STAINED_GLASS_PANE
-                    : slot == 0 || slot == 8 ? Material.LIGHT_BLUE_STAINED_GLASS_PANE : Material.GRAY_STAINED_GLASS_PANE;
+            Material glass = slot >= size - 9 ? Material.BLACK_STAINED_GLASS_PANE : Material.GRAY_STAINED_GLASS_PANE;
             inventory.setItem(slot, Items.pane(glass));
         }
     }
