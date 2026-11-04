@@ -158,16 +158,16 @@ Eigene Wegpunkte darf jeder Ersteller immer umbenennen, verschieben und löschen
 > Shops nur für VIPs? `players-create: false` setzen und `/lp group vip permission set mrwaypoints.create.shops true`.
 
 ### Konfiguration
-Alles steht kommentiert in `plugins/MRwaypoints/config.yml`. Änderungen übernimmst du mit `/mrwaypoints reload`.
+Am einfachsten im Browser: Mit **MRadmin** (ab der Version mit „Konfiguration im Browser“) unter **Plugins → MRwaypoints → Konfiguration** - jede Einstellung mit Erklärung, Speichern lädt MRwaypoints sofort neu (Permission `mradmin.config`). Alles steht außerdem kommentiert in `plugins/MRwaypoints/config.yml`; Änderungen von Hand übernimmst du mit `/mrwaypoints reload`.
 
 | Abschnitt | Wofür |
 |---|---|
-| `language` · `fallback-language` · `server-language` | Sprachen - jeder Spieler automatisch in seiner |
-| `guide` | Wegweiser: wie oft der Pfeil aktualisiert (`update-ticks`), ab wie vielen Blöcken „angekommen“ (`arrive-distance`), Ton |
+| `general` | Sprachen (`language`, `fallback-language`, `server-language`) - jeder Spieler automatisch in seiner |
 | `waypoints` | längster Name (`max-name-length`) |
+| `guide` | Wegweiser: wie oft der Pfeil aktualisiert (`update-ticks`), ab wie vielen Blöcken „angekommen“ (`arrive-distance`), Ton |
 | `mod` | Mod für Xaero: Mindestversion (`minimum-version`), Download-Link |
 | `view` | Einstellungen der Spieler für Xaero: wählbare Sichtweiten in Chunks (`ranges`: Chunks in jede Richtung um den Spieler, `0` = unbegrenzt) und Standards (`default-range`, `default-display` `everywhere`/`world-map`, `default-far-on-world-map`) |
-| `update-checker` · `gui` | Update-Hinweise, Menüs |
+| `updates` · `gui` | Update-Hinweise, Menüs |
 
 **Texte:** Alle Texte stehen in `plugins/MRwaypoints/lang/<sprache>.yml`, die Namen der Kategorien in `categories.yml`. Die Konsole ist immer Englisch.
 

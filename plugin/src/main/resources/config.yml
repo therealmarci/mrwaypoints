@@ -1,46 +1,38 @@
 ﻿# ==============================================================================
 #   MRwaypoints - Configuration
 # ==============================================================================
+#   Easiest way:     MRadmin web interface -> Plugins -> MRwaypoints -> Configuration
+#                    (saved and reloaded right away; this file stays editable by hand)
 #   After changes:   /mrwaypoints reload   (no restart needed)
 #   Waypoints:       /waypoints
 #   Help & docs:     https://mrtechnology.marcelr.at/docs/mrwaypoints/
 #
 #   The categories are in categories.yml (same folder) - or edited in MRadmin's web interface.
-#   Texts & messages: lang/de.yml or lang/en.yml (see "language" below).
+#   Texts & messages: lang/de.yml or lang/en.yml (see "general.language" below).
 #
 #   This file is UTF-8 encoded. If special characters (ä, ö, ü) look wrong,
 #   set the encoding in your editor to "UTF-8".
 # ==============================================================================
 
 # Do not change - used for automatic config updates.
-config-version: 6
-
-# Language of the texts (chat, menus, action bar). The texts are in plugins/MRwaypoints/lang/<language>.yml.
-#   auto = every player gets the language set in their Minecraft client:
-#          German (also Austria/Switzerland) -> de.yml, English -> en.yml, a language without a file -> fallback-language.
-#   de / en / ... = fixed language for all players.
-# The console is always English. Own language: copy a file (e.g. as fr.yml) and translate it - with "auto"
-# French players then get it automatically.
-language: auto
-
-# Language for players whose Minecraft language has no file of its own.
-fallback-language: en
-
-# Language of texts that are not meant for a single player (kept for all MR plugins alike; MRwaypoints has none yet).
-server-language: en
+config-version: 7
 
 
 # ------------------------------------------------------------------------------
-#   1) GUIDE
+#   1) GENERAL
 # ------------------------------------------------------------------------------
-# A click on a waypoint in /waypoints shows the way in the action bar: an arrow and the distance.
-guide:
-  # How often the arrow is refreshed (in ticks, 20 = 1 second).
-  update-ticks: 5
-  # Within this many blocks the guide ends ("You have arrived").
-  arrive-distance: 5
-  # A short sound on arrival.
-  sound: true
+general:
+  # Language of the texts (chat, menus, action bar). The texts are in plugins/MRwaypoints/lang/<language>.yml.
+  #   auto = every player gets the language set in their Minecraft client:
+  #          German (also Austria/Switzerland) -> de.yml, English -> en.yml, a language without a file -> fallback-language.
+  #   de / en / ... = fixed language for all players.
+  # The console is always English. Own language: copy a file (e.g. as fr.yml) and translate it - with "auto"
+  # French players then get it automatically.
+  language: auto
+  # Language for players whose Minecraft language has no file of its own.
+  fallback-language: en
+  # Language of texts that are not meant for a single player (kept for all MR plugins alike; MRwaypoints has none yet).
+  server-language: en
 
 
 # ------------------------------------------------------------------------------
@@ -54,7 +46,20 @@ waypoints:
 
 
 # ------------------------------------------------------------------------------
-#   3) MOD FOR XAERO'S MAP
+#   3) GUIDE
+# ------------------------------------------------------------------------------
+# A click on a waypoint in /waypoints shows the way in the action bar: an arrow and the distance.
+guide:
+  # How often the arrow is refreshed (in ticks, 20 = 1 second).
+  update-ticks: 5
+  # Within this many blocks the guide ends ("You have arrived").
+  arrive-distance: 5
+  # A short sound on arrival.
+  sound: true
+
+
+# ------------------------------------------------------------------------------
+#   4) MOD FOR XAERO'S MAP
 # ------------------------------------------------------------------------------
 # Players with the MRwaypoints mod (Fabric, needs Xaero's Minimap) see the server waypoints in Xaero's Minimap and
 # World Map and switch categories on and off in /waypoints -> Categories (the key J and a button in Xaero's waypoint menu
@@ -69,7 +74,7 @@ mod:
 
 
 # ------------------------------------------------------------------------------
-#   4) VIEW IN XAERO'S MAP (players with the mod)
+#   5) VIEW IN XAERO'S MAP (players with the mod)
 # ------------------------------------------------------------------------------
 # Every player sets in /waypoints -> Settings how far and where they see the server waypoints (permission
 # mrwaypoints.settings, saved per player in players.yml). These are the choices and the defaults.
@@ -89,9 +94,9 @@ view:
 
 
 # ------------------------------------------------------------------------------
-#   5) UPDATE CHECK
+#   6) UPDATES
 # ------------------------------------------------------------------------------
-update-checker:
+updates:
   # Look for new versions on startup and regularly afterwards.
   # If a newer version is available, a notice appears in the console.
   enabled: true
@@ -106,7 +111,7 @@ update-checker:
 
 
 # ------------------------------------------------------------------------------
-#   6) MENUS
+#   7) MENUS
 # ------------------------------------------------------------------------------
 gui:
   # How often open menus are refreshed (in ticks, 20 = 1 second) - distances stay up to date.

@@ -27,7 +27,8 @@ plugin/src/main/java/at/marcelr/mrwaypoints/
 ├─ util/                  Layout (Menü-Plätze, Pfeil), Wire (Nachrichtenformat) - mit Tests; LanguageChoice, TitleWidth, Versions
 └─ waypoint/              Category, Waypoint, View, WaypointStore (categories.yml, waypoints.yml, players.yml)
 plugin/src/main/resources/
-├─ config.yml             UTF-8 mit BOM!
+├─ config.yml             UTF-8 mit BOM! Aufbau wie alle MR-Plugins (general, Funktionen, updates, gui)
+├─ web-config.yml         Formular der config.yml für MRadmins Browser-Konfiguration (Test: WebConfigFormTest)
 ├─ categories.yml         Beispiel-Kategorien (beim ersten Start kopiert)
 ├─ plugin.yml, build-info.properties
 └─ lang/de.yml, lang/en.yml
@@ -54,6 +55,7 @@ Alle symmetrisch. `MainMenu` (3 Reihen): oben Meine (2) · Erstellen (4) · Alle
 - `MRadminLink` hat keine MRadmin-Typen und verbindet sich am Ende von `onEnable` (bzw. wenn MRadmin später startet). `WaypointStore#onChange` → `changed()` → `webChanged`.
 - `MRadminModule` (nur mit MRadmin geladen): Dashboard-Knopf mit `viewPermission` `mrwaypoints.admin.view`, `openMenu` öffnet `/waypoints`.
 - **Karte der Spielerseite (API 8):** `selfMap` = eine `SelfMapLayer` pro Kategorie mit `map: true` (alle Welten, MRadmin zeigt die gewählte), Marker = Wegpunkte mit Aktionen `guide` (nur online in der Welt), `rename`/`delete` (nur eigene); `here` = `create` (Name per Eingabe, Höhe `getHighestBlockYAt + 1`, Weltgrenze geprüft). Anlegen offline nur mit `players-create` (Rechte offline unbekannt), online wie im Spiel (`createBlocked`). Schalter `xaero` = `WaypointStore#setVisible`. Der frühere Bereich „Wegpunkte“ der Spielerseite ist entfallen.
+- **Konfiguration im Browser (API 12):** `webConfig()` gibt `config.yml`, `web-config.yml` und `plugin.reload()` an MRadmin. Neue oder umbenannte Config-Schlüssel immer auch in `web-config.yml` eintragen (Namen und Hilfe DE/EN) - `WebConfigFormTest` prüft das. Umbenennungen in `ConfigUpdater.RENAMED_KEYS` (v7: `general.*`, `updates.*`).
 
 ## 8. Mod für Xaero (`ModBridge`, `mod/`)
 - Protokoll, Handshake und Nachrichten: [COMPATIBILITY.md](COMPATIBILITY.md). `ModBridge` (Plugin) wie in MRtoolbar: wartet mit Nachrichten, bis der Client den Kanal angemeldet hat, schickt nach OK den Zustand und bei jeder Änderung (`WaypointStore#onChange`, einmal pro Tick) neu an alle mit Mod.

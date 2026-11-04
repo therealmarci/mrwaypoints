@@ -1,0 +1,156 @@
+# Form of config.yml for MRadmin's web interface (Plugins -> MRwaypoints -> Configuration).
+# Every field names a key of config.yml, its type and limits, and a name and help text in German and English.
+# Format: MRadmin docs/MODULE-API.md, section "Konfiguration im Browser". Texts with a comma need quotes.
+sections:
+  - id: general
+    name: {de: Allgemein, en: General}
+    help: {de: Sprache der Texte im Spiel., en: Language of the texts in game.}
+    fields:
+      - key: general.language
+        type: choice
+        name: {de: Sprache der Spieler, en: Language of the players}
+        help: {de: "Automatisch = jeder Spieler bekommt die Sprache seines Minecraft-Clients.", en: "Automatic = every player gets the language of their Minecraft client."}
+        options:
+          - {value: auto, de: Automatisch, en: Automatic}
+          - {value: de, de: Deutsch, en: German}
+          - {value: en, de: Englisch, en: English}
+      - key: general.fallback-language
+        type: choice
+        name: {de: Ersatzsprache, en: Fallback language}
+        help: {de: Für Spieler mit einer Sprache ohne eigene Datei., en: For players whose language has no file of its own.}
+        when: general.language=auto
+        options:
+          - {value: de, de: Deutsch, en: German}
+          - {value: en, de: Englisch, en: English}
+      - key: general.server-language
+        type: choice
+        name: {de: Server-Sprache, en: Server language}
+        help: {de: Für Texte ohne einzelnen Spieler (bei MRwaypoints noch keine)., en: For texts not meant for a single player (MRwaypoints has none yet).}
+        options:
+          - {value: de, de: Deutsch, en: German}
+          - {value: en, de: Englisch, en: English}
+
+  - id: waypoints
+    name: {de: Wegpunkte, en: Waypoints}
+    help: {de: "Wer Wegpunkte anlegen darf und wie viele, steht bei den Kategorien (Seite Karte).", en: "Who may create waypoints and how many is set per category (page Map)."}
+    fields:
+      - key: waypoints.max-name-length
+        type: int
+        min: 3
+        max: 64
+        unit: {de: Zeichen, en: characters}
+        name: {de: Längster Name, en: Longest name}
+
+  - id: guide
+    name: {de: Wegweiser, en: Guide}
+    help: {de: "Ein Klick auf einen Wegpunkt zeigt Pfeil und Entfernung über der Hotbar.", en: "A click on a waypoint shows an arrow and the distance above the hotbar."}
+    fields:
+      - key: guide.update-ticks
+        type: int
+        min: 2
+        max: 40
+        unit: {de: Ticks, en: ticks}
+        name: {de: Pfeil aktualisieren alle, en: Refresh the arrow every}
+        help: {de: 20 Ticks = 1 Sekunde., en: 20 ticks = 1 second.}
+      - key: guide.arrive-distance
+        type: int
+        min: 1
+        max: 64
+        unit: {de: Blöcke, en: blocks}
+        name: {de: Angekommen ab, en: Arrived within}
+        help: {de: "So nah am Ziel endet der Wegweiser („Du bist angekommen“).", en: "That close to the target the guide ends (\"You have arrived\")."}
+      - key: guide.sound
+        type: bool
+        name: {de: Ton beim Ankommen, en: Sound on arrival}
+
+  - id: mod
+    name: {de: Mod für Xaero, en: Mod for Xaero}
+    help: {de: "Spieler mit dem MRwaypoints-Mod sehen die Server-Wegpunkte in Xaero's Minimap und Weltkarte.", en: "Players with the MRwaypoints mod see the server waypoints in Xaero's Minimap and World Map."}
+    fields:
+      - key: mod.minimum-version
+        type: string
+        max-length: 40
+        name: {de: Älteste erlaubte Mod-Version, en: Oldest allowed mod version}
+        help: {de: "Z.B. 0.2.1 - sperrt ältere Versionen aus (leer = jede passende).", en: "E.g. 0.2.1 - locks out older versions (empty = any compatible one)."}
+      - key: mod.download-url
+        type: string
+        max-length: 300
+        name: {de: Download-Link, en: Download link}
+        help: {de: Wo Spieler den Mod bekommen (Link in den Hinweisen)., en: Where players get the mod (link in the notices).}
+
+  - id: view
+    name: {de: Anzeige in Xaero, en: View in Xaero}
+    help: {de: "Spieler stellen unter /waypoints → Einstellungen selbst ein, wie weit und wo sie die Wegpunkte sehen. Hier die Auswahl und die Standardwerte.", en: "Players set in /waypoints → Settings how far and where they see the waypoints. Here the choices and the defaults."}
+    fields:
+      - key: view.ranges
+        type: ints
+        min: 0
+        max: 1000
+        unit: {de: Chunks, en: chunks}
+        name: {de: Sichtweiten zur Auswahl, en: Ranges to choose from}
+        help: {de: "In Chunks in jede Richtung, 0 = unbegrenzt.", en: "In chunks to every side, 0 = unlimited."}
+      - key: view.default-range
+        type: int
+        min: 0
+        max: 1000
+        unit: {de: Chunks, en: chunks}
+        name: {de: Standard-Sichtweite, en: Default range}
+        help: {de: "Für Spieler, die nichts geändert haben (0 = unbegrenzt).", en: "For players who changed nothing (0 = unlimited)."}
+      - key: view.default-display
+        type: choice
+        name: {de: Standard-Anzeige, en: Default display}
+        options:
+          - {value: everywhere, de: Überall, en: Everywhere}
+          - {value: world-map, de: Nur Weltkarte, en: World map only}
+      - key: view.default-far-on-world-map
+        type: bool
+        name: {de: Entfernte auf der Weltkarte, en: Far ones on the world map}
+        help: {de: Wegpunkte außerhalb der Sichtweite bleiben auf Xaeros Weltkarte sichtbar (Standard für Spieler)., en: Waypoints beyond the range stay visible on Xaero's World Map (default for players).}
+
+  - id: updates
+    name: {de: Updates, en: Updates}
+    help: {de: Nach neuen Versionen von MRwaypoints suchen., en: Look for new versions of MRwaypoints.}
+    fields:
+      - key: updates.enabled
+        type: bool
+        name: {de: Nach Updates suchen, en: Look for updates}
+        help: {de: Beim Start und danach regelmäßig. Ein Hinweis erscheint in der Konsole., en: On start and regularly afterwards. A notice appears in the console.}
+      - key: updates.source
+        type: choice
+        when: updates.enabled
+        name: {de: Quelle, en: Source}
+        options:
+          - {value: github, de: GitHub, en: GitHub}
+          - {value: modrinth, de: Modrinth, en: Modrinth}
+      - key: updates.include-prereleases
+        type: bool
+        when: updates.enabled
+        name: {de: Auch Vorabversionen, en: Pre-releases too}
+        help: {de: "Läuft eine Vorabversion (0.x), werden sie immer gemeldet.", en: "When a pre-release (0.x) runs they are always reported."}
+      - key: updates.interval-hours
+        type: int
+        when: updates.enabled
+        min: 1
+        max: 168
+        unit: {de: Stunden, en: hours}
+        name: {de: Prüfen alle, en: Check every}
+      - key: updates.notify-on-join
+        type: bool
+        when: updates.enabled
+        name: {de: Team beim Betreten informieren, en: Tell the team on join}
+        help: {de: Spieler mit mrwaypoints.admin.update bekommen einen Hinweis., en: Players with mrwaypoints.admin.update get a notice.}
+
+  - id: gui
+    name: {de: Menüs, en: Menus}
+    help: {de: Die Menüs von /waypoints., en: The menus of /waypoints.}
+    fields:
+      - key: gui.refresh-ticks
+        type: int
+        min: 5
+        max: 200
+        unit: {de: Ticks, en: ticks}
+        name: {de: Aktualisieren alle, en: Refresh every}
+        help: {de: "20 Ticks = 1 Sekunde - Entfernungen bleiben aktuell.", en: "20 ticks = 1 second - distances stay up to date."}
+      - key: gui.sounds
+        type: bool
+        name: {de: Klickgeräusche, en: Click sounds}

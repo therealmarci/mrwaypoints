@@ -109,8 +109,8 @@ public final class MRWaypoints extends JavaPlugin implements Listener {
     private void loadConfiguration() {
         config = ConfigUpdater.load(this);
         settings = Settings.from(config, getLogger());
-        messages.load(this, config.getString("language", "auto"), config.getString("fallback-language", "en"),
-                config.getString("server-language", "en"));
+        messages.load(this, config.getString("general.language", "auto"), config.getString("general.fallback-language", "en"),
+                config.getString("general.server-language", "en"));
     }
 
     @EventHandler
