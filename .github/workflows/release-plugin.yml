@@ -6,6 +6,8 @@ name: Release Plugin
 on:
   push:
     tags: ['plugin-mc*-v*']
+  # By hand on a tag ("Run workflow", choose the tag) - in this repository pushes did not always start workflows.
+  workflow_dispatch:
 
 permissions:
   contents: write
