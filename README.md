@@ -56,6 +56,7 @@ Spieler **ohne** Mod nutzen Menü und Wegweiser ganz normal. Plugin und Mod habe
 | **Wegpunkt erstellen** | ein Dialog mit Name und Kategorie - nur Kategorien, in denen du gerade anlegen darfst (mit „genutzt/Limit“). Der Wegpunkt kommt an deine Position. Grau, wenn du nirgends darfst. |
 | **Alle Wegpunkte** | alle Server-Wegpunkte hier |
 | Mitte: **Wegweiser** | nur wenn einer läuft - Klick beendet ihn |
+| unten: **In Xaero anzeigen** · **Einstellungen** · **Schließen** | „In Xaero anzeigen“ nur mit dem Mod; **Einstellungen**: Sichtweite und Anzeige in Xaero (siehe unten) |
 
 In den Listen:
 
@@ -80,6 +81,17 @@ Private Wegpunkte legst du wie gewohnt direkt in Xaero's Minimap an - sie bleibe
    | Server-Wegpunkte ein/aus | alle Server-Wegpunkte in Xaero aus- und wieder einblenden (nur auf diesem PC, deine Auswahl pro Kategorie bleibt) |
    | Wegpunkt-Menü öffnen | `/waypoints` |
    | Wegweiser beenden | wie `/waypoints stop` |
+
+5. **Sichtweite und Anzeige:** In `/waypoints` → **Einstellungen** (oder Knopf „Sichtweite und Anzeige …“ im Bildschirm von `J`) legst du fest, wie du die Server-Wegpunkte siehst. Der Server speichert das für dich.
+
+   | Einstellung | Was sie tut |
+   |---|---|
+   | **Sichtweite** | bis wie viele Blöcke die Wegpunkte im Spiel und auf der Minimap erscheinen (Linksklick weiter, Rechtsklick näher; Stufen legt der Server fest, auch „unbegrenzt“). Xaeros eigene Grenze für Wegpunkte im Spiel gilt zusätzlich. |
+   | **Anzeige** | „Welt, Minimap und Weltkarte“ oder „nur Weltkarte“ |
+   | **Entfernte auf der Weltkarte** | Wegpunkte außerhalb der Sichtweite trotzdem auf der World Map zeigen (nur bei begrenzter Sichtweite) |
+
+   > [!NOTE]
+   > Xaero zeigt einen Wegpunkt im Spiel und auf der Minimap immer gemeinsam - „nur Minimap“ oder „nur im Spiel“ gibt es pro Wegpunkt nicht. Dafür hat Xaero eigene Einstellungen, die dann für alle Wegpunkte gelten.
 
 ## Für Server-Admins
 
@@ -117,7 +129,7 @@ Am einfachsten vergibst du die **Gruppen** - sie sind in allen MRtechnology-Plug
 
 | Gruppe | Enthält |
 |---|---|
-| `mrwaypoints.player` | `/waypoints` mit Wegweiser, anlegen in Kategorien mit `players-create: true`, `/mrwaypoints version` |
+| `mrwaypoints.player` | `/waypoints` mit Wegweiser und eigenen Einstellungen für Xaero, anlegen in Kategorien mit `players-create: true`, `/mrwaypoints version` |
 | `mrwaypoints.groups.support` | Spieler + MRwaypoints im MRadmin-Dashboard und die Seite **Wegpunkte** im Web ansehen |
 | `mrwaypoints.groups.staff` | Support + in **jeder** Kategorie anlegen, **alle** Wegpunkte bearbeiten und löschen, ohne Limit |
 | `mrwaypoints.groups.admin` | Alles: Staff + zu Wegpunkten teleportieren, Kategorien im Web verwalten, Reload, Update-Hinweis |
@@ -130,6 +142,7 @@ Standard ist `op`, die Rechte pro Kategorie haben standardmäßig niemand (sie k
 | Permission | Wofür |
 |---|---|
 | `mrwaypoints.use` | `/waypoints` |
+| `mrwaypoints.settings` | `/waypoints` → Einstellungen: Sichtweite und Anzeige in Xaero (mit Mod) |
 | `mrwaypoints.version` | `/mrwaypoints version` |
 | `mrwaypoints.create.<kategorie>` · `mrwaypoints.create.*` | Wegpunkte in einer bzw. allen Kategorien anlegen |
 | `mrwaypoints.manage.<kategorie>` · `mrwaypoints.manage.*` | alle Wegpunkte einer bzw. aller Kategorien bearbeiten und löschen, ohne Limit |
@@ -154,6 +167,7 @@ Alles steht kommentiert in `plugins/MRwaypoints/config.yml`. Änderungen überni
 | `guide` | Wegweiser: wie oft der Pfeil aktualisiert (`update-ticks`), ab wie vielen Blöcken „angekommen“ (`arrive-distance`), Ton |
 | `waypoints` | längster Name (`max-name-length`) |
 | `mod` | Mod für Xaero: Mindestversion (`minimum-version`), Download-Link |
+| `view` | Einstellungen der Spieler für Xaero: wählbare Sichtweiten (`ranges`, `0` = unbegrenzt) und Standards (`default-range`, `default-display` `everywhere`/`world-map`, `default-far-on-world-map`) |
 | `update-checker` · `gui` | Update-Hinweise, Menüs |
 
 **Texte:** Alle Texte stehen in `plugins/MRwaypoints/lang/<sprache>.yml`, die Namen der Kategorien in `categories.yml`. Die Konsole ist immer Englisch.

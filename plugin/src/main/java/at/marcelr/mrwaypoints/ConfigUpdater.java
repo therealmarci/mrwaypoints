@@ -23,7 +23,7 @@ import java.util.logging.Level;
 public final class ConfigUpdater {
 
     /** 2: mod (the MRwaypoints mod for Xaero's map). */
-    public static final int CURRENT_VERSION = 2;
+    public static final int CURRENT_VERSION = 3;
     public static final String BOM = "﻿";
     /** Texts whose content changed with new features; the new default replaces the old value. */
     private static final Set<String> REPLACED_KEYS = Set.of();

@@ -12,9 +12,9 @@ import at.marcelr.mrwaypoints.util.Versions;
 public final class Compatibility {
 
     /** Oldest protocol this plugin still understands. Raise it only when dropping support for old mods. */
-    public static final int MIN_PROTOCOL = 1;
+    public static final int MIN_PROTOCOL = 2;
     /** Newest protocol this plugin speaks. Raise it together with the mod whenever a message changes. */
-    public static final int MAX_PROTOCOL = 1;
+    public static final int MAX_PROTOCOL = 2;
 
     /** Result of the handshake; the code is sent to the mod (never reuse or reorder codes). */
     public enum Status {

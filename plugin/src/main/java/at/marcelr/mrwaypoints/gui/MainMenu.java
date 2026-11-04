@@ -2,19 +2,22 @@ package at.marcelr.mrwaypoints.gui;
 
 import at.marcelr.mrwaypoints.MRWaypoints;
 import at.marcelr.mrwaypoints.Messages;
+import at.marcelr.mrwaypoints.WaypointPerms;
+import at.marcelr.mrwaypoints.util.Layout;
 import at.marcelr.mrwaypoints.waypoint.Category;
 import at.marcelr.mrwaypoints.waypoint.Waypoint;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static at.marcelr.mrwaypoints.Messages.tag;
 
 /**
  * /waypoints: the start - "my waypoints", "create waypoint" and "all waypoints" in the top row, the running guide
- * in the middle (click ends it), "show in Xaero" (with the mod) and close at the bottom. Everything only for the
- * dimension the player is in.
+ * in the middle (click ends it), "show in Xaero" (with the mod), settings and close at the bottom. Everything only
+ * for the dimension the player is in.
  */
 public final class MainMenu extends Menu {
 
@@ -53,17 +56,30 @@ public final class MainMenu extends Menu {
                 render();
             });
         }
-        // With the mod: "show in Xaero" and close side by side, otherwise close in the middle.
-        boolean mod = plugin.bridge().compatible(viewer);
-        if (mod) {
-            set(21, Items.of(Material.MAP).name(messages.item("gui-xaero-name"))
+        // Bottom row, centred: "show in Xaero" (with the mod), settings (with the permission), close.
+        List<Runnable> bottom = new ArrayList<>();
+        List<Integer> slots = new ArrayList<>();
+        if (plugin.bridge().compatible(viewer)) {
+            bottom.add(() -> set(slots.removeFirst(), Items.of(Material.MAP).name(messages.item("gui-xaero-name"))
                     .lore(messages.lore("gui-xaero-lore")).build(), click -> {
                 clickSound();
                 viewer.closeInventory();
                 plugin.bridge().openScreen(viewer);
-            });
+            }));
         }
-        set(mod ? 23 : 22, Items.of(Material.OAK_DOOR).name(messages.item("gui-close")).build(), click -> viewer.closeInventory());
+        if (viewer.hasPermission(WaypointPerms.SETTINGS)) {
+            bottom.add(() -> set(slots.removeFirst(), Items.of(Material.COMPARATOR).name(messages.item("gui-settings-name"))
+                    .lore(messages.lore("gui-settings-lore")).build(), click -> {
+                clickSound();
+                new SettingsMenu(plugin, viewer, this).open();
+            }));
+        }
+        bottom.add(() -> set(slots.removeFirst(), Items.of(Material.OAK_DOOR).name(messages.item("gui-close")).build(),
+                click -> viewer.closeInventory()));
+        for (int slot : Layout.row(bottom.size())) {
+            slots.add(slot + 9);
+        }
+        bottom.forEach(Runnable::run);
     }
 
     /** "Create waypoint" - grey with the reason if the player may create in no category right now. */

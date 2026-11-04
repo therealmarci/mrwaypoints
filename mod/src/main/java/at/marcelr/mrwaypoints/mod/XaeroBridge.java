@@ -11,6 +11,7 @@ import xaero.hud.minimap.BuiltInHudModules;
 import xaero.hud.minimap.module.MinimapSession;
 import xaero.hud.minimap.waypoint.WaypointColor;
 import xaero.hud.minimap.waypoint.WaypointPurpose;
+import xaero.hud.minimap.waypoint.WaypointVisibilityType;
 import xaero.hud.minimap.waypoint.thirdparty.ThirdPartyWaypointManager;
 import xaero.hud.minimap.waypoint.thirdparty.ThirdPartyWaypoints;
 import xaero.hud.minimap.world.container.MinimapWorldContainer;
@@ -38,9 +39,19 @@ final class XaeroBridge {
     /** Containers and origins filled last time, to clear them again. */
     private static final List<MinimapWorldContainer> USED = new ArrayList<>();
     private static final Set<Identifier> ORIGINS = new HashSet<>();
+    /** The waypoints put into Xaero with where they are - their visibility follows the player (range). */
+    private static final List<Shown> SHOWN = new ArrayList<>();
+    /** The player's view of the last state, and where the visibility was set last (null = set it again). */
+    private static Protocol.View view;
+    private static String lastDimension;
+    private static double lastX;
+    private static double lastZ;
     /** The root container the waypoints went into - a new one (other server, world switch) needs them again. */
     private static Object appliedRoot;
     private static boolean broken;
+
+    private record Shown(Waypoint waypoint, String dimension, int x, int z) {
+    }
 
     private XaeroBridge() {
     }
@@ -100,8 +111,11 @@ final class XaeroBridge {
                 Waypoint waypoint = new Waypoint(w.x(), w.y(), w.z(), w.name(), initials(w.name()),
                         nearest(category.color()), WaypointPurpose.NORMAL);
                 waypoints.add(String.valueOf(w.id()), waypoint);
+                SHOWN.add(new Shown(waypoint, w.dimension(), w.x(), w.z()));
                 count++;
             }
+            view = state.view();
+            lastDimension = null;
             appliedRoot = root;
             MRwaypointsClient.LOG.info("{} server waypoints in {} categories shown in Xaero's Minimap.", count,
                     visible.size());
@@ -109,6 +123,42 @@ final class XaeroBridge {
         } catch (LinkageError | RuntimeException e) {
             fail(e);
             return true;
+        }
+    }
+
+    /**
+     * Sets every waypoint's visibility from the player's view and position: in range in the world and on the minimap
+     * (or only on the World Map), beyond the range on the World Map or nowhere. Only does something after a new state
+     * or when the player moved a few blocks - cheap enough for every tick.
+     */
+    static void follow(String dimension, double x, double z) {
+        if (broken || view == null) {
+            return;
+        }
+        if (dimension.equals(lastDimension) && Math.abs(x - lastX) < 8 && Math.abs(z - lastZ) < 8) {
+            return;
+        }
+        lastDimension = dimension;
+        lastX = x;
+        lastZ = z;
+        try {
+            double range = (double) view.range() * view.range();
+            for (Shown shown : SHOWN) {
+                double dx = shown.x() + 0.5 - x;
+                double dz = shown.z() + 0.5 - z;
+                // Other dimensions are out of range (Xaero shows them only on the World Map of that dimension).
+                boolean near = view.range() == 0 || shown.dimension().equals(dimension) && dx * dx + dz * dz <= range;
+                Waypoint waypoint = shown.waypoint();
+                if (near || view.farOnMap()) {
+                    waypoint.setDisabled(false);
+                    waypoint.setVisibility(near && !view.worldMapOnly()
+                            ? WaypointVisibilityType.LOCAL : WaypointVisibilityType.WORLD_MAP_LOCAL);
+                } else {
+                    waypoint.setDisabled(true);
+                }
+            }
+        } catch (LinkageError | RuntimeException e) {
+            fail(e);
         }
     }
 
@@ -123,6 +173,7 @@ final class XaeroBridge {
             fail(e);
         }
         appliedRoot = null;
+        view = null;
     }
 
     private static void clearNow() {
@@ -134,6 +185,7 @@ final class XaeroBridge {
         }
         USED.clear();
         ORIGINS.clear();
+        SHOWN.clear();
     }
 
     private static void fail(Throwable e) {

@@ -18,7 +18,7 @@ import java.util.List;
 public final class Protocol {
 
     /** Protocol this mod speaks. Raise it (here and in the plugin) whenever state or toggle change. */
-    public static final int VERSION = 1;
+    public static final int VERSION = 2;
 
     private Protocol() {
     }
@@ -94,10 +94,18 @@ public final class Protocol {
     }
 
     /**
-     * Everything for this player: VarInt n, n × (String id, String name, Int colour, Boolean visible), VarInt m,
-     * m × (VarInt id, String category, String name, String dimension, Int x, Int y, Int z).
+     * How the player wants the waypoints (set in /waypoints -> settings): {@code range} blocks in the world and on the
+     * minimap (0 = unlimited), only on the World Map, the ones beyond the range still on the World Map.
      */
-    public record StatePayload(List<Category> categories, List<Waypoint> waypoints) implements CustomPacketPayload {
+    public record View(int range, boolean worldMapOnly, boolean farOnMap) {
+    }
+
+    /**
+     * Everything for this player: VarInt n, n × (String id, String name, Int colour, Boolean visible), VarInt m,
+     * m × (VarInt id, String category, String name, String dimension, Int x, Int y, Int z),
+     * VarInt range, Boolean world map only, Boolean far ones on the World Map.
+     */
+    public record StatePayload(List<Category> categories, List<Waypoint> waypoints, View view) implements CustomPacketPayload {
 
         public static final Type<StatePayload> TYPE = new Type<>(id("state"));
         public static final StreamCodec<FriendlyByteBuf, StatePayload> CODEC = StreamCodec.of(
@@ -119,6 +127,9 @@ public final class Protocol {
                         buf.writeInt(w.y());
                         buf.writeInt(w.z());
                     }
+                    buf.writeVarInt(payload.view.range());
+                    buf.writeBoolean(payload.view.worldMapOnly());
+                    buf.writeBoolean(payload.view.farOnMap());
                 },
                 buf -> {
                     int categories = buf.readVarInt();
@@ -132,7 +143,8 @@ public final class Protocol {
                         waypointList.add(new Waypoint(buf.readVarInt(), buf.readUtf(), buf.readUtf(), buf.readUtf(),
                                 buf.readInt(), buf.readInt(), buf.readInt()));
                     }
-                    return new StatePayload(List.copyOf(categoryList), List.copyOf(waypointList));
+                    View view = new View(buf.readVarInt(), buf.readBoolean(), buf.readBoolean());
+                    return new StatePayload(List.copyOf(categoryList), List.copyOf(waypointList), view);
                 });
 
         @Override
@@ -168,7 +180,9 @@ public final class Protocol {
         /** Create a waypoint here (the server shows its dialog with name and category). */
         CREATE,
         /** End the guide. */
-        GUIDE_STOP
+        GUIDE_STOP,
+        /** Open the settings (range, display) - button in the category screen. */
+        SETTINGS
     }
 
     /** Client to server: byte action. */

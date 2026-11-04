@@ -2,8 +2,10 @@ package at.marcelr.mrwaypoints;
 
 import at.marcelr.mrwaypoints.gui.CreateDialog;
 import at.marcelr.mrwaypoints.gui.MainMenu;
+import at.marcelr.mrwaypoints.gui.SettingsMenu;
 import at.marcelr.mrwaypoints.util.Wire;
 import at.marcelr.mrwaypoints.waypoint.Category;
+import at.marcelr.mrwaypoints.waypoint.View;
 import at.marcelr.mrwaypoints.waypoint.Waypoint;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -31,7 +33,7 @@ import static at.marcelr.mrwaypoints.Messages.tag;
  * is optional - menu and guide work without it. See docs/COMPATIBILITY.md.
  * <p>
  * On joining, the mod sends {@code hello} (protocol, mod version); the plugin checks it ({@link Compatibility}) and
- * answers {@code welcome}. After an OK it sends {@code state} (categories with the player's choice, all waypoints) -
+ * answers {@code welcome}. After an OK it sends {@code state} (categories with the player's choice, all waypoints, the player's view) -
  * again after every change - and takes {@code toggle} (switch a category on or off, saved per player). {@code hello}
  * and {@code welcome} never change their format.
  */
@@ -101,7 +103,7 @@ public final class ModBridge implements Listener, PluginMessageListener {
         });
     }
 
-    /** Sends the player their state: categories (names in their language, their choice) and all waypoints. */
+    /** Sends the player their state: categories (names in their language, their choice), all waypoints, their view. */
     public void sendState(Player player) {
         if (!compatible(player) || !player.hasPermission(WaypointPerms.USE)) {
             return;
@@ -123,6 +125,9 @@ public final class ModBridge implements Listener, PluginMessageListener {
             out.varInt(w.id()).string(w.category()).string(w.name()).string(dimension)
                     .intValue(w.x()).intValue(w.y()).intValue(w.z());
         }
+        // How far and where the player wants them (protocol 2).
+        View view = plugin.store().view(player.getUniqueId());
+        out.varInt(view.range()).bool(view.worldMapOnly()).bool(view.farOnMap());
         send(player, STATE, out.bytes());
     }
 
@@ -236,7 +241,10 @@ public final class ModBridge implements Listener, PluginMessageListener {
     }
 
 
-    /** action: byte (0 open /waypoints, 1 create here, 2 end the guide) - keys of the mod. Unknown codes are ignored. */
+    /**
+     * action: byte (0 open /waypoints, 1 create here, 2 end the guide, 3 open the settings) - keys and buttons of the
+     * mod. Unknown codes are ignored.
+     */
     private void action(Player player, Wire.Reader in) throws IOException {
         int code = in.unsignedByte();
         if (!compatible(player) || !player.hasPermission(WaypointPerms.USE)) {
@@ -247,6 +255,13 @@ public final class ModBridge implements Listener, PluginMessageListener {
             case 1 -> CreateDialog.open(plugin, player, () -> {
             });
             case 2 -> plugin.messages().send(player, plugin.guide().stop(player) ? "guide-stopped" : "guide-none");
+            case 3 -> {
+                if (player.hasPermission(WaypointPerms.SETTINGS)) {
+                    new SettingsMenu(plugin, player, null).open();
+                } else {
+                    plugin.messages().send(player, "no-permission");
+                }
+            }
             default -> {
             }
         }

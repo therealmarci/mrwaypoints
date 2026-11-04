@@ -1,5 +1,7 @@
 package at.marcelr.mrwaypoints.util;
 
+import java.util.List;
+
 /** Slot layouts of the menus - symmetric, without Bukkit so they can be tested. */
 public final class Layout {
 
@@ -15,6 +17,18 @@ public final class Layout {
             case 4 -> new int[]{10, 12, 14, 16};
             default -> new int[]{11, 12, 13, 14, 15};
         };
+    }
+
+    /**
+     * The next (or previous) of a list of choices, in its order, going round. A value that is not in the list (config
+     * changed) starts at the first choice.
+     */
+    public static int step(List<Integer> choices, int current, boolean forward) {
+        int index = choices.indexOf(current);
+        if (index < 0) {
+            return choices.getFirst();
+        }
+        return choices.get(Math.floorMod(index + (forward ? 1 : -1), choices.size()));
     }
 
     /** Arrow from where the player looks to the target. */

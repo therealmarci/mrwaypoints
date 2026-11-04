@@ -146,6 +146,11 @@ public final class MRwaypointsClient implements ClientModInitializer {
             if (current != null && (dirty || XaeroBridge.needsApply())) {
                 dirty = !XaeroBridge.apply(current, hiddenAll);
             }
+            // The range follows the player.
+            if (current != null && client.player != null) {
+                XaeroBridge.follow(client.player.level().dimension().identifier().toString(), client.player.getX(),
+                        client.player.getZ());
+            }
         });
     }
 
@@ -213,6 +218,11 @@ public final class MRwaypointsClient implements ClientModInitializer {
                         payload.pluginVersion()));
             }
         }
+    }
+
+    /** Asks the server to open its settings menu (range, display) - button in the category screen. */
+    public static void openSettings() {
+        send(Minecraft.getInstance(), Action.SETTINGS);
     }
 
     /** Switches a category on or off ("*" = all) - the server saves it and sends the new state. */

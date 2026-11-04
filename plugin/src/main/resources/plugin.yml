@@ -22,10 +22,11 @@ permissions:
   # the team - each group contains the one below. The single permissions further down stay usable on their own.
   # mrwaypoints.create.<category> and mrwaypoints.manage.<category> exist for every category of categories.yml.
   mrwaypoints.player:
-    description: "Player: /waypoints - see all waypoints and be guided there; create waypoints in categories with players-create; /mrwaypoints version."
+    description: "Player: /waypoints - see all waypoints and be guided there, own settings for Xaero's map; create waypoints in categories with players-create; /mrwaypoints version."
     default: op
     children:
       mrwaypoints.use: true
+      mrwaypoints.settings: true
       mrwaypoints.version: true
   mrwaypoints.groups.support:
     description: "Group support: player + see the waypoints page in MRadmin's web interface."
@@ -53,6 +54,9 @@ permissions:
   # ------------------------------------------------------------ Players
   mrwaypoints.use:
     description: /waypoints - see all waypoints and be guided there.
+    default: op
+  mrwaypoints.settings:
+    description: "/waypoints -> Settings: how far and where the server waypoints show in Xaero's map (with the mod)."
     default: op
   mrwaypoints.version:
     description: /mrwaypoints version - version, update status and links.

@@ -2,10 +2,12 @@ package at.marcelr.mrwaypoints.util;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/** Menus are symmetric; the guide arrow follows the look direction (yaw 0 = south, 90 = west). */
+/** Menus are symmetric, choices go round; the guide arrow follows the look direction (yaw 0 = south, 90 = west). */
 class LayoutTest {
 
     @Test
@@ -13,6 +15,16 @@ class LayoutTest {
         assertArrayEquals(new int[]{13}, Layout.row(1));
         assertArrayEquals(new int[]{11, 15}, Layout.row(2));
         assertArrayEquals(new int[]{11, 12, 13, 14, 15}, Layout.row(5));
+    }
+
+    @Test
+    void rangeChoicesGoRound() {
+        List<Integer> ranges = List.of(64, 256, 0);
+        assertEquals(256, Layout.step(ranges, 64, true));
+        assertEquals(64, Layout.step(ranges, 0, true));
+        assertEquals(0, Layout.step(ranges, 64, false));
+        // Not in the list any more (config changed): start at the first choice.
+        assertEquals(64, Layout.step(ranges, 500, false));
     }
 
     @Test

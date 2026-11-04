@@ -40,6 +40,8 @@ public final class WaypointStore {
     private final Map<Integer, Waypoint> waypoints = new LinkedHashMap<>();
     /** player -> category -> shown in Xaero, where the player chose differently from the category's default */
     private final Map<UUID, Map<String, Boolean>> visibility = new HashMap<>();
+    /** player -> their settings for Xaero's map, only players who changed something */
+    private final Map<UUID, View> views = new HashMap<>();
     private final List<Runnable> listeners = new ArrayList<>();
     /** Told when a player switched categories on or off (players.yml). */
     private final List<java.util.function.Consumer<UUID>> visibilityListeners = new ArrayList<>();
@@ -67,10 +69,12 @@ public final class WaypointStore {
 
     private void loadPlayers() {
         visibility.clear();
+        views.clear();
         if (!playersFile.exists()) {
             return;
         }
         YamlConfiguration yaml = YamlConfiguration.loadConfiguration(playersFile);
+        loadViews(yaml.getConfigurationSection("view"));
         ConfigurationSection section = yaml.getConfigurationSection("visibility");
         if (section == null) {
             return;
@@ -86,6 +90,42 @@ public final class WaypointStore {
             } catch (RuntimeException e) {
                 plugin.getLogger().warning("players.yml: entry " + key + " is broken and was skipped.");
             }
+        }
+    }
+
+    private void loadViews(@Nullable ConfigurationSection section) {
+        if (section == null) {
+            return;
+        }
+        View defaults = plugin.settings().view().defaults();
+        for (String key : section.getKeys(false)) {
+            ConfigurationSection c = section.getConfigurationSection(key);
+            try {
+                views.put(UUID.fromString(key), new View(Math.max(0, c.getInt("range", defaults.range())),
+                        c.getString("display", defaults.worldMapOnly() ? "world-map" : "everywhere").equals("world-map"),
+                        c.getBoolean("far-on-world-map", defaults.farOnMap())));
+            } catch (RuntimeException e) {
+                plugin.getLogger().warning("players.yml: view of " + key + " is broken and was skipped.");
+            }
+        }
+    }
+
+    /** How the player wants the waypoints in Xaero's map: their own settings, otherwise the defaults of config.yml. */
+    public View view(UUID player) {
+        View own = views.get(player);
+        return own != null ? own : plugin.settings().view().defaults();
+    }
+
+    /** Saves the player's settings for Xaero's map; the same as the defaults is forgotten (defaults may change). */
+    public void setView(UUID player, View view) {
+        if (view.equals(plugin.settings().view().defaults())) {
+            views.remove(player);
+        } else {
+            views.put(player, view);
+        }
+        savePlayers();
+        for (var listener : visibilityListeners) {
+            listener.accept(player);
         }
     }
 
@@ -124,9 +164,14 @@ public final class WaypointStore {
     private void savePlayers() {
         YamlConfiguration yaml = new YamlConfiguration();
         yaml.options().setHeader(List.of("Which categories each player switched on or off for Xaero's map "
-                + "(only choices that differ from the category's \"visible\")."));
+                + "(only choices that differ from the category's \"visible\") and their settings for it (view)."));
         visibility.forEach((player, choices) -> choices.forEach((category, shown) ->
                 yaml.set("visibility." + player + "." + category, shown)));
+        views.forEach((player, view) -> {
+            yaml.set("view." + player + ".range", view.range());
+            yaml.set("view." + player + ".display", view.worldMapOnly() ? "world-map" : "everywhere");
+            yaml.set("view." + player + ".far-on-world-map", view.farOnMap());
+        });
         write(playersFile, yaml.saveToString());
     }
 

@@ -36,7 +36,7 @@ final class CategoryScreen extends Screen {
         }
         List<Category> categories = shown.categories();
         int left = width / 2 - BUTTON_WIDTH / 2;
-        int top = Math.max(40, height / 2 - (categories.size() * ROW + 2 * ROW) / 2);
+        int top = Math.max(40, height / 2 - (categories.size() * ROW + 3 * ROW) / 2);
         int y = top;
         for (Category category : categories) {
             long count = shown.waypoints().stream().filter(w -> w.category().equals(category.id())).count();
@@ -57,6 +57,12 @@ final class CategoryScreen extends Screen {
                 button -> MRwaypointsClient.toggle("*", true)).bounds(left, y, half, 20).build());
         addRenderableWidget(Button.builder(Component.translatable("mrwaypoints.screen.all-off"),
                 button -> MRwaypointsClient.toggle("*", false)).bounds(left + half + 4, y, half, 20).build());
+        y += ROW;
+        // Range and display are a menu of the server (saved there, the same as in /waypoints).
+        addRenderableWidget(Button.builder(Component.translatable("mrwaypoints.screen.settings"), button -> {
+            minecraft.gui.setScreen(null);
+            MRwaypointsClient.openSettings();
+        }).bounds(left, y, BUTTON_WIDTH, 20).build());
         y += ROW;
         addRenderableWidget(Button.builder(Component.translatable("gui.done"), button -> onClose())
                 .bounds(left, y, BUTTON_WIDTH, 20).build());

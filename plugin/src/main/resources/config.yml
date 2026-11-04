@@ -13,7 +13,7 @@
 # ==============================================================================
 
 # Do not change - used for automatic config updates.
-config-version: 2
+config-version: 3
 
 # Language of the texts (chat, menus, action bar). The texts are in plugins/MRwaypoints/lang/<language>.yml.
 #   auto = every player gets the language set in their Minecraft client:
@@ -69,7 +69,26 @@ mod:
 
 
 # ------------------------------------------------------------------------------
-#   4) UPDATE CHECK
+#   4) VIEW IN XAERO'S MAP (players with the mod)
+# ------------------------------------------------------------------------------
+# Every player sets in /waypoints -> Settings how far and where they see the server waypoints (permission
+# mrwaypoints.settings, saved per player in players.yml). These are the choices and the defaults.
+view:
+  # Distances to choose from for "Visible up to" (in blocks, 0 = unlimited). Only applies in the world and on the
+  # minimap - Xaero's own limit for waypoints in the world applies on top.
+  ranges: [64, 128, 256, 512, 1024, 2048, 0]
+  # Default distance for players who did not change anything (0 = unlimited).
+  default-range: 0
+  # Where the waypoints show by default:
+  #   everywhere = in the world, on the minimap and on Xaero's World Map
+  #   world-map  = only on Xaero's World Map
+  default-display: everywhere
+  # Waypoints beyond the distance still show on Xaero's World Map (default for players).
+  default-far-on-world-map: true
+
+
+# ------------------------------------------------------------------------------
+#   5) UPDATE CHECK
 # ------------------------------------------------------------------------------
 update-checker:
   # Look for new versions on startup and regularly afterwards.
@@ -86,7 +105,7 @@ update-checker:
 
 
 # ------------------------------------------------------------------------------
-#   5) MENUS
+#   6) MENUS
 # ------------------------------------------------------------------------------
 gui:
   # How often open menus are refreshed (in ticks, 20 = 1 second) - distances stay up to date.

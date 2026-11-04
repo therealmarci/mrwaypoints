@@ -22,6 +22,7 @@ public final class WaypointPerms {
 
     public static final String PLAYER = "mrwaypoints.player";
     public static final String USE = "mrwaypoints.use";
+    public static final String SETTINGS = "mrwaypoints.settings";
     public static final String CREATE = "mrwaypoints.create.";
     public static final String MANAGE = "mrwaypoints.manage.";
     public static final String TELEPORT = "mrwaypoints.teleport";

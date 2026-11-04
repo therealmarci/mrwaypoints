@@ -9,6 +9,7 @@
   "mrwaypoints.screen.hint": "Which categories show in Xaero's map - the same on every PC.",
   "mrwaypoints.screen.all-on": "All on",
   "mrwaypoints.screen.all-off": "All off",
+  "mrwaypoints.screen.settings": "Range and display …",
   "mrwaypoints.button.xaero": "Server waypoints …",
   "mrwaypoints.message.no-server": "This server has no MRwaypoints.",
   "mrwaypoints.message.all-hidden": "Server waypoints hidden in Xaero (press again: back on).",

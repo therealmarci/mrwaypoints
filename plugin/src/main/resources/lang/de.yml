@@ -179,6 +179,35 @@ gui-xaero-name: "<aqua>In Xaero anzeigen"
 gui-xaero-lore:
   - "<gray>Kategorien für Xaero's Karte ein- und ausblenden"
   - "<dark_gray>auch mit der Taste J"
+# --- Einstellungen (Xaero's Karte) -------------------------------------------
+gui-settings-name: "<aqua>Einstellungen"
+gui-settings-lore:
+  - "<gray>Sichtweite und Anzeige in Xaero's Karte"
+gui-settings-title: "<dark_gray>Wegpunkte · Einstellungen"
+gui-settings-nomod-name: "<yellow>Nur mit dem Mod"
+gui-settings-nomod-lore:
+  - "<gray>Gilt für Xaero's Karte mit dem MRwaypoints-Mod"
+  - "<dark_gray>Menü und Wegweiser bleiben gleich"
+gui-range-name: "<aqua>Sichtweite: <white><range>"
+gui-range-lore:
+  - "<gray>So weit in der Welt und auf der Minimap"
+  - "<dark_gray>Linksklick: weiter · Rechtsklick: näher"
+gui-range-unlimited: "unbegrenzt"
+gui-range-blocks: "<count> Blöcke"
+gui-display-name: "<aqua>Anzeige: <white><display>"
+gui-display-lore:
+  - "<gray>Wo die Server-Wegpunkte erscheinen"
+  - "<dark_gray>Klick: umschalten"
+gui-display-everywhere: "Welt, Minimap und Weltkarte"
+gui-display-world-map: "nur Weltkarte"
+gui-far-name: "<aqua>Entfernte auf der Weltkarte: <state>"
+gui-far-lore:
+  - "<gray>Außerhalb der Sichtweite trotzdem auf der Weltkarte"
+  - "<dark_gray>Klick: umschalten"
+gui-far-unlimited-lore:
+  - "<gray>Nur bei begrenzter Sichtweite"
+gui-state-on: "<green>an"
+gui-state-off: "<red>aus"
 # --- Version & Updates -------------------------------------------------------
 version: "<prefix><gray>MRwaypoints <white>v<version></white> <dark_gray>(MC <mc>)</dark_gray> von <white><author></white>"
 version-latest: "<prefix><green>Du nutzt die aktuellste Version."

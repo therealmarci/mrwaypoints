@@ -179,6 +179,35 @@ gui-xaero-name: "<aqua>Show in Xaero"
 gui-xaero-lore:
   - "<gray>Switch categories on and off for Xaero's map"
   - "<dark_gray>also with the key J"
+# --- Settings (Xaero's map) --------------------------------------------------
+gui-settings-name: "<aqua>Settings"
+gui-settings-lore:
+  - "<gray>Range and display in Xaero's map"
+gui-settings-title: "<dark_gray>Waypoints · Settings"
+gui-settings-nomod-name: "<yellow>Only with the mod"
+gui-settings-nomod-lore:
+  - "<gray>Applies to Xaero's map with the MRwaypoints mod"
+  - "<dark_gray>Menu and guide stay the same"
+gui-range-name: "<aqua>Range: <white><range>"
+gui-range-lore:
+  - "<gray>This far in the world and on the minimap"
+  - "<dark_gray>Left click: farther · right click: closer"
+gui-range-unlimited: "unlimited"
+gui-range-blocks: "<count> blocks"
+gui-display-name: "<aqua>Display: <white><display>"
+gui-display-lore:
+  - "<gray>Where the server waypoints show"
+  - "<dark_gray>Click: switch"
+gui-display-everywhere: "world, minimap and World Map"
+gui-display-world-map: "World Map only"
+gui-far-name: "<aqua>Far ones on the World Map: <state>"
+gui-far-lore:
+  - "<gray>Beyond the range still on the World Map"
+  - "<dark_gray>Click: switch"
+gui-far-unlimited-lore:
+  - "<gray>Only with a limited range"
+gui-state-on: "<green>on"
+gui-state-off: "<red>off"
 # --- Version & updates -------------------------------------------------------
 version: "<prefix><gray>MRwaypoints <white>v<version></white> <dark_gray>(MC <mc>)</dark_gray> by <white><author></white>"
 version-latest: "<prefix><green>You are using the latest version."

@@ -9,6 +9,7 @@
   "mrwaypoints.screen.hint": "Welche Kategorien in Xaero's Karte erscheinen - gilt auf jedem PC.",
   "mrwaypoints.screen.all-on": "Alle an",
   "mrwaypoints.screen.all-off": "Alle aus",
+  "mrwaypoints.screen.settings": "Sichtweite und Anzeige …",
   "mrwaypoints.button.xaero": "Server-Wegpunkte …",
   "mrwaypoints.message.no-server": "Dieser Server hat kein MRwaypoints.",
   "mrwaypoints.message.all-hidden": "Server-Wegpunkte in Xaero ausgeblendet (Taste nochmal: wieder an).",
