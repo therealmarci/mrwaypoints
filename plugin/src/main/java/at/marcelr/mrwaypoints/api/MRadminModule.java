@@ -112,7 +112,8 @@ final class MRadminModule implements AdminModule, WebModule {
 
     @Override
     public Map<String, String> actions() {
-        return Map.of("rename", "manage", "delete", "manage", "recategorize", "manage",
+        return Map.of("rename", "manage", "delete", "manage", "recategorize", "manage", "bulkDelete", "manage",
+                "bulkRecategorize", "manage",
                 "categorySave", "categories", "categoryDelete", "categories", "categoryOrder", "categories");
     }
 
@@ -162,6 +163,7 @@ final class MRadminModule implements AdminModule, WebModule {
     public @Nullable String action(String action, Map<String, Object> args, WebUser user) {
         return switch (action) {
             case "rename", "delete", "recategorize" -> waypointAction(action, args);
+            case "bulkDelete", "bulkRecategorize" -> bulk(action, args);
             case "categorySave" -> saveCategory(args);
             case "categoryDelete" -> {
                 Category c = plugin.store().category(text(args, "id"));
@@ -215,6 +217,48 @@ final class MRadminModule implements AdminModule, WebModule {
             default -> plugin.store().remove(w.id());
         }
         return null;
+    }
+
+    /**
+     * Several waypoints at once ({@code ids} comma separated, at most 500): delete them, or move them into
+     * {@code category}. Waypoints that cannot move (world not allowed there, name taken) stay where they are - then
+     * "wp-bulk-partial", the others are done.
+     */
+    private @Nullable String bulk(String action, Map<String, Object> args) {
+        List<Waypoint> chosen = new ArrayList<>();
+        for (String raw : text(args, "ids").split(",")) {
+            try {
+                Waypoint w = plugin.store().byId(Integer.parseInt(raw.strip()));
+                if (w != null) {
+                    chosen.add(w);
+                }
+            } catch (NumberFormatException ignored) {
+                // not an id
+            }
+        }
+        if (chosen.isEmpty() || chosen.size() > 500) {
+            return "not-found";
+        }
+        if (action.equals("bulkDelete")) {
+            chosen.forEach(w -> plugin.store().remove(w.id()));
+            return null;
+        }
+        Category target = plugin.store().category(text(args, "category"));
+        if (target == null) {
+            return "wp-invalid-category";
+        }
+        int skipped = 0;
+        for (Waypoint w : chosen) {
+            if (w.category().equals(target.id())) {
+                continue;
+            }
+            if (!target.allows(w.worldName()) || plugin.store().byName(target.id(), w.name()) != null) {
+                skipped++;
+                continue;
+            }
+            plugin.store().update(w.inCategory(target.id()));
+        }
+        return skipped > 0 ? "wp-bulk-partial" : null;
     }
 
     /** New or changed category; "isNew" decides whether the id may already exist. */
