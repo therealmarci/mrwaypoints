@@ -36,6 +36,7 @@ public final class MRWaypoints extends JavaPlugin implements Listener {
     private UpdateChecker updateChecker;
     private MenuListener menuListener;
     private MRadminLink mradmin;
+    private final DiscordWebhook discord = new DiscordWebhook(this);
     private ModBridge bridge;
 
     @Override
@@ -94,6 +95,7 @@ public final class MRWaypoints extends JavaPlugin implements Listener {
         if (store != null) {
             store.close();
         }
+        discord.shutdown();
     }
 
     /** Reloads config.yml, the texts and categories.yml. */
@@ -111,6 +113,7 @@ public final class MRWaypoints extends JavaPlugin implements Listener {
         settings = Settings.from(config, getLogger());
         messages.load(this, config.getString("general.language", "auto"), config.getString("general.fallback-language", "en"),
                 config.getString("general.server-language", "en"));
+        discord.load(config.getConfigurationSection("discord"));
     }
 
     @EventHandler
@@ -174,6 +177,11 @@ public final class MRWaypoints extends JavaPlugin implements Listener {
     }
 
     /** The optional connection to MRadmin. */
+    /** Discord log (and with MRadmin its log in the web interface). */
+    public DiscordWebhook discord() {
+        return discord;
+    }
+
     public MRadminLink mradmin() {
         return mradmin;
     }

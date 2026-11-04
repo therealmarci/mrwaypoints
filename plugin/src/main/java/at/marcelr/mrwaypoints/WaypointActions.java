@@ -60,6 +60,7 @@ public final class WaypointActions {
         Waypoint waypoint = plugin.store().add(new Waypoint(0, category.id(), name, at.getWorld().getUID(),
                 at.getWorld().getName(), at.getBlockX(), at.getBlockY(), at.getBlockZ(), player.getUniqueId(),
                 player.getName(), System.currentTimeMillis()));
+        log("waypoint-created", player.getName(), waypoint);
         messages().send(player, "created", tag("name", name), tag("category", category.name(messages().languageOf(player))),
                 tag("x", waypoint.x()), tag("y", waypoint.y()), tag("z", waypoint.z()));
         sound(player, Sound.ENTITY_EXPERIENCE_ORB_PICKUP);
@@ -76,6 +77,7 @@ public final class WaypointActions {
             return;
         }
         plugin.store().update(waypoint.withName(name));
+        log("waypoint-renamed", player.getName(), waypoint.withName(name), "old", waypoint.name());
         messages().send(player, "renamed", tag("old", waypoint.name()), tag("name", name));
         sound(player, Sound.ENTITY_EXPERIENCE_ORB_PICKUP);
     }
@@ -91,6 +93,7 @@ public final class WaypointActions {
         }
         Waypoint moved = waypoint.movedTo(player.getLocation());
         plugin.store().update(moved);
+        log("waypoint-relocated", player.getName(), moved);
         messages().send(player, "moved", tag("name", waypoint.name()), tag("x", moved.x()), tag("y", moved.y()),
                 tag("z", moved.z()));
         sound(player, Sound.ENTITY_EXPERIENCE_ORB_PICKUP);
@@ -101,6 +104,7 @@ public final class WaypointActions {
             return;
         }
         plugin.store().remove(waypoint.id());
+        log("waypoint-deleted", player.getName(), waypoint);
         messages().send(player, "deleted", tag("name", waypoint.name()));
         sound(player, Sound.ENTITY_ITEM_BREAK);
     }
@@ -120,6 +124,7 @@ public final class WaypointActions {
         player.teleportAsync(target).thenAccept(ok -> {
             if (ok) {
                 messages().run(player, () -> messages().send(player, "teleported", tag("name", waypoint.name())));
+                log("teleport", player.getName(), waypoint);
             }
         });
     }
@@ -147,6 +152,25 @@ public final class WaypointActions {
     }
 
     /** Trimmed, inner spaces collapsed. */
+    /**
+     * An event of the Discord log (and of MRadmin's log) about a waypoint: {name}, {category} (in the server language),
+     * {world}, {x} {y} {z} and {player} = who did it; {@code more} = further key/value pairs.
+     */
+    public void log(String event, String player, Waypoint waypoint, Object... more) {
+        Category category = plugin.store().category(waypoint.category());
+        Object[] base = {"player", player, "name", waypoint.name(),
+                "category", category == null ? waypoint.category() : categoryName(category),
+                "world", waypoint.worldName(), "x", waypoint.x(), "y", waypoint.y(), "z", waypoint.z()};
+        Object[] all = java.util.Arrays.copyOf(base, base.length + more.length);
+        System.arraycopy(more, 0, all, base.length, more.length);
+        plugin.discord().log(event, all);
+    }
+
+    /** Name of a category in the server language (Discord, MRadmin's log). */
+    public String categoryName(Category category) {
+        return category.name(plugin.messages().serverLanguage());
+    }
+
     public static String clean(String raw) {
         return raw == null ? "" : raw.strip().replaceAll("\\s+", " ");
     }

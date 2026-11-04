@@ -167,26 +167,29 @@ final class MRadminModule implements AdminModule, WebModule {
     @Override
     public @Nullable String action(String action, Map<String, Object> args, WebUser user) {
         return switch (action) {
-            case "rename", "delete", "recategorize" -> waypointAction(action, args);
-            case "bulkDelete", "bulkRecategorize" -> bulk(action, args);
-            case "categorySave" -> saveCategory(args);
+            case "rename", "delete", "recategorize" -> waypointAction(action, args, user.name());
+            case "bulkDelete", "bulkRecategorize" -> bulk(action, args, user.name());
+            case "categorySave" -> saveCategory(args, user.name());
             case "categoryDelete" -> {
                 Category c = plugin.store().category(text(args, "id"));
                 if (c == null) {
                     yield "not-found";
                 }
                 plugin.store().removeCategory(c.id());
+                plugin.discord().log("category-deleted", "player", user.name(), "category", plugin.actions().categoryName(c));
                 yield null;
             }
             case "categoryOrder" -> {
                 plugin.store().reorder(List.of(text(args, "ids").split(",")));
+                plugin.discord().log("category-order", "player", user.name());
                 yield null;
             }
             default -> "unknown-action";
         };
     }
 
-    private @Nullable String waypointAction(String action, Map<String, Object> args) {
+    /** @param by name of the team member (Discord log) */
+    private @Nullable String waypointAction(String action, Map<String, Object> args, String by) {
         Waypoint w;
         try {
             w = plugin.store().byId(Integer.parseInt(text(args, "id")));
@@ -205,6 +208,7 @@ final class MRadminModule implements AdminModule, WebModule {
                     return problem.equals("not-found") ? problem : "wp-" + problem;
                 }
                 plugin.store().update(w.withName(name));
+                plugin.actions().log("waypoint-renamed", by, w.withName(name), "old", w.name());
             }
             case "recategorize" -> {
                 Category target = plugin.store().category(text(args, "category"));
@@ -218,8 +222,12 @@ final class MRadminModule implements AdminModule, WebModule {
                     return "wp-name-taken";
                 }
                 plugin.store().update(w.inCategory(target.id()));
+                plugin.actions().log("waypoint-moved", by, w.inCategory(target.id()));
             }
-            default -> plugin.store().remove(w.id());
+            default -> {
+                plugin.store().remove(w.id());
+                plugin.actions().log("waypoint-deleted", by, w);
+            }
         }
         return null;
     }
@@ -229,7 +237,7 @@ final class MRadminModule implements AdminModule, WebModule {
      * {@code category}. Waypoints that cannot move (world not allowed there, name taken) stay where they are - then
      * "wp-bulk-partial", the others are done.
      */
-    private @Nullable String bulk(String action, Map<String, Object> args) {
+    private @Nullable String bulk(String action, Map<String, Object> args, String by) {
         List<Waypoint> chosen = new ArrayList<>();
         for (String raw : text(args, "ids").split(",")) {
             try {
@@ -246,6 +254,7 @@ final class MRadminModule implements AdminModule, WebModule {
         }
         if (action.equals("bulkDelete")) {
             chosen.forEach(w -> plugin.store().remove(w.id()));
+            plugin.discord().log("waypoints-bulk-deleted", "player", by, "count", chosen.size());
             return null;
         }
         Category target = plugin.store().category(text(args, "category"));
@@ -253,6 +262,7 @@ final class MRadminModule implements AdminModule, WebModule {
             return "wp-invalid-category";
         }
         int skipped = 0;
+        int moved = 0;
         for (Waypoint w : chosen) {
             if (w.category().equals(target.id())) {
                 continue;
@@ -262,12 +272,17 @@ final class MRadminModule implements AdminModule, WebModule {
                 continue;
             }
             plugin.store().update(w.inCategory(target.id()));
+            moved++;
+        }
+        if (moved > 0) {
+            plugin.discord().log("waypoints-bulk-moved", "player", by, "count", moved,
+                    "category", plugin.actions().categoryName(target));
         }
         return skipped > 0 ? "wp-bulk-partial" : null;
     }
 
     /** New or changed category; "isNew" decides whether the id may already exist. */
-    private @Nullable String saveCategory(Map<String, Object> args) {
+    private @Nullable String saveCategory(Map<String, Object> args, String by) {
         String id = text(args, "id").toLowerCase(java.util.Locale.ROOT);
         boolean isNew = Boolean.parseBoolean(text(args, "isNew"));
         if (!Category.validId(id)) {
@@ -312,9 +327,12 @@ final class MRadminModule implements AdminModule, WebModule {
         if (worlds.size() > 64 || worlds.stream().anyMatch(w -> w.length() > 64)) {
             return "wp-invalid-worlds";
         }
-        plugin.store().putCategory(new Category(id, names, Integer.parseInt(color, 16), icon,
+        Category saved = new Category(id, names, Integer.parseInt(color, 16), icon,
                 Boolean.parseBoolean(text(args, "playersCreate")), max, Boolean.parseBoolean(text(args, "visible")),
-                Boolean.parseBoolean(text(args, "map")), worlds));
+                Boolean.parseBoolean(text(args, "map")), worlds);
+        plugin.store().putCategory(saved);
+        plugin.discord().log(isNew ? "category-created" : "category-changed", "player", by,
+                "category", plugin.actions().categoryName(saved));
         return null;
     }
 
@@ -515,6 +533,7 @@ final class MRadminModule implements AdminModule, WebModule {
                         return m.plain("self-" + problem, "max", plugin.settings().waypoints().maxNameLength(), "name", name);
                     }
                     plugin.store().update(w.withName(name));
+                    plugin.actions().log("waypoint-renamed", viewer.name(), w.withName(name), "old", w.name());
                     return null;
                 }
                 case "edit" -> {
@@ -536,11 +555,19 @@ final class MRadminModule implements AdminModule, WebModule {
                     if (problem != null) {
                         return m.plain("self-" + problem, "max", plugin.settings().waypoints().maxNameLength(), "name", name);
                     }
-                    plugin.store().update(w.withName(name).inCategory(target.id()));
+                    Waypoint edited = w.withName(name).inCategory(target.id());
+                    plugin.store().update(edited);
+                    if (!name.equals(w.name())) {
+                        plugin.actions().log("waypoint-renamed", viewer.name(), edited, "old", w.name());
+                    }
+                    if (!target.id().equals(category.id())) {
+                        plugin.actions().log("waypoint-moved", viewer.name(), edited);
+                    }
                     return null;
                 }
                 case "delete" -> {
                     plugin.store().remove(w.id());
+                    plugin.actions().log("waypoint-deleted", viewer.name(), w);
                     return null;
                 }
                 default -> {
@@ -579,8 +606,9 @@ final class MRadminModule implements AdminModule, WebModule {
             return m.plain("self-" + problem, "max", plugin.settings().waypoints().maxNameLength(), "name", name);
         }
         int y = world.getHighestBlockYAt(x, z) + 1;
-        plugin.store().add(new Waypoint(0, category.id(), name, world.getUID(), world.getName(), x, y, z,
+        Waypoint created = plugin.store().add(new Waypoint(0, category.id(), name, world.getUID(), world.getName(), x, y, z,
                 viewer.player(), viewer.name(), System.currentTimeMillis()));
+        plugin.actions().log("waypoint-created", viewer.name(), created);
         return null;
     }
 
@@ -594,6 +622,7 @@ final class MRadminModule implements AdminModule, WebModule {
         }
         return new WebConfig(new File(plugin.getDataFolder(), "config.yml"), form, defaults, by -> {
             plugin.reload();
+            plugin.discord().log("admin-reload", "admin", by);
         });
     }
 
@@ -602,6 +631,22 @@ final class MRadminModule implements AdminModule, WebModule {
             return in == null ? null : new String(in.readAllBytes(), StandardCharsets.UTF_8);
         } catch (IOException e) {
             return null;
+        }
+    }
+
+    /** Into MRadmin's log (only with API 13 or newer). */
+    static void log(String event, String text, int color) {
+        MRadminService service = MRadminService.get();
+        if (service != null && service.apiVersion() >= 13) {
+            service.log(ID, event, text, color);
+        }
+    }
+
+    /** A line in MRadmin's Discord admin log (fallback when the plugin has no webhook of its own). */
+    static void adminLog(String text) {
+        MRadminService service = MRadminService.get();
+        if (service != null) {
+            service.adminLog(ID, text);
         }
     }
 }

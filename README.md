@@ -121,6 +121,7 @@ Mitgeliefert sind **Spawn & Warps** (nur Team), **Shops** (Spieler, je 3), **Far
 | `/waypoints` (`/waypoint`, `/wegpunkte`, `/wegpunkt`, `/wps`) | Menü mit allen Wegpunkten | `mrwaypoints.use` |
 | `/waypoints stop` | Wegweiser beenden | `mrwaypoints.use` |
 | `/mrwaypoints reload` | Config, Kategorien und Texte neu laden | `mrwaypoints.admin.reload` |
+| `/mrwaypoints discord [test]` | Status des Discord-Logs · Testnachricht senden | `mrwaypoints.admin.discord` |
 | `/mrwaypoints version` | Version und Update-Status | `mrwaypoints.version` |
 
 ### Permissions
@@ -131,7 +132,7 @@ Am einfachsten vergibst du die **Gruppen** - sie sind in allen MRtechnology-Plug
 | `mrwaypoints.player` | `/waypoints` mit Wegweiser und eigenen Einstellungen für Xaero, anlegen in Kategorien mit `players-create: true`, `/mrwaypoints version` |
 | `mrwaypoints.groups.support` | Spieler + MRwaypoints im MRadmin-Dashboard und die Seite **Wegpunkte** im Web ansehen |
 | `mrwaypoints.groups.staff` | Support + in **jeder** Kategorie anlegen, **alle** Wegpunkte bearbeiten und löschen, ohne Limit |
-| `mrwaypoints.groups.admin` | Alles: Staff + zu Wegpunkten teleportieren, Kategorien im Web verwalten, Reload, Update-Hinweis |
+| `mrwaypoints.groups.admin` | Alles: Staff + zu Wegpunkten teleportieren, Kategorien im Web verwalten, Reload, Discord-Log, Update-Hinweis |
 
 <details>
 <summary>Alle einzelnen Permissions</summary>
@@ -149,6 +150,7 @@ Standard ist `op`, die Rechte pro Kategorie haben standardmäßig niemand (sie k
 | `mrwaypoints.admin.view` | MRwaypoints im MRadmin-Dashboard, Seite **Wegpunkte** in der Weboberfläche |
 | `mrwaypoints.admin.categories` | Kategorien im Web anlegen, ändern, sortieren, löschen |
 | `mrwaypoints.admin.reload` | `/mrwaypoints reload` |
+| `mrwaypoints.admin.discord` | `/mrwaypoints discord [test]` |
 | `mrwaypoints.admin.update` | Update-Hinweis beim Betreten des Servers |
 
 Eigene Wegpunkte darf jeder Ersteller immer umbenennen, verschieben und löschen.
@@ -167,9 +169,24 @@ Am einfachsten im Browser: Mit **MRadmin** (ab der Version mit „Konfiguration 
 | `guide` | Wegweiser: wie oft der Pfeil aktualisiert (`update-ticks`), ab wie vielen Blöcken „angekommen“ (`arrive-distance`), Ton |
 | `mod` | Mod für Xaero: Mindestversion (`minimum-version`), Download-Link |
 | `view` | Einstellungen der Spieler für Xaero: wählbare Sichtweiten in Chunks (`ranges`: Chunks in jede Richtung um den Spieler, `0` = unbegrenzt) und Standards (`default-range`, `default-display` `everywhere`/`world-map`, `default-far-on-world-map`) |
+| `discord` | Discord-Log: Webhook, eigener oder MRadmins (`use-mradmin-webhook`), welche Ereignisse in welcher Farbe |
 | `updates` · `gui` | Update-Hinweise, Menüs |
 
 **Texte:** Alle Texte stehen in `plugins/MRwaypoints/lang/<sprache>.yml`, die Namen der Kategorien in `categories.yml`. Die Konsole ist immer Englisch.
+
+### Discord-Log
+MRwaypoints meldet in einen Discord-Kanal, wenn Wegpunkte angelegt, umbenannt, in eine andere Kategorie verschoben, versetzt oder gelöscht werden (auch mehrere auf einmal im Web), wenn Kategorien angelegt, geändert, gelöscht oder umsortiert werden, wenn sich ein Admin zu einem Wegpunkt teleportiert und wenn jemand neu lädt - egal ob im Spiel, auf der Seite **Wegpunkte** oder auf der Karte der Spielerseite.
+
+1. In Discord: **Kanal bearbeiten → Integrationen → Webhooks → Neuer Webhook** und die **Webhook-URL kopieren**.
+2. In der Config `discord.enabled: true` setzen und die URL bei `webhook-url` eintragen.
+3. `/mrwaypoints reload`, dann mit **`/mrwaypoints discord test`** prüfen.
+
+Unter `discord.events` legst du pro Ereignis fest, ob es gesendet wird und in welcher Farbe (z.B. `waypoint-created`, `waypoint-deleted`, `category-changed`, `teleport`). Die Texte stehen in der Sprachdatei unter `discord`, Kategorien heißen dort wie in `general.server-language`.
+
+> [!TIP]
+> **Kein eigener Webhook?** Mit MRadmin geht es auch über dessen Discord-Log: `discord.enabled: true`, `webhook-url` leer lassen und `discord.use-mradmin-webhook: true` setzen.
+>
+> Mit MRadmin steht jedes Ereignis außerdem im **Protokoll** der Weboberfläche (bis zu 14 Tage) - auch wenn Discord aus ist.
 
 ---
 
@@ -181,6 +198,7 @@ MRwaypoints läuft **allein**. Zusammen mit anderen MRtechnology-Plugins kann es
 | Seite **Wegpunkte** fürs Team: Kategorien anlegen, ändern, sortieren, löschen (`mrwaypoints.admin.categories`), alle Wegpunkte umbenennen, in eine andere Kategorie verschieben, löschen (`mrwaypoints.manage.*`) | MRadmin |
 | Tab **Karte** auf der Spielerseite (`/web`): eine Ebene pro Kategorie mit `map: true`; Rechtsklick auf eine freie Stelle: „Wegpunkt erstellen“ mit Name und Kategorie (Höhe = Boden an der Stelle), auf eigene „Wegpunkt bearbeiten“ (Name, Kategorie) und „Wegpunkt löschen“, auf jeden den Wegweiser im Spiel starten; „in Xaero: an/aus“ pro Kategorie | MRadmin |
 | Knopf im MRadmin-Dashboard (öffnet `/waypoints`) | MRadmin |
+| Ereignisse im **Protokoll** der MRadmin-Weboberfläche, Discord-Log über MRadmins Webhook (`discord.use-mradmin-webhook`) | MRadmin |
 | Wegpunkte in Xaero's Minimap und World Map, Kategorien ein- und ausblenden | MRwaypoints-Mod + Xaero's Minimap |
 
 ## Häufige Fragen

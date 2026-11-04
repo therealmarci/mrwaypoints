@@ -15,7 +15,7 @@
 # ==============================================================================
 
 # Do not change - used for automatic config updates.
-config-version: 7
+config-version: 8
 
 
 # ------------------------------------------------------------------------------
@@ -94,7 +94,72 @@ view:
 
 
 # ------------------------------------------------------------------------------
-#   6) UPDATES
+#   6) DISCORD LOGS
+# ------------------------------------------------------------------------------
+# Create a webhook: Discord channel -> Edit Channel -> Integrations -> Webhooks
+#                   -> New Webhook -> Copy Webhook URL.
+# The texts of the events are in the language file (lang/<language>.yml, section discord).
+# An event with "enabled: false" or an empty text is not sent.
+# With MRadmin every event also goes into the log of its web interface - even while Discord is off.
+# Not working? -> /mrwaypoints discord shows the status, /mrwaypoints discord test sends a test message.
+discord:
+  enabled: false
+  # Full URL in quotes, e.g. "https://discord.com/api/webhooks/123456/abcdef"
+  webhook-url: ""
+  # Without a webhook of its own (webhook-url empty): true = send the events to MRadmin's Discord log instead
+  # (needs MRadmin with its Discord log set up).
+  use-mradmin-webhook: false
+  # Name and avatar of the webhook (empty = settings from Discord).
+  username: "MRwaypoints"
+  avatar-url: ""
+  # true = coloured embeds, false = plain text messages.
+  use-embeds: true
+  # Footer of the embeds, e.g. the server name (empty = none).
+  footer: "Minecraft-Server"
+  events:
+    waypoint-created:
+      enabled: true
+      color: "#2ECC71"
+    waypoint-renamed:
+      enabled: true
+      color: "#3498DB"
+    waypoint-moved:
+      enabled: true
+      color: "#3498DB"
+    waypoint-relocated:
+      enabled: true
+      color: "#3498DB"
+    waypoint-deleted:
+      enabled: true
+      color: "#E74C3C"
+    waypoints-bulk-moved:
+      enabled: true
+      color: "#3498DB"
+    waypoints-bulk-deleted:
+      enabled: true
+      color: "#E74C3C"
+    category-created:
+      enabled: true
+      color: "#9B59B6"
+    category-changed:
+      enabled: true
+      color: "#9B59B6"
+    category-deleted:
+      enabled: true
+      color: "#C0392B"
+    category-order:
+      enabled: true
+      color: "#9B59B6"
+    teleport:
+      enabled: true
+      color: "#1ABC9C"
+    admin-reload:
+      enabled: true
+      color: "#3498DB"
+
+
+# ------------------------------------------------------------------------------
+#   7) UPDATES
 # ------------------------------------------------------------------------------
 updates:
   # Look for new versions on startup and regularly afterwards.
@@ -111,7 +176,7 @@ updates:
 
 
 # ------------------------------------------------------------------------------
-#   7) MENUS
+#   8) MENUS
 # ------------------------------------------------------------------------------
 gui:
   # How often open menus are refreshed (in ticks, 20 = 1 second) - distances stay up to date.

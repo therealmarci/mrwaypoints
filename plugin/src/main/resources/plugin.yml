@@ -14,7 +14,7 @@ commands:
     aliases: [waypoint, wegpunkte, wegpunkt, wps]
   mrwaypoints:
     description: Management of MRwaypoints.
-    usage: /mrwaypoints <reload|version|help>
+    usage: /mrwaypoints <reload|discord|version|help>
 
 permissions:
   # ------------------------------------------------------------------ Groups
@@ -42,13 +42,14 @@ permissions:
       mrwaypoints.create.*: true
       mrwaypoints.manage.*: true
   mrwaypoints.groups.admin:
-    description: "Group admin: everything of MRwaypoints - staff + teleport to waypoints, manage categories in the web interface, reload, update notice."
+    description: "Group admin: everything of MRwaypoints - staff + teleport to waypoints, manage categories in the web interface, reload, Discord log, update notice."
     default: op
     children:
       mrwaypoints.groups.staff: true
       mrwaypoints.teleport: true
       mrwaypoints.admin.categories: true
       mrwaypoints.admin.reload: true
+      mrwaypoints.admin.discord: true
       mrwaypoints.admin.update: true
 
   # ------------------------------------------------------------ Players
@@ -80,6 +81,9 @@ permissions:
     default: op
   mrwaypoints.admin.reload:
     description: /mrwaypoints reload - config, categories and texts.
+    default: op
+  mrwaypoints.admin.discord:
+    description: /mrwaypoints discord [test] - status of the Discord log, send a test message.
     default: op
   mrwaypoints.admin.update:
     description: Update notice when joining the server.
