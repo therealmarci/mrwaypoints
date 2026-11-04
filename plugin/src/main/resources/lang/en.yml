@@ -175,10 +175,16 @@ self-create-limit: "Limit reached - at most <max> own waypoints in this category
 mod-download-label: "<aqua><u>[Download]</u></aqua>"
 mod-too-old: "<prefix><hover:show_text:'<gray>Your MRwaypoints mod <version> is too old for this server - waypoints do not show in Xaero'><gold>Mod update needed</hover> <download>"
 mod-too-new: "<prefix><hover:show_text:'<gray>Your MRwaypoints mod <version> is newer than the plugin on the server - the team has to update it'><gold>Mod does not fit the server</hover>"
-gui-xaero-name: "<aqua>Show in Xaero"
-gui-xaero-lore:
-  - "<gray>Switch categories on and off for Xaero's map"
-  - "<dark_gray>also with the key J"
+gui-categories-name: "<aqua>Categories"
+gui-categories-lore:
+  - "<gray>Which ones show in Xaero's map"
+  - "<dark_gray><on>/<total> on · also with the key J"
+gui-categories-title: "<dark_gray>Waypoints · Categories"
+gui-category-lore:
+  - "<gray>In Xaero: <state>"
+  - "<dark_gray><count> waypoints · click: switch"
+gui-categories-all-on: "<green>All on"
+gui-categories-all-off: "<red>All off"
 # --- Settings (Xaero's map) --------------------------------------------------
 gui-settings-name: "<aqua>Settings"
 gui-settings-lore:

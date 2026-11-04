@@ -17,7 +17,7 @@ import java.util.List;
  */
 public final class Protocol {
 
-    /** Protocol this mod speaks. Raise it (here and in the plugin) whenever state or toggle change. */
+    /** Protocol this mod speaks. Raise it (here and in the plugin) whenever state or the actions change. */
     public static final int VERSION = 2;
 
     private Protocol() {
@@ -154,23 +154,6 @@ public final class Protocol {
         }
     }
 
-    /** Switch a category on or off for this player: String category ("*" = all), Boolean visible. */
-    public record TogglePayload(String category, boolean visible) implements CustomPacketPayload {
-
-        public static final Type<TogglePayload> TYPE = new Type<>(id("toggle"));
-        public static final StreamCodec<FriendlyByteBuf, TogglePayload> CODEC = StreamCodec.of(
-                (buf, payload) -> {
-                    buf.writeUtf(payload.category);
-                    buf.writeBoolean(payload.visible);
-                },
-                buf -> new TogglePayload(buf.readUtf(), buf.readBoolean()));
-
-        @Override
-        public Type<? extends CustomPacketPayload> type() {
-            return TYPE;
-        }
-    }
-
     /**
      * A key was pressed, sent as the ordinal - new actions only at the end. Plugins ignore codes they do not know, so
      * a new action needs no new protocol (it just does nothing on older servers).
@@ -181,9 +164,7 @@ public final class Protocol {
         /** Create a waypoint here (the server shows its dialog with name and category). */
         CREATE,
         /** End the guide. */
-        GUIDE_STOP,
-        /** Open the settings (range, display) - button in the category screen. */
-        SETTINGS
+        GUIDE_STOP
     }
 
     /** Client to server: byte action. */
@@ -193,21 +174,6 @@ public final class Protocol {
         public static final StreamCodec<FriendlyByteBuf, ActionPayload> CODEC = StreamCodec.of(
                 (buf, payload) -> buf.writeByte(payload.action.ordinal()),
                 buf -> new ActionPayload(Action.values()[Math.min(buf.readUnsignedByte(), Action.values().length - 1)]));
-
-        @Override
-        public Type<? extends CustomPacketPayload> type() {
-            return TYPE;
-        }
-    }
-
-    /** The server asks to open the category screen (button in /waypoints). No content. */
-    public record OpenPayload() implements CustomPacketPayload {
-
-        public static final Type<OpenPayload> TYPE = new Type<>(id("open"));
-        public static final StreamCodec<FriendlyByteBuf, OpenPayload> CODEC = StreamCodec.of(
-                (buf, payload) -> {
-                },
-                buf -> new OpenPayload());
 
         @Override
         public Type<? extends CustomPacketPayload> type() {

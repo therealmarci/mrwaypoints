@@ -16,8 +16,8 @@ import static at.marcelr.mrwaypoints.Messages.tag;
 
 /**
  * /waypoints: the start - "my waypoints", "create waypoint" and "all waypoints" in the top row, the running guide
- * in the middle (click ends it), "show in Xaero" (with the mod), settings and close at the bottom. Everything only
- * for the dimension the player is in.
+ * in the middle (click ends it), categories for Xaero (with the mod), settings and close at the bottom. Everything
+ * only for the dimension the player is in. With the mod the key J opens this menu too.
  */
 public final class MainMenu extends Menu {
 
@@ -56,15 +56,17 @@ public final class MainMenu extends Menu {
                 render();
             });
         }
-        // Bottom row, centred: "show in Xaero" (with the mod), settings (with the permission), close.
+        // Bottom row, centred: categories for Xaero (with the mod), settings (with the permission), close.
         List<Runnable> bottom = new ArrayList<>();
         List<Integer> slots = new ArrayList<>();
         if (plugin.bridge().compatible(viewer)) {
-            bottom.add(() -> set(slots.removeFirst(), Items.of(Material.MAP).name(messages.item("gui-xaero-name"))
-                    .lore(messages.lore("gui-xaero-lore")).build(), click -> {
+            long on = plugin.store().categories().stream()
+                    .filter(c -> plugin.store().visible(viewer.getUniqueId(), c)).count();
+            bottom.add(() -> set(slots.removeFirst(), Items.of(Material.MAP).name(messages.item("gui-categories-name"))
+                    .lore(messages.lore("gui-categories-lore", tag("on", on),
+                            tag("total", plugin.store().categories().size()))).build(), click -> {
                 clickSound();
-                viewer.closeInventory();
-                plugin.bridge().openScreen(viewer);
+                new CategoryMenu(plugin, viewer, this).open();
             }));
         }
         if (viewer.hasPermission(WaypointPerms.SETTINGS)) {

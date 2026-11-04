@@ -2,7 +2,6 @@ package at.marcelr.mrwaypoints;
 
 import at.marcelr.mrwaypoints.gui.CreateDialog;
 import at.marcelr.mrwaypoints.gui.MainMenu;
-import at.marcelr.mrwaypoints.gui.SettingsMenu;
 import at.marcelr.mrwaypoints.util.Wire;
 import at.marcelr.mrwaypoints.waypoint.Category;
 import at.marcelr.mrwaypoints.waypoint.View;
@@ -33,17 +32,15 @@ import static at.marcelr.mrwaypoints.Messages.tag;
  * is optional - menu and guide work without it. See docs/COMPATIBILITY.md.
  * <p>
  * On joining, the mod sends {@code hello} (protocol, mod version); the plugin checks it ({@link Compatibility}) and
- * answers {@code welcome}. After an OK it sends {@code state} (categories with the player's choice, all waypoints, the player's view) -
- * again after every change - and takes {@code toggle} (switch a category on or off, saved per player). {@code hello}
- * and {@code welcome} never change their format.
+ * answers {@code welcome}. After an OK it sends {@code state} (categories with the player's choice, all waypoints, the
+ * player's view) - again after every change - and takes {@code action} (keys of the mod). The categories are switched in
+ * /waypoints. {@code hello} and {@code welcome} never change their format.
  */
 public final class ModBridge implements Listener, PluginMessageListener {
 
     public static final String HELLO = "mrwaypoints:hello";
     public static final String WELCOME = "mrwaypoints:welcome";
     public static final String STATE = "mrwaypoints:state";
-    public static final String TOGGLE = "mrwaypoints:toggle";
-    public static final String OPEN = "mrwaypoints:open";
     public static final String ACTION = "mrwaypoints:action";
 
     /** What the handshake of a player gave. */
@@ -66,11 +63,9 @@ public final class ModBridge implements Listener, PluginMessageListener {
 
     public void start() {
         Bukkit.getMessenger().registerIncomingPluginChannel(plugin, HELLO, this);
-        Bukkit.getMessenger().registerIncomingPluginChannel(plugin, TOGGLE, this);
         Bukkit.getMessenger().registerIncomingPluginChannel(plugin, ACTION, this);
         Bukkit.getMessenger().registerOutgoingPluginChannel(plugin, WELCOME);
         Bukkit.getMessenger().registerOutgoingPluginChannel(plugin, STATE);
-        Bukkit.getMessenger().registerOutgoingPluginChannel(plugin, OPEN);
     }
 
     public void stop() {
@@ -129,15 +124,6 @@ public final class ModBridge implements Listener, PluginMessageListener {
         View view = plugin.store().view(player.getUniqueId());
         out.varInt(view.range()).bool(view.worldMapOnly()).bool(view.farOnMap());
         send(player, STATE, out.bytes());
-    }
-
-    /** Opens the mod's category screen. @return false without a compatible mod */
-    public boolean openScreen(Player player) {
-        if (!compatible(player)) {
-            return false;
-        }
-        send(player, OPEN, new byte[0]);
-        return true;
     }
 
     /**
@@ -200,7 +186,6 @@ public final class ModBridge implements Listener, PluginMessageListener {
         try {
             switch (channel) {
                 case HELLO -> hello(player, new Wire.Reader(message));
-                case TOGGLE -> toggle(player, new Wire.Reader(message));
                 case ACTION -> action(player, new Wire.Reader(message));
                 default -> {
                 }
@@ -242,8 +227,8 @@ public final class ModBridge implements Listener, PluginMessageListener {
 
 
     /**
-     * action: byte (0 open /waypoints, 1 create here, 2 end the guide, 3 open the settings) - keys and buttons of the
-     * mod. Unknown codes are ignored.
+     * action: byte (0 open /waypoints, 1 create here, 2 end the guide) - keys of the mod. Unknown codes are
+     * ignored.
      */
     private void action(Player player, Wire.Reader in) throws IOException {
         int code = in.unsignedByte();
@@ -255,29 +240,8 @@ public final class ModBridge implements Listener, PluginMessageListener {
             case 1 -> CreateDialog.open(plugin, player, () -> {
             });
             case 2 -> plugin.messages().send(player, plugin.guide().stop(player) ? "guide-stopped" : "guide-none");
-            case 3 -> {
-                if (player.hasPermission(WaypointPerms.SETTINGS)) {
-                    new SettingsMenu(plugin, player, null).open();
-                } else {
-                    plugin.messages().send(player, "no-permission");
-                }
-            }
             default -> {
             }
         }
-    }
-    /** toggle: String category ("*" = all), Boolean visible. */
-    private void toggle(Player player, Wire.Reader in) throws IOException {
-        String id = in.string();
-        boolean visible = in.bool();
-        if (!compatible(player)) {
-            return;
-        }
-        Category category = id.equals("*") ? null : plugin.store().category(id);
-        if (category == null && !id.equals("*")) {
-            return;
-        }
-        // The store tells its listeners, which send the new state.
-        plugin.store().setVisible(player.getUniqueId(), category, visible);
     }
 }

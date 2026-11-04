@@ -3,9 +3,7 @@ package at.marcelr.mrwaypoints.mod;
 import at.marcelr.mrwaypoints.mod.Protocol.Action;
 import at.marcelr.mrwaypoints.mod.Protocol.ActionPayload;
 import at.marcelr.mrwaypoints.mod.Protocol.HelloPayload;
-import at.marcelr.mrwaypoints.mod.Protocol.OpenPayload;
 import at.marcelr.mrwaypoints.mod.Protocol.StatePayload;
-import at.marcelr.mrwaypoints.mod.Protocol.TogglePayload;
 import at.marcelr.mrwaypoints.mod.Protocol.WelcomePayload;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.api.ClientModInitializer;
@@ -28,9 +26,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * MRwaypoints on the client: says hello to the plugin, receives the server waypoints and hands the visible ones to
- * Xaero's Minimap ({@link XaeroBridge}). The categories are switched on and off on the server (saved per player), from
- * the own screen ({@link CategoryScreen}: key, button in Xaero's waypoint menu, button in /waypoints) or on the player
- * page in the web interface.
+ * Xaero's Minimap ({@link XaeroBridge}). There is one menu only - the server's /waypoints (categories for Xaero,
+ * settings, lists): the key J and a button in Xaero's waypoint menu open it. The categories are saved on the server per
+ * player and can also be switched on the player page in the web interface.
  */
 public final class MRwaypointsClient implements ClientModInitializer {
 
@@ -40,7 +38,6 @@ public final class MRwaypointsClient implements ClientModInitializer {
     /** Class of Xaero's waypoint menu - by name, so the button just does not appear if Xaero renames it. */
     private static final String XAERO_WAYPOINTS_SCREEN = "xaero.common.gui.GuiWaypoints";
 
-    private static KeyMapping screenKey;
     private static KeyMapping createKey;
     private static KeyMapping toggleAllKey;
     private static KeyMapping menuKey;
@@ -61,19 +58,15 @@ public final class MRwaypointsClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         PayloadTypeRegistry.serverboundPlay().register(HelloPayload.TYPE, HelloPayload.CODEC);
-        PayloadTypeRegistry.serverboundPlay().register(TogglePayload.TYPE, TogglePayload.CODEC);
         PayloadTypeRegistry.serverboundPlay().register(ActionPayload.TYPE, ActionPayload.CODEC);
         PayloadTypeRegistry.clientboundPlay().register(WelcomePayload.TYPE, WelcomePayload.CODEC);
         PayloadTypeRegistry.clientboundPlay().register(StatePayload.TYPE, StatePayload.CODEC);
-        PayloadTypeRegistry.clientboundPlay().register(OpenPayload.TYPE, OpenPayload.CODEC);
 
         ClientPlayNetworking.registerGlobalReceiver(WelcomePayload.TYPE, (payload, context) -> welcome(payload));
         ClientPlayNetworking.registerGlobalReceiver(StatePayload.TYPE, (payload, context) -> {
             state = payload;
             dirty = true;
         });
-        ClientPlayNetworking.registerGlobalReceiver(OpenPayload.TYPE,
-                (payload, context) -> context.client().gui.setScreen(new CategoryScreen(null)));
 
         // Say hello as soon as the server can receive it (it announces its channels after joining).
         ServerboundPlayChannelEvents.REGISTER.register((handler, sender, client, channels) -> {
@@ -98,17 +91,19 @@ public final class MRwaypointsClient implements ClientModInitializer {
 
         // Only J has a default; the others are free to bind (Options -> Controls -> MRwaypoints), so nothing clashes
         // with Xaero or other mods. Fixed order there, the ids stay the same.
-        screenKey = key("categories", InputConstants.KEY_J, 0);
+        menuKey = key("menu", InputConstants.KEY_J, 0);
         createKey = key("create", InputConstants.UNKNOWN.getValue(), 1);
         toggleAllKey = key("toggle-all", InputConstants.UNKNOWN.getValue(), 2);
-        menuKey = key("menu", InputConstants.UNKNOWN.getValue(), 3);
-        guideStopKey = key("guide-stop", InputConstants.UNKNOWN.getValue(), 4);
+        guideStopKey = key("guide-stop", InputConstants.UNKNOWN.getValue(), 3);
 
-        // A button in Xaero's waypoint menu opens the category screen (only on servers with MRwaypoints).
+        // A button in Xaero's waypoint menu opens /waypoints (only on servers with MRwaypoints).
         ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
             if (state() != null && screen.getClass().getName().equals(XAERO_WAYPOINTS_SCREEN)) {
                 Screens.getWidgets(screen).add(Button.builder(Component.translatable("mrwaypoints.button.xaero"),
-                        button -> client.gui.setScreen(new CategoryScreen(screen)))
+                        button -> {
+                            client.gui.setScreen(null);
+                            send(client, Action.MENU);
+                        })
                         .bounds(width - 125, 5, 120, 20).build());
             }
         });
@@ -118,11 +113,6 @@ public final class MRwaypointsClient implements ClientModInitializer {
                     && helloTicks <= 600) {
                 LOG.info("No answer from MRwaypoints on the server yet, saying hello again.");
                 ClientPlayNetworking.send(hello());
-            }
-            while (screenKey.consumeClick()) {
-                if (connected(client)) {
-                    client.gui.setScreen(new CategoryScreen(null));
-                }
             }
             while (createKey.consumeClick()) {
                 send(client, Action.CREATE);
@@ -222,18 +212,6 @@ public final class MRwaypointsClient implements ClientModInitializer {
                 client.player.sendSystemMessage(Component.translatable("mrwaypoints.message.incompatible",
                         payload.pluginVersion()));
             }
-        }
-    }
-
-    /** Asks the server to open its settings menu (range, display) - button in the category screen. */
-    public static void openSettings() {
-        send(Minecraft.getInstance(), Action.SETTINGS);
-    }
-
-    /** Switches a category on or off ("*" = all) - the server saves it and sends the new state. */
-    public static void toggle(String category, boolean visible) {
-        if (compatible && ClientPlayNetworking.canSend(TogglePayload.TYPE)) {
-            ClientPlayNetworking.send(new TogglePayload(category, visible));
         }
     }
 

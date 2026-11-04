@@ -5,7 +5,7 @@ MRwaypoints besteht aus zwei Teilen:
 | Teil | Ordner | Läuft auf | Aufgabe |
 |---|---|---|---|
 | **Plugin** (Paper) | `plugin/` | Server | Kategorien, Wegpunkte, Rechte, Menü `/waypoints`, Wegweiser, Web und Karte über MRadmin, welche Kategorien ein Spieler in Xaero sehen will (`players.yml`) |
-| **Mod** (Fabric) | `mod/` | Client | Zeigt die Server-Wegpunkte in Xaero's Minimap und World Map, Bildschirm zum Ein- und Ausschalten der Kategorien (Taste `J`, Knopf in Xaeros Wegpunkt-Menü) |
+| **Mod** (Fabric) | `mod/` | Client | Zeigt die Server-Wegpunkte in Xaero's Minimap und World Map, Taste `J` und Knopf in Xaeros Wegpunkt-Menü öffnen `/waypoints` (dort auch die Kategorien) - kein eigener Bildschirm |
 
 Der Mod ist **optional**: Ohne ihn funktionieren Menü und Wegweiser ganz normal. Er braucht **Xaero's Minimap** (die World Map zeigt die Wegpunkte der Minimap mit an).
 
@@ -31,9 +31,7 @@ Die Formate von `hello` und `welcome` ändern sich **nie** (Felder nur hinten an
 | `mrwaypoints:hello` | Mod → Plugin | VarInt Protokoll, String Mod-Version, String Minecraft-Version (eingefroren) |
 | `mrwaypoints:welcome` | Plugin → Mod | VarInt Status (0 OK, 1 zu alt, 2 zu neu), VarInt min, VarInt max, String Plugin-Version, String Mindestversion, String Download-Link (eingefroren) |
 | `mrwaypoints:state` | Plugin → Mod | VarInt n, n × (String id, String Name in der Sprache des Spielers, Int Farbe, Boolean an); VarInt m, m × (VarInt id, String Kategorie, String Name, String Dimension wie `minecraft:overworld`, Int x, Int y, Int z); VarInt Sichtweite (Chunks in jede Richtung um den Spieler, 0 = unbegrenzt), Boolean nur Weltkarte, Boolean Entfernte auf der Weltkarte |
-| `mrwaypoints:toggle` | Mod → Plugin | String Kategorie (`*` = alle), Boolean an |
-| `mrwaypoints:open` | Plugin → Mod | leer - öffnet den Kategorien-Bildschirm (Knopf in `/waypoints`) |
-| `mrwaypoints:action` | Mod → Plugin | Byte Aktion: 0 `/waypoints` öffnen, 1 Wegpunkt hier erstellen (Server zeigt seinen Dialog), 2 Wegweiser beenden, 3 Einstellungen öffnen - unbekannte Codes ignoriert das Plugin, neue Aktionen nur hinten anhängen (kein neues Protokoll nötig) |
+| `mrwaypoints:action` | Mod → Plugin | Byte Aktion: 0 `/waypoints` öffnen, 1 Wegpunkt hier erstellen (Server zeigt seinen Dialog), 2 Wegweiser beenden - unbekannte Codes ignoriert das Plugin, neue Aktionen nur hinten anhängen (kein neues Protokoll nötig) |
 
 Strings sind VarInt-Länge + UTF-8, Zahlen Big-Endian - wie Minecrafts `FriendlyByteBuf` (Plugin: `util/Wire`, getestet in `WireTest`).
 
@@ -43,11 +41,11 @@ Xaero hat keine offizielle API. Der Mod nutzt Xaeros Ablage für Wegpunkte ander
 Die Einstellungen des Spielers setzt `XaeroBridge.follow` pro Wegpunkt um, sobald er sich ein paar Blöcke bewegt: innerhalb der Sichtweite `LOCAL` (Welt + Minimap + World Map), sonst bzw. bei „nur Weltkarte“ `WORLD_MAP_LOCAL` (nur World Map - Xaeros Minimap- und Welt-Anzeige überspringen diesen Typ), ohne „Entfernte auf der Weltkarte“ `setDisabled(true)`. Minimap und Welt lassen sich pro Wegpunkt nicht getrennt schalten.
 
 ## Bei Änderungen
-- Neue Nachricht oder geändertes Format von `state`/`toggle`/`open`: `Protocol.VERSION` im Mod **und** `MAX_PROTOCOL` im Plugin erhöhen. Alte Mods weiter unterstützen, solange es geht (`MIN_PROTOCOL` erst anheben, wenn es nicht mehr anders geht).
+- Neue Nachricht oder geändertes Format von `state`: `Protocol.VERSION` im Mod **und** `MAX_PROTOCOL` im Plugin erhöhen. Alte Mods weiter unterstützen, solange es geht (`MIN_PROTOCOL` erst anheben, wenn es nicht mehr anders geht).
 - Neue Xaero-Version: `xaero_minimap_version` in `mod/gradle.properties` anheben, bauen, im Spiel prüfen.
 
 ## Verlauf des Protokolls
 | Protokoll | Änderung |
 |---|---|
 | 1 | erste Fassung (nie veröffentlicht) |
-| 2 | `state` endet mit den Einstellungen des Spielers (Sichtweite, nur Weltkarte, Entfernte auf der Weltkarte); Aktion 3 öffnet die Einstellungen. Plugin spricht nur noch 2 (1 war nie veröffentlicht). |
+| 2 | `state` endet mit den Einstellungen des Spielers (Sichtweite, nur Weltkarte, Entfernte auf der Weltkarte); `toggle` und `open` entfallen (Kategorien nur noch im Menü `/waypoints`). Plugin spricht nur noch 2 (1 war nie veröffentlicht). |

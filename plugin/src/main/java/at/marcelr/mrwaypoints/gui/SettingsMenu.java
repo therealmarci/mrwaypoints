@@ -8,7 +8,6 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
-import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
@@ -16,14 +15,14 @@ import static at.marcelr.mrwaypoints.Messages.tag;
 
 /**
  * /waypoints -> settings: how far and where the player sees the server waypoints in Xaero's map (only with the mod).
- * Range, display and "far ones on the World Map" in the middle row, back (or close, opened by the mod) at the bottom
- * centre. Saved on the server per player, the mod gets the new state at once.
+ * Range, display and "far ones on the World Map" in the middle row, back at the bottom centre. Saved on the server
+ * per player, the mod gets the new state at once.
  */
 public final class SettingsMenu extends Menu {
 
-    private final @Nullable Menu back;
+    private final Menu back;
 
-    public SettingsMenu(MRWaypoints plugin, Player viewer, @Nullable Menu back) {
+    public SettingsMenu(MRWaypoints plugin, Player viewer, Menu back) {
         super(plugin, viewer, 3, plugin.messages().get("gui-settings-title"));
         this.back = back;
     }
@@ -67,14 +66,10 @@ public final class SettingsMenu extends Menu {
             });
         }
 
-        if (back != null) {
-            set(22, Items.of(Material.ARROW).name(messages.item("gui-back")).build(), click -> {
-                clickSound();
-                back.open();
-            });
-        } else {
-            set(22, Items.of(Material.OAK_DOOR).name(messages.item("gui-close")).build(), click -> viewer.closeInventory());
-        }
+        set(22, Items.of(Material.ARROW).name(messages.item("gui-back")).build(), click -> {
+            clickSound();
+            back.open();
+        });
     }
 
     private void save(View view) {

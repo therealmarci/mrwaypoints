@@ -13,7 +13,7 @@
 # ==============================================================================
 
 # Do not change - used for automatic config updates.
-config-version: 5
+config-version: 6
 
 # Language of the texts (chat, menus, action bar). The texts are in plugins/MRwaypoints/lang/<language>.yml.
 #   auto = every player gets the language set in their Minecraft client:
@@ -57,8 +57,8 @@ waypoints:
 #   3) MOD FOR XAERO'S MAP
 # ------------------------------------------------------------------------------
 # Players with the MRwaypoints mod (Fabric, needs Xaero's Minimap) see the server waypoints in Xaero's Minimap and
-# World Map and switch categories on and off (key J, button in Xaero's waypoint menu or in /waypoints). Their choice
-# is saved on the server (players.yml). Without the mod, menu and guide work as usual.
+# World Map and switch categories on and off in /waypoints -> Categories (the key J and a button in Xaero's waypoint menu
+# open /waypoints). Their choice is saved on the server (players.yml). Without the mod, menu and guide work as usual.
 mod:
   # Oldest version of the mod that is still allowed (e.g. "0.2.1", empty = any compatible version).
   # Which mod versions fit the plugin in principle is built into the plugin (protocol version) - here you

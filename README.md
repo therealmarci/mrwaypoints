@@ -56,7 +56,7 @@ Spieler **ohne** Mod nutzen Menü und Wegweiser ganz normal. Plugin und Mod habe
 | **Wegpunkt erstellen** | ein Dialog mit Name und Kategorie - nur Kategorien, in denen du gerade anlegen darfst (mit „genutzt/Limit“). Der Wegpunkt kommt an deine Position. Grau, wenn du nirgends darfst. |
 | **Alle Wegpunkte** | alle Server-Wegpunkte hier |
 | Mitte: **Wegweiser** | nur wenn einer läuft - Klick beendet ihn |
-| unten: **In Xaero anzeigen** · **Einstellungen** · **Schließen** | „In Xaero anzeigen“ nur mit dem Mod; **Einstellungen**: Sichtweite und Anzeige in Xaero (siehe unten) |
+| unten: **Kategorien** · **Einstellungen** · **Schließen** | **Kategorien** (nur mit dem Mod): welche Kategorien in Xaero erscheinen; **Einstellungen**: Sichtweite und Anzeige in Xaero (siehe unten) |
 
 In den Listen:
 
@@ -71,18 +71,17 @@ Private Wegpunkte legst du wie gewohnt direkt in Xaero's Minimap an - sie bleibe
 ### In Xaero's Minimap und World Map (mit Mod)
 1. **Fabric API**, **Xaero's Minimap** (und gern Xaero's World Map) und den **[MRwaypoints-Mod](https://mrtechnology.marcelr.at/download/mrwaypoints/)** (Zeile „Fabric-Mod (Client)“) in den Ordner `mods/` legen.
 2. Auf den Server gehen - die Server-Wegpunkte erscheinen von selbst auf der Minimap, im Spiel und auf der World Map, in der Farbe ihrer Kategorie. Sie liegen getrennt von deinen eigenen Xaero-Wegpunkten.
-3. **Kategorien ein- und ausschalten:** Taste **`J`** (änderbar unter Optionen → Steuerung → MRwaypoints), Knopf **„Server-Wegpunkte …“** in Xaeros Wegpunkt-Menü oder **„In Xaero anzeigen“** in `/waypoints`. Deine Auswahl speichert der Server - sie gilt auf jedem PC und auch auf der Spielerseite im Web.
+3. **Ein Menü für alles:** Die Taste **`J`** (änderbar unter Optionen → Steuerung → MRwaypoints) und der Knopf **„Server-Wegpunkte …“** in Xaeros Wegpunkt-Menü öffnen `/waypoints`. Dort schaltest du unter **Kategorien** ein und aus, welche Kategorien in Xaero erscheinen (Klick pro Kategorie, „Alle an“ / „Alle aus“). Deine Auswahl speichert der Server - sie gilt auf jedem PC und auch auf der Spielerseite im Web.
 4. **Tasten** (Optionen → Steuerung → MRwaypoints): nur `J` ist vorbelegt, die anderen legst du selbst fest, damit nichts mit Xaero oder anderen Mods kollidiert.
 
    | Taste | Was passiert |
    |---|---|
-   | Kategorien (`J`) | Bildschirm mit allen Kategorien zum Ein- und Ausschalten |
+   | Wegpunkt-Menü (`J`) | `/waypoints` |
    | Wegpunkt hier erstellen | der Dialog mit Name und Kategorie - wie im Menü |
    | Server-Wegpunkte ein/aus | alle Server-Wegpunkte in Xaero aus- und wieder einblenden (nur auf diesem PC, deine Auswahl pro Kategorie bleibt) |
-   | Wegpunkt-Menü öffnen | `/waypoints` |
    | Wegweiser beenden | wie `/waypoints stop` |
 
-5. **Sichtweite und Anzeige:** In `/waypoints` → **Einstellungen** (oder Knopf „Sichtweite und Anzeige …“ im Bildschirm von `J`) legst du fest, wie du die Server-Wegpunkte siehst. Der Server speichert das für dich.
+5. **Sichtweite und Anzeige:** In `/waypoints` → **Einstellungen** legst du fest, wie du die Server-Wegpunkte siehst. Der Server speichert das für dich.
 
    | Einstellung | Was sie tut |
    |---|---|
@@ -189,7 +188,7 @@ MRwaypoints läuft **allein**. Zusammen mit anderen MRtechnology-Plugins kann es
 
 **Brauchen Spieler einen Mod?** Nein. Menü und Wegweiser funktionieren mit jedem Client. Der Mod bringt die Wegpunkte zusätzlich in Xaero's Karten.
 
-**Mit Mod erscheinen keine Wegpunkte in Xaero.** Ist die Kategorie für dich eingeschaltet (Taste `J`)? Ist Xaero's **Minimap** installiert (die World Map allein reicht nicht)? Im Client-Log steht „Connected to MRwaypoints …“ bzw. bei einer nicht unterstützten Xaero-Version eine Fehlermeldung.
+**Mit Mod erscheinen keine Wegpunkte in Xaero.** Ist die Kategorie für dich eingeschaltet (`/waypoints` → Kategorien)? Ist Xaero's **Minimap** installiert (die World Map allein reicht nicht)? Im Client-Log steht „Connected to MRwaypoints …“ bzw. bei einer nicht unterstützten Xaero-Version eine Fehlermeldung.
 
 ## Lizenz
 MRwaypoints steht unter der **[MRtechnology Lizenz](LICENSE)** (source-available, nicht Open Source). Kurz gesagt:

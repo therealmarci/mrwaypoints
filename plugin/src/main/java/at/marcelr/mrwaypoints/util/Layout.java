@@ -1,5 +1,6 @@
 package at.marcelr.mrwaypoints.util;
 
+import java.util.Arrays;
 import java.util.List;
 
 /** Slot layouts of the menus - symmetric, without Bukkit so they can be tested. */
@@ -29,6 +30,20 @@ public final class Layout {
             return choices.getFirst();
         }
         return choices.get(Math.floorMod(index + (forward ? 1 : -1), choices.size()));
+    }
+
+    /**
+     * Columns (0-8) for up to seven buttons in one row, symmetric around the middle (4): up to four spaced out, five
+     * and seven side by side, six with a gap in the middle.
+     */
+    public static int[] columns(int count) {
+        return switch (count) {
+            case 0 -> new int[0];
+            case 1, 2, 3, 4 -> Arrays.stream(row(count)).map(slot -> slot - 9).toArray();
+            case 5 -> new int[]{2, 3, 4, 5, 6};
+            case 6 -> new int[]{1, 2, 3, 5, 6, 7};
+            default -> new int[]{1, 2, 3, 4, 5, 6, 7};
+        };
     }
 
     /** Arrow from where the player looks to the target. */
