@@ -42,7 +42,7 @@ public record Settings(
     /**
      * What players can pick in /waypoints -> settings (only with the mod) and what applies until they do.
      *
-     * @param ranges   the ranges to choose from: side of the square around the player in chunks, 0 = unlimited
+     * @param ranges   the ranges to choose from: chunks to every side of the player, 0 = unlimited
      * @param defaults for players who did not change anything
      */
     public record ViewSettings(List<Integer> ranges, View defaults) {

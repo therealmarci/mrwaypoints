@@ -11,7 +11,7 @@
 # ==============================================================================
 
 # Nicht ändern - damit erkennt das Plugin bei Updates, welche Texte erneuert werden müssen.
-lang-version: 2
+lang-version: 3
 
 prefix: "<dark_gray>[<gold>MRwaypoints</gold>]</dark_gray> "
 
@@ -193,7 +193,7 @@ gui-range-lore:
   - "<gray>So weit in der Welt und auf der Minimap"
   - "<dark_gray>Linksklick: weiter · Rechtsklick: näher"
 gui-range-unlimited: "unbegrenzt"
-gui-range-chunks: "<count> × <count> Chunks"
+gui-range-chunks: "<count> Chunks in jede Richtung"
 gui-display-name: "<aqua>Anzeige: <white><display>"
 gui-display-lore:
   - "<gray>Wo die Server-Wegpunkte erscheinen"

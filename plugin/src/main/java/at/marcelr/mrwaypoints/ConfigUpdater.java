@@ -22,14 +22,14 @@ import java.util.logging.Level;
 public final class ConfigUpdater {
 
     /** 2: mod (the MRwaypoints mod for Xaero's map). */
-    public static final int CURRENT_VERSION = 4;
+    public static final int CURRENT_VERSION = 5;
     public static final String BOM = "﻿";
     /**
      * Values whose meaning or default changed: key -> config-version that brought the change. Only files older than
      * that version get the new default, later changes by the admin stay.
      */
     private static final Map<String, Integer> REPLACED_KEYS = Map.of(
-            // 4: the range is counted in chunks (side of the square around the player) instead of blocks.
+            // 4: the range is counted in chunks (to every side of the player) instead of blocks.
             "view.ranges", 4, "view.default-range", 4);
     /** Keys that were renamed: old path -> new path (the value is carried over). */
     private static final Map<String, String> RENAMED_KEYS = Map.of();

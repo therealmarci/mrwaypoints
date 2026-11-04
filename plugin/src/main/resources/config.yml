@@ -13,7 +13,7 @@
 # ==============================================================================
 
 # Do not change - used for automatic config updates.
-config-version: 4
+config-version: 5
 
 # Language of the texts (chat, menus, action bar). The texts are in plugins/MRwaypoints/lang/<language>.yml.
 #   auto = every player gets the language set in their Minecraft client:
@@ -74,7 +74,7 @@ mod:
 # Every player sets in /waypoints -> Settings how far and where they see the server waypoints (permission
 # mrwaypoints.settings, saved per player in players.yml). These are the choices and the defaults.
 view:
-  # Ranges to choose from, in chunks: the side of the square around the player, e.g. 10 = 10 x 10 chunks
+  # Ranges to choose from, in chunks to every side of the player, e.g. 10 = 10 chunks (160 blocks) in each direction
   # (0 = unlimited). Only applies in the world and on the minimap - Xaero's own limit for waypoints in the world
   # applies on top.
   ranges: [10, 20, 50, 100, 0]

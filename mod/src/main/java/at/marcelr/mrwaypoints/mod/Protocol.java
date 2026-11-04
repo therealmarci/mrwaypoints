@@ -94,8 +94,8 @@ public final class Protocol {
     }
 
     /**
-     * How the player wants the waypoints (set in /waypoints -> settings): in the world and on the minimap only within
-     * a square of {@code range} x {@code range} chunks around them (0 = unlimited), only on the World Map, the ones
+     * How the player wants the waypoints (set in /waypoints -> settings): in the world and on the minimap only up to
+     * {@code range} chunks to every side of them (0 = unlimited), only on the World Map, the ones
      * beyond the range still on the World Map.
      */
     public record View(int range, boolean worldMapOnly, boolean farOnMap) {

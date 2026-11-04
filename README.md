@@ -86,7 +86,7 @@ Private Wegpunkte legst du wie gewohnt direkt in Xaero's Minimap an - sie bleibe
 
    | Einstellung | Was sie tut |
    |---|---|
-   | **Sichtweite** | in welchem Bereich um dich die Wegpunkte im Spiel und auf der Minimap erscheinen: 10 × 10, 20 × 20, 50 × 50 oder 100 × 100 Chunks oder unbegrenzt (Linksklick weiter, Rechtsklick näher; die Stufen legt der Server fest). Xaeros eigene Grenze für Wegpunkte im Spiel gilt zusätzlich. |
+   | **Sichtweite** | wie weit um dich die Wegpunkte im Spiel und auf der Minimap erscheinen: 10, 20, 50 oder 100 Chunks in jede Richtung oder unbegrenzt (Linksklick weiter, Rechtsklick näher; die Stufen legt der Server fest). Xaeros eigene Grenze für Wegpunkte im Spiel gilt zusätzlich. |
    | **Anzeige** | „Welt, Minimap und Weltkarte“ oder „nur Weltkarte“ |
    | **Entfernte auf der Weltkarte** | Wegpunkte außerhalb der Sichtweite trotzdem auf der World Map zeigen (nur bei begrenzter Sichtweite) |
 
@@ -167,7 +167,7 @@ Alles steht kommentiert in `plugins/MRwaypoints/config.yml`. Änderungen überni
 | `guide` | Wegweiser: wie oft der Pfeil aktualisiert (`update-ticks`), ab wie vielen Blöcken „angekommen“ (`arrive-distance`), Ton |
 | `waypoints` | längster Name (`max-name-length`) |
 | `mod` | Mod für Xaero: Mindestversion (`minimum-version`), Download-Link |
-| `view` | Einstellungen der Spieler für Xaero: wählbare Sichtweiten in Chunks (`ranges`: Seitenlänge des Quadrats um den Spieler, `0` = unbegrenzt) und Standards (`default-range`, `default-display` `everywhere`/`world-map`, `default-far-on-world-map`) |
+| `view` | Einstellungen der Spieler für Xaero: wählbare Sichtweiten in Chunks (`ranges`: Chunks in jede Richtung um den Spieler, `0` = unbegrenzt) und Standards (`default-range`, `default-display` `everywhere`/`world-map`, `default-far-on-world-map`) |
 | `update-checker` · `gui` | Update-Hinweise, Menüs |
 
 **Texte:** Alle Texte stehen in `plugins/MRwaypoints/lang/<sprache>.yml`, die Namen der Kategorien in `categories.yml`. Die Konsole ist immer Englisch.

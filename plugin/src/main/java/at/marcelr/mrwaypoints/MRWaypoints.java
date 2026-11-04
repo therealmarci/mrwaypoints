@@ -27,7 +27,8 @@ public final class MRWaypoints extends JavaPlugin implements Listener {
     private FileConfiguration config;
     private Settings settings;
     // lang-version 2: one dialog for name and category (create).
-    private final Messages messages = new Messages(2, Map.of(2, Set.of("dialog-create-title", "dialog-create-hint")));
+    private final Messages messages = new Messages(3, Map.of(2, Set.of("dialog-create-title", "dialog-create-hint"),
+            3, Set.of("gui-range-chunks")));
     private final WaypointPerms permissions = new WaypointPerms();
     private final WaypointActions actions = new WaypointActions(this);
     private WaypointStore store;
