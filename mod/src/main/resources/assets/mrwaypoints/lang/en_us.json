@@ -3,7 +3,6 @@
   "key.mrwaypoints.create": "Create waypoint here",
   "key.mrwaypoints.toggle-all": "Server waypoints on/off",
   "key.mrwaypoints.menu": "Waypoint menu (/waypoints)",
-  "key.mrwaypoints.guide-stop": "End guide",
   "mrwaypoints.button.xaero": "Server waypoints …",
   "mrwaypoints.message.no-server": "This server has no MRwaypoints.",
   "mrwaypoints.message.too-old": "Your MRwaypoints mod is too old for this server - please update it.",

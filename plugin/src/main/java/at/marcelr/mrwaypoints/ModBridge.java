@@ -42,6 +42,7 @@ public final class ModBridge implements Listener, PluginMessageListener {
     public static final String WELCOME = "mrwaypoints:welcome";
     public static final String STATE = "mrwaypoints:state";
     public static final String ACTION = "mrwaypoints:action";
+    public static final String KEYS = "mrwaypoints:keys";
 
     /** What the handshake of a player gave. */
     public record Client(int protocol, String modVersion, Compatibility.Status status) {
@@ -66,6 +67,7 @@ public final class ModBridge implements Listener, PluginMessageListener {
         Bukkit.getMessenger().registerIncomingPluginChannel(plugin, ACTION, this);
         Bukkit.getMessenger().registerOutgoingPluginChannel(plugin, WELCOME);
         Bukkit.getMessenger().registerOutgoingPluginChannel(plugin, STATE);
+        Bukkit.getMessenger().registerOutgoingPluginChannel(plugin, KEYS);
     }
 
     public void stop() {
@@ -126,6 +128,15 @@ public final class ModBridge implements Listener, PluginMessageListener {
         send(player, STATE, out.bytes());
     }
 
+
+    /** Opens Minecraft's key bindings on the client (the MRwaypoints keys are there). @return false without the mod */
+    public boolean openKeys(Player player) {
+        if (!compatible(player)) {
+            return false;
+        }
+        send(player, KEYS, new byte[0]);
+        return true;
+    }
     /**
      * Sends a message now, or as soon as the client announced the channel. While something is waiting, later messages
      * wait behind it, so they never overtake each other (e.g. the state the welcome).

@@ -3,7 +3,6 @@
   "key.mrwaypoints.create": "Wegpunkt hier erstellen",
   "key.mrwaypoints.toggle-all": "Server-Wegpunkte ein/aus",
   "key.mrwaypoints.menu": "Wegpunkt-Menü (/waypoints)",
-  "key.mrwaypoints.guide-stop": "Wegweiser beenden",
   "mrwaypoints.button.xaero": "Server-Wegpunkte …",
   "mrwaypoints.message.no-server": "Dieser Server hat kein MRwaypoints.",
   "mrwaypoints.message.too-old": "Dein MRwaypoints-Mod ist zu alt für diesen Server - bitte aktualisieren.",

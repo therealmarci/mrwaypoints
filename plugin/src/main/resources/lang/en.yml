@@ -188,6 +188,18 @@ gui-category-lore:
 gui-category-only: "<dark_gray>Only in: <worlds>"
 gui-categories-all-on: "<green>All on"
 gui-categories-all-off: "<red>All off"
+gui-categories-info: "<aqua>Categories in Xaero <dark_gray>· <white><on>/<total> on"
+gui-categories-info-lore:
+  - "<gray>A click on symbol or state switches it"
+  - "<dark_gray>applies on every PC and on the web map"
+gui-category-shown: "<green>✔ Shown <dark_gray>· <name>"
+gui-category-hidden: "<red>✖ Hidden <dark_gray>· <name>"
+gui-category-switch-lore:
+  - "<dark_gray>Click: switch"
+gui-keys-name: "<aqua>Key bindings"
+gui-keys-lore:
+  - "<gray>Set the keys of MRwaypoints"
+  - "<dark_gray>opens Minecraft's controls"
 # --- Settings (Xaero's map) --------------------------------------------------
 gui-settings-name: "<aqua>Settings"
 gui-settings-lore:

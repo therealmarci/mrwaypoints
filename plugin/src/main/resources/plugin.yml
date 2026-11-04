@@ -11,7 +11,7 @@ commands:
   waypoints:
     description: Menu with all server waypoints - guide, create, edit; /waypoints stop ends the guide.
     usage: /waypoints [stop]
-    aliases: [wegpunkte, wps]
+    aliases: [waypoint, wegpunkte, wegpunkt, wps]
   mrwaypoints:
     description: Management of MRwaypoints.
     usage: /mrwaypoints <reload|version|help>

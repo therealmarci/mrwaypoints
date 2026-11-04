@@ -48,7 +48,7 @@ Spieler **ohne** Mod nutzen Menü und Wegweiser ganz normal. Plugin und Mod habe
 ---
 
 ## Für Spieler
-**`/waypoints`** (auch `/wegpunkte`) öffnet ein kleines Menü mit drei Knöpfen. Alles darin gilt für die **Welt bzw. Dimension, in der du gerade bist** - Wegpunkte im Nether siehst du im Nether.
+**`/waypoints`** (auch `/waypoint`, `/wegpunkte`) öffnet ein kleines Menü mit drei Knöpfen. Alles darin gilt für die **Welt bzw. Dimension, in der du gerade bist** - Wegpunkte im Nether siehst du im Nether.
 
 | Knopf | Was passiert |
 |---|---|
@@ -72,16 +72,15 @@ Private Wegpunkte legst du wie gewohnt direkt in Xaero's Minimap an - sie bleibe
 1. **Fabric API**, **Xaero's Minimap** (und gern Xaero's World Map) und den **[MRwaypoints-Mod](https://mrtechnology.marcelr.at/download/mrwaypoints/)** (Zeile „Fabric-Mod (Client)“) in den Ordner `mods/` legen.
 2. Auf den Server gehen - die Server-Wegpunkte erscheinen von selbst auf der Minimap, im Spiel und auf der World Map, in der Farbe ihrer Kategorie. Sie liegen getrennt von deinen eigenen Xaero-Wegpunkten.
 3. **Ein Menü für alles:** Die Taste **`J`** (änderbar unter Optionen → Steuerung → MRwaypoints) und der Knopf **„Server-Wegpunkte …“** in Xaeros Wegpunkt-Menü öffnen `/waypoints`. Dort schaltest du unter **Kategorien** ein und aus, welche Kategorien in Xaero erscheinen (Klick pro Kategorie, „Alle an“ / „Alle aus“). Deine Auswahl speichert der Server - sie gilt auf jedem PC und auch auf der Spielerseite im Web.
-4. **Tasten** (Optionen → Steuerung → MRwaypoints): nur `J` ist vorbelegt, die anderen legst du selbst fest, damit nichts mit Xaero oder anderen Mods kollidiert.
+4. **Tasten** (Optionen → Steuerung → MRwaypoints, schneller über `/waypoints` → Einstellungen → Tastenbelegung): nur `J` ist vorbelegt, die anderen legst du selbst fest, damit nichts mit Xaero oder anderen Mods kollidiert.
 
    | Taste | Was passiert |
    |---|---|
    | Wegpunkt-Menü (`J`) | `/waypoints` |
    | Wegpunkt hier erstellen | der Dialog mit Name und Kategorie - wie im Menü |
    | Server-Wegpunkte ein/aus | alle Server-Wegpunkte in Xaero aus- und wieder einblenden (nur auf diesem PC, deine Auswahl pro Kategorie bleibt) |
-   | Wegweiser beenden | wie `/waypoints stop` |
 
-5. **Sichtweite und Anzeige:** In `/waypoints` → **Einstellungen** legst du fest, wie du die Server-Wegpunkte siehst. Der Server speichert das für dich.
+5. **Sichtweite und Anzeige:** In `/waypoints` → **Einstellungen** legst du fest, wie du die Server-Wegpunkte siehst. Der Server speichert das für dich. Der Knopf **Tastenbelegung** dort öffnet Minecrafts Steuerung, um die Tasten von MRwaypoints festzulegen.
 
    | Einstellung | Was sie tut |
    |---|---|
@@ -119,7 +118,7 @@ Mitgeliefert sind **Spawn & Warps** (nur Team), **Shops** (Spieler, je 3), **Far
 
 | Befehl | Was er tut | Permission |
 |---|---|---|
-| `/waypoints` (`/wegpunkte`, `/wps`) | Menü mit allen Wegpunkten | `mrwaypoints.use` |
+| `/waypoints` (`/waypoint`, `/wegpunkte`, `/wegpunkt`, `/wps`) | Menü mit allen Wegpunkten | `mrwaypoints.use` |
 | `/waypoints stop` | Wegweiser beenden | `mrwaypoints.use` |
 | `/mrwaypoints reload` | Config, Kategorien und Texte neu laden | `mrwaypoints.admin.reload` |
 | `/mrwaypoints version` | Version und Update-Status | `mrwaypoints.version` |

@@ -163,7 +163,7 @@ public final class Protocol {
         MENU,
         /** Create a waypoint here (the server shows its dialog with name and category). */
         CREATE,
-        /** End the guide. */
+        /** End the guide (no key any more - the code stays, codes are never reused). */
         GUIDE_STOP
     }
 
@@ -174,6 +174,21 @@ public final class Protocol {
         public static final StreamCodec<FriendlyByteBuf, ActionPayload> CODEC = StreamCodec.of(
                 (buf, payload) -> buf.writeByte(payload.action.ordinal()),
                 buf -> new ActionPayload(Action.values()[Math.min(buf.readUnsignedByte(), Action.values().length - 1)]));
+
+        @Override
+        public Type<? extends CustomPacketPayload> type() {
+            return TYPE;
+        }
+    }
+
+    /** The server asks to open Minecraft's key bindings (button in /waypoints -> settings). No content. */
+    public record KeysPayload() implements CustomPacketPayload {
+
+        public static final Type<KeysPayload> TYPE = new Type<>(id("keys"));
+        public static final StreamCodec<FriendlyByteBuf, KeysPayload> CODEC = StreamCodec.of(
+                (buf, payload) -> {
+                },
+                buf -> new KeysPayload());
 
         @Override
         public Type<? extends CustomPacketPayload> type() {

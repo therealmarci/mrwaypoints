@@ -31,7 +31,8 @@ Die Formate von `hello` und `welcome` ändern sich **nie** (Felder nur hinten an
 | `mrwaypoints:hello` | Mod → Plugin | VarInt Protokoll, String Mod-Version, String Minecraft-Version (eingefroren) |
 | `mrwaypoints:welcome` | Plugin → Mod | VarInt Status (0 OK, 1 zu alt, 2 zu neu), VarInt min, VarInt max, String Plugin-Version, String Mindestversion, String Download-Link (eingefroren) |
 | `mrwaypoints:state` | Plugin → Mod | VarInt n, n × (String id, String Name in der Sprache des Spielers, Int Farbe, Boolean an); VarInt m, m × (VarInt id, String Kategorie, String Name, String Dimension wie `minecraft:overworld`, Int x, Int y, Int z); VarInt Sichtweite (Chunks in jede Richtung um den Spieler, 0 = unbegrenzt), Boolean nur Weltkarte, Boolean Entfernte auf der Weltkarte |
-| `mrwaypoints:action` | Mod → Plugin | Byte Aktion: 0 `/waypoints` öffnen, 1 Wegpunkt hier erstellen (Server zeigt seinen Dialog), 2 Wegweiser beenden - unbekannte Codes ignoriert das Plugin, neue Aktionen nur hinten anhängen (kein neues Protokoll nötig) |
+| `mrwaypoints:keys` | Plugin → Mod | leer - öffnet Minecrafts Tastenbelegung (Knopf in `/waypoints` → Einstellungen) |
+| `mrwaypoints:action` | Mod → Plugin | Byte Aktion: 0 `/waypoints` öffnen, 1 Wegpunkt hier erstellen (Server zeigt seinen Dialog), 2 Wegweiser beenden (seit der Taste weg ist ungenutzt, Code bleibt belegt) - unbekannte Codes ignoriert das Plugin, neue Aktionen nur hinten anhängen (kein neues Protokoll nötig) |
 
 Strings sind VarInt-Länge + UTF-8, Zahlen Big-Endian - wie Minecrafts `FriendlyByteBuf` (Plugin: `util/Wire`, getestet in `WireTest`).
 

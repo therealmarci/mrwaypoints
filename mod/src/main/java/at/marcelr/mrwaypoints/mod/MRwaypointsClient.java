@@ -3,6 +3,7 @@ package at.marcelr.mrwaypoints.mod;
 import at.marcelr.mrwaypoints.mod.Protocol.Action;
 import at.marcelr.mrwaypoints.mod.Protocol.ActionPayload;
 import at.marcelr.mrwaypoints.mod.Protocol.HelloPayload;
+import at.marcelr.mrwaypoints.mod.Protocol.KeysPayload;
 import at.marcelr.mrwaypoints.mod.Protocol.StatePayload;
 import at.marcelr.mrwaypoints.mod.Protocol.WelcomePayload;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -19,6 +20,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
@@ -41,7 +43,6 @@ public final class MRwaypointsClient implements ClientModInitializer {
     private static KeyMapping createKey;
     private static KeyMapping toggleAllKey;
     private static KeyMapping menuKey;
-    private static KeyMapping guideStopKey;
     /** All server waypoints hidden in Xaero with the key (only on this PC; the choice per category stays). */
     private static volatile boolean hiddenAll;
     private static volatile StatePayload state;
@@ -61,12 +62,16 @@ public final class MRwaypointsClient implements ClientModInitializer {
         PayloadTypeRegistry.serverboundPlay().register(ActionPayload.TYPE, ActionPayload.CODEC);
         PayloadTypeRegistry.clientboundPlay().register(WelcomePayload.TYPE, WelcomePayload.CODEC);
         PayloadTypeRegistry.clientboundPlay().register(StatePayload.TYPE, StatePayload.CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(KeysPayload.TYPE, KeysPayload.CODEC);
 
         ClientPlayNetworking.registerGlobalReceiver(WelcomePayload.TYPE, (payload, context) -> welcome(payload));
         ClientPlayNetworking.registerGlobalReceiver(StatePayload.TYPE, (payload, context) -> {
             state = payload;
             dirty = true;
         });
+        // Settings in /waypoints: open Minecraft's key bindings (the MRwaypoints keys are listed there).
+        ClientPlayNetworking.registerGlobalReceiver(KeysPayload.TYPE, (payload, context) ->
+                context.client().gui.setScreen(new KeyBindsScreen(null, context.client().options)));
 
         // Say hello as soon as the server can receive it (it announces its channels after joining).
         ServerboundPlayChannelEvents.REGISTER.register((handler, sender, client, channels) -> {
@@ -94,7 +99,6 @@ public final class MRwaypointsClient implements ClientModInitializer {
         menuKey = key("menu", InputConstants.KEY_J, 0);
         createKey = key("create", InputConstants.UNKNOWN.getValue(), 1);
         toggleAllKey = key("toggle-all", InputConstants.UNKNOWN.getValue(), 2);
-        guideStopKey = key("guide-stop", InputConstants.UNKNOWN.getValue(), 3);
 
         // A button in Xaero's waypoint menu opens /waypoints (only on servers with MRwaypoints).
         ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
@@ -119,9 +123,6 @@ public final class MRwaypointsClient implements ClientModInitializer {
             }
             while (menuKey.consumeClick()) {
                 send(client, Action.MENU);
-            }
-            while (guideStopKey.consumeClick()) {
-                send(client, Action.GUIDE_STOP);
             }
             while (toggleAllKey.consumeClick()) {
                 if (connected(client)) {
