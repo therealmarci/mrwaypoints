@@ -101,6 +101,6 @@ public final class MainMenu extends Menu {
     }
 
     private boolean inWorld(Waypoint w) {
-        return w.world().equals(viewer.getWorld().getUID()) && plugin.store().category(w.category()) != null;
+        return w.world().equals(viewer.getWorld().getUID()) && plugin.store().shown(w);
     }
 }

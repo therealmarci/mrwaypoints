@@ -54,6 +54,8 @@ public final class CategoryMenu extends Menu {
                                 .decoration(TextDecoration.ITALIC, false))
                         .lore(messages.lore("gui-category-lore", tag("state", messages.get(on ? "gui-state-on" : "gui-state-off")),
                                 tag("count", count)))
+                        .lore(category.worlds().isEmpty() ? List.of() : List.of(messages.item("gui-category-only",
+                                tag("worlds", String.join(", ", category.worlds())))))
                         .glint(on).build(), click -> {
                     clickSound();
                     plugin.store().setVisible(viewer.getUniqueId(), category, !on);

@@ -40,7 +40,7 @@ public final class CreateDialog {
     public static List<Category> allowed(MRWaypoints plugin, Player player) {
         List<Category> allowed = new ArrayList<>();
         for (Category category : plugin.store().categories()) {
-            if (plugin.actions().createBlocked(player, category) == null) {
+            if (plugin.actions().createBlockedHere(player, category) == null) {
                 allowed.add(category);
             }
         }

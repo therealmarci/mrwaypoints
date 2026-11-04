@@ -152,7 +152,7 @@ public final class ListMenu extends Menu {
         String query = search.toLowerCase(Locale.ROOT);
         List<Waypoint> list = new ArrayList<>();
         for (Waypoint w : plugin.store().all()) {
-            if (!w.world().equals(viewer.getWorld().getUID()) || plugin.store().category(w.category()) == null) {
+            if (!w.world().equals(viewer.getWorld().getUID()) || !plugin.store().shown(w)) {
                 continue;
             }
             if ((mine && !w.creator().equals(viewer.getUniqueId())) || (category != null && !w.category().equals(category))
@@ -172,7 +172,9 @@ public final class ListMenu extends Menu {
 
     /** The next category after the current one (all → first → … → last → all). */
     private String nextCategory() {
-        List<String> ids = plugin.store().categories().stream().map(Category::id).toList();
+        // Only the categories of the world the player is in.
+        List<String> ids = plugin.store().categories().stream()
+                .filter(c -> c.allows(viewer.getWorld().getName())).map(Category::id).toList();
         if (ids.isEmpty()) {
             return null;
         }

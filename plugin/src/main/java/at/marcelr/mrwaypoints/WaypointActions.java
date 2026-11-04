@@ -40,9 +40,14 @@ public final class WaypointActions {
         return null;
     }
 
+    /** Like {@link #createBlocked}, and also for the player's world (a category may be for some worlds only). */
+    public @Nullable String createBlockedHere(Player player, Category category) {
+        return category.allows(player.getWorld().getName()) ? createBlocked(player, category) : "create-wrong-world";
+    }
+
     /** Creates a waypoint where the player stands. @return the new waypoint, or null (the player was told why) */
     public @Nullable Waypoint create(Player player, Category category, String rawName) {
-        String blocked = createBlocked(player, category);
+        String blocked = createBlockedHere(player, category);
         if (blocked != null) {
             deny(player, blocked, category);
             return null;
@@ -77,6 +82,11 @@ public final class WaypointActions {
 
     public void moveHere(Player player, Waypoint waypoint) {
         if (!mayEdit(player, waypoint)) {
+            return;
+        }
+        Category category = plugin.store().category(waypoint.category());
+        if (category != null && !category.allows(player.getWorld().getName())) {
+            deny(player, "create-wrong-world", category);
             return;
         }
         Waypoint moved = waypoint.movedTo(player.getLocation());

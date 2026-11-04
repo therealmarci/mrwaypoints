@@ -133,6 +133,7 @@ final class MRadminModule implements AdminModule, WebModule {
             map.put("maxPerPlayer", c.maxPerPlayer());
             map.put("visible", c.visible());
             map.put("map", c.onMap());
+            map.put("worlds", c.worlds());
             map.put("count", plugin.store().inCategory(c.id()).size());
             categories.add(map);
         }
@@ -151,8 +152,10 @@ final class MRadminModule implements AdminModule, WebModule {
             map.put("created", w.created());
             waypoints.add(map);
         }
+        // The loaded worlds, to pick the ones a category is for.
+        List<String> worlds = Bukkit.getWorlds().stream().map(World::getName).toList();
         return Map.of("categories", categories, "waypoints", waypoints,
-                "maxNameLength", plugin.settings().waypoints().maxNameLength());
+                "maxNameLength", plugin.settings().waypoints().maxNameLength(), "worlds", worlds);
     }
 
     @Override
@@ -200,6 +203,9 @@ final class MRadminModule implements AdminModule, WebModule {
                 Category target = plugin.store().category(text(args, "category"));
                 if (target == null) {
                     return "wp-invalid-category";
+                }
+                if (!target.allows(w.worldName())) {
+                    return "wp-wrong-world";
                 }
                 if (plugin.store().byName(target.id(), w.name()) != null) {
                     return "wp-name-taken";
@@ -251,9 +257,15 @@ final class MRadminModule implements AdminModule, WebModule {
         if (names.isEmpty()) {
             return "wp-name-empty";
         }
+        // Worlds as a comma separated list of names, empty = every world.
+        List<String> worlds = java.util.Arrays.stream(text(args, "worlds").split(","))
+                .map(String::strip).filter(w -> !w.isEmpty()).distinct().toList();
+        if (worlds.size() > 64 || worlds.stream().anyMatch(w -> w.length() > 64)) {
+            return "wp-invalid-worlds";
+        }
         plugin.store().putCategory(new Category(id, names, Integer.parseInt(color, 16), icon,
                 Boolean.parseBoolean(text(args, "playersCreate")), max, Boolean.parseBoolean(text(args, "visible")),
-                Boolean.parseBoolean(text(args, "map"))));
+                Boolean.parseBoolean(text(args, "map")), worlds));
         return null;
     }
 
@@ -304,7 +316,7 @@ final class MRadminModule implements AdminModule, WebModule {
                 List<SelfMapLayer.Marker> markers = new ArrayList<>();
                 for (Waypoint w : plugin.store().inCategory(category.id())) {
                     World world = w.bukkitWorld();
-                    if (world == null) {
+                    if (world == null || !plugin.store().shown(w)) {
                         continue;
                     }
                     boolean own = w.creator().equals(viewer.player());
@@ -455,6 +467,9 @@ final class MRadminModule implements AdminModule, WebModule {
                         return m.plain("self-not-found");
                     }
                     if (!target.id().equals(category.id())) {
+                        if (!target.allows(w.worldName())) {
+                            return m.plain("self-create-wrong-world");
+                        }
                         String blocked = mayCreate(viewer, target, online);
                         if (blocked != null) {
                             return m.plain("self-" + blocked, "max", target.maxPerPlayer());
@@ -497,6 +512,9 @@ final class MRadminModule implements AdminModule, WebModule {
         }
         if (world == null || !world.getWorldBorder().isInside(new org.bukkit.Location(world, x + 0.5, 64, z + 0.5))) {
             return m.plain("map-outside");
+        }
+        if (!category.allows(world.getName())) {
+            return m.plain("self-create-wrong-world");
         }
         String name = WaypointActions.clean(args.get("value"));
         String problem = plugin.actions().nameProblem(category, name, null);

@@ -221,7 +221,8 @@ public final class WaypointStore {
         }
         return new Category(id, names, color(c.getString("color", "#FFFFFF"), id), icon,
                 c.getBoolean("players-create", false), Math.max(0, c.getInt("max-per-player", 0)),
-                c.getBoolean("visible", true), c.getBoolean("map", true));
+                c.getBoolean("visible", true), c.getBoolean("map", true),
+                c.getStringList("worlds").stream().map(String::strip).filter(w -> !w.isEmpty()).distinct().toList());
     }
 
     private int color(String raw, String id) {
@@ -278,6 +279,15 @@ public final class WaypointStore {
 
     public @Nullable Waypoint byId(int id) {
         return waypoints.get(id);
+    }
+
+    /**
+     * Whether a waypoint shows anywhere (menus, Xaero, map): its category exists and is for the waypoint's world. A
+     * waypoint stays saved when the admin takes its world away from the category - it just does not show.
+     */
+    public boolean shown(Waypoint waypoint) {
+        Category category = categories.get(waypoint.category());
+        return category != null && category.allows(waypoint.worldName());
     }
 
     /** The waypoints of a category, sorted by name. Waypoints of a deleted category are in none. */
@@ -389,6 +399,9 @@ public final class WaypointStore {
             yaml.set(base + "max-per-player", c.maxPerPlayer());
             yaml.set(base + "visible", c.visible());
             yaml.set(base + "map", c.onMap());
+            if (!c.worlds().isEmpty()) {
+                yaml.set(base + "worlds", c.worlds());
+            }
         }
         write(categoriesFile, yaml.saveToString());
     }

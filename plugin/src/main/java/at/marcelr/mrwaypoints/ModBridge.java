@@ -111,7 +111,7 @@ public final class ModBridge implements Listener, PluginMessageListener {
             out.string(c.id()).string(c.name(lang)).intValue(c.color())
                     .bool(plugin.store().visible(player.getUniqueId(), c));
         }
-        var waypoints = plugin.store().all().stream().filter(w -> plugin.store().category(w.category()) != null).toList();
+        var waypoints = plugin.store().all().stream().filter(plugin.store()::shown).toList();
         out.varInt(waypoints.size());
         for (Waypoint w : waypoints) {
             World world = w.bukkitWorld();

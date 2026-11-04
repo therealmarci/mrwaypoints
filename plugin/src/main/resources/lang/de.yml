@@ -39,6 +39,7 @@ guide-down: " <dark_gray>▼ <blocks>"
 # --- Anlegen und Bearbeiten --------------------------------------------------
 create-no-permission: "<prefix><red>In <white><category></white> darfst du keine Wegpunkte anlegen."
 create-limit: "<prefix><hover:show_text:'<gray>Höchstens <max> eigene Wegpunkte pro Spieler - lösche einen alten'><red>Limit in <white><category></white> erreicht</hover>"
+create-wrong-world: "<prefix><hover:show_text:'<gray>Diese Kategorie gibt es nur in bestimmten Welten'><red><white><category></white> gibt es in dieser Welt nicht</hover>"
 created: "<prefix><hover:show_text:'<gray><category> · <x> <y> <z>'><green>Wegpunkt <white><name></white> angelegt</hover>"
 renamed: "<prefix><hover:show_text:'<gray>vorher: <old>'><green>Umbenannt in <white><name></white></hover>"
 moved: "<prefix><hover:show_text:'<gray>neu: <x> <y> <z>'><green><white><name></white> liegt jetzt hier</hover>"
@@ -170,6 +171,7 @@ self-name-too-long: "Der Name ist zu lang (höchstens <max> Zeichen)."
 self-name-taken: "In dieser Kategorie gibt es <name> schon."
 self-create-no-permission: "In dieser Kategorie darfst du keine Wegpunkte anlegen."
 self-create-limit: "Limit erreicht - höchstens <max> eigene Wegpunkte in dieser Kategorie."
+self-create-wrong-world: "Diese Kategorie gibt es in dieser Welt nicht."
 
 # --- Mod für Xaero's Karte -----------------------------------------------------
 mod-download-label: "<aqua><u>[Download]</u></aqua>"
@@ -183,6 +185,7 @@ gui-categories-title: "<dark_gray>Wegpunkte · Kategorien"
 gui-category-lore:
   - "<gray>In Xaero: <state>"
   - "<dark_gray><count> Wegpunkte · Klick: umschalten"
+gui-category-only: "<dark_gray>Nur in: <worlds>"
 gui-categories-all-on: "<green>Alle an"
 gui-categories-all-off: "<red>Alle aus"
 # --- Einstellungen (Xaero's Karte) -------------------------------------------

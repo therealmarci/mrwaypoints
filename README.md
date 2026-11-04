@@ -108,6 +108,7 @@ In `plugins/MRwaypoints/categories.yml`, danach `/mrwaypoints reload`:
 | `max-per-player` | so viele eigene Wegpunkte pro Spieler, `0` = unbegrenzt (wer `mrwaypoints.manage.<id>` hat, ist nie begrenzt) |
 | `visible` | in Xaero's Karte standardmäßig eingeblendet - jeder Spieler schaltet es für sich um (Mod oder Karte auf der Spielerseite) |
 | `map` | als eigene Ebene auf der Karte der Spielerseite zeigen (Tab „Karte“ in MRadmin, nur für angemeldete Spieler) |
+| `worlds` | nur in diesen Welten, z.B. `[world_nether]` für einen Nether-Highway (Namen wie im Server-Ordner bzw. `/mv list`). Weglassen = alle Welten. In anderen Welten kann man dort nichts anlegen und die Kategorie erscheint weder im Menü noch in Xaero noch auf der Karte. |
 
 Mitgeliefert sind **Spawn & Warps** (nur Team), **Shops** (Spieler, je 3), **Farmen** (Spieler, je 5, nicht auf der Karte) und **Sehenswürdigkeiten** (Spieler, je 3).
 
