@@ -6,7 +6,7 @@
 | Plattform | Paper 26.3 (`paper-api:26.3.build.200-stable`), Java 25 |
 | Build | Gradle (Wrapper in `plugin/`), JUnit 6, Minotaur für Modrinth |
 | Paket | `at.marcelr.mrwaypoints` |
-| Abhängigkeiten | keine Pflicht. Optional MRadmin (Modul-API `api-1.6.0`, `compileOnly`, `softdepend`) |
+| Abhängigkeiten | keine Pflicht. Optional MRadmin (Modul-API `api-1.9.0`, `compileOnly`, `softdepend`) |
 
 ## 2. Projektstruktur
 ```text
@@ -18,13 +18,14 @@ plugin/src/main/java/at/marcelr/mrwaypoints/
 ├─ WaypointPerms.java     Permissions, auch die pro Kategorie (zur Laufzeit registriert)
 ├─ WaypointActions.java   anlegen, umbenennen, verschieben, löschen, teleportieren - mit Prüfungen und Meldungen
 ├─ Guide.java             Wegweiser in der Actionbar
-├─ ModBridge.java         Verbindung zum Mod (Handshake, Zustand, Ein/Aus), Compatibility (Protokoll)
+├─ ModBridge.java         Verbindung zum Mod (Handshake, Zustand, Aktionen, Tastenbelegung), Compatibility (Protokoll)
 ├─ UpdateChecker.java     Update-Prüfung (GitHub/Modrinth)
 ├─ command/               /waypoints, /mrwaypoints
-├─ gui/                   Menu, MenuListener, Items, MainMenu, ListMenu, WaypointMenu, ConfirmMenu, CreateDialog, NameDialog
+├─ gui/                   Menu (gemeinsamer Glas-Rahmen), MenuListener, Items, MainMenu, ListMenu, WaypointMenu, CategoryMenu,
+│                         SettingsMenu, ConfirmMenu, CreateDialog, NameDialog
 ├─ api/                   MRadminLink (ohne MRadmin-Typen), MRadminModule (Dashboard, Team-Seite, Karte der Spielerseite)
 ├─ util/                  Layout (Menü-Plätze, Pfeil), Wire (Nachrichtenformat) - mit Tests; LanguageChoice, TitleWidth, Versions
-└─ waypoint/              Category, Waypoint, WaypointStore (categories.yml, waypoints.yml)
+└─ waypoint/              Category, Waypoint, View, WaypointStore (categories.yml, waypoints.yml, players.yml)
 plugin/src/main/resources/
 ├─ config.yml             UTF-8 mit BOM!
 ├─ categories.yml         Beispiel-Kategorien (beim ersten Start kopiert)
@@ -33,7 +34,7 @@ plugin/src/main/resources/
 ```
 
 ## 3. Daten
-- **`categories.yml`** (Server-Admin oder MRadmin-Web): Abschnitt `categories.<id>` mit `name.<sprache>`, `color`, `icon`, `players-create`, `max-per-player`, `visible`, `map`. Die Reihenfolge der Datei ist die Reihenfolge in Menüs und auf den Karten. Wird aus dem Web gespeichert, schreibt `WaypointStore#saveCategories` die Datei neu und übernimmt den Kommentarblock aus der mitgelieferten Datei.
+- **`categories.yml`** (Server-Admin oder MRadmin-Web): Abschnitt `categories.<id>` mit `name.<sprache>`, `color`, `icon`, `players-create`, `max-per-player`, `visible`, `map`, `worlds` (Weltnamen, leer = alle; `Category#allows`, `WaypointStore#shown` blendet Wegpunkte in anderen Welten überall aus). Die Reihenfolge der Datei ist die Reihenfolge in Menüs und auf den Karten. Wird aus dem Web gespeichert, schreibt `WaypointStore#saveCategories` die Datei neu und übernimmt den Kommentarblock aus der mitgelieferten Datei.
 - **`waypoints.yml`**: `next-id` und `waypoints.<id>` mit `category`, `name`, `world` (UUID), `world-name`, `x`/`y`/`z` (Block), `creator`, `creator-name`, `created`.
 - Geschrieben wird im Hintergrund über einen eigenen Thread (Reihenfolge bleibt), mit Temp-Datei und Umbenennen. `close()` beim Abschalten wartet darauf.
 - Jede Änderung ruft die `onChange`-Listener auf (MRadmin-Seiten, Mod-Abgleich).
@@ -56,8 +57,8 @@ Alle symmetrisch. `MainMenu` (3 Reihen): oben Meine (2) · Erstellen (4) · Alle
 
 ## 8. Mod für Xaero (`ModBridge`, `mod/`)
 - Protokoll, Handshake und Nachrichten: [COMPATIBILITY.md](COMPATIBILITY.md). `ModBridge` (Plugin) wie in MRtoolbar: wartet mit Nachrichten, bis der Client den Kanal angemeldet hat, schickt nach OK den Zustand und bei jeder Änderung (`WaypointStore#onChange`, einmal pro Tick) neu an alle mit Mod.
-- **Auswahl pro Spieler:** `WaypointStore#visible/setVisible`, gespeichert in `players.yml` (nur Abweichungen von `visible` der Kategorie). Geändert über `toggle` vom Mod oder `selfMapAction` `xaero` von der Karte der Spielerseite; danach bekommt der Spieler den neuen Zustand und MRadmin lädt die Seite neu.
-- **Mod:** `MRwaypointsClient` (Handshake, Taste `J`, Knopf in `xaero.common.gui.GuiWaypoints` per `ScreenEvents.AFTER_INIT` - Klasse per Name, ohne Mixin), `CategoryScreen`, `XaeroBridge` (einzige Klasse mit Xaero-Typen). `XaeroBridge.apply` leert die eigenen Herkünfte und füllt sie neu, sobald ein Zustand kommt oder Xaero eine neue Welt-Sitzung hat (`getAutoRootContainer` hat sich geändert); Fehler → einmal loggen, danach still.
+- **Auswahl pro Spieler:** `WaypointStore#visible/setVisible`, gespeichert in `players.yml` (nur Abweichungen von `visible` der Kategorie). Geändert im Menü `/waypoints` → Kategorien (`gui/CategoryMenu`) oder über `selfMapAction` `xaero` von der Karte der Spielerseite; die Einstellungen für Xaero (`View`: Sichtweite in Chunks je Richtung, nur Weltkarte, Entfernte auf der Weltkarte) unter `view.<uuid>` in `players.yml`, Standards aus `view` in der config.yml; danach bekommt der Spieler den neuen Zustand und MRadmin lädt die Seite neu.
+- **Mod:** `MRwaypointsClient` (Handshake, Taste `J` und Knopf in `xaero.common.gui.GuiWaypoints` per `ScreenEvents.AFTER_INIT` - Klasse per Name, ohne Mixin - schicken die Aktion „Menü“, der Server öffnet `/waypoints`; Nachricht `keys` öffnet `KeyBindsScreen`; kein eigener Bildschirm), `XaeroBridge` (einzige Klasse mit Xaero-Typen). `XaeroBridge.apply` leert die eigenen Herkünfte und füllt sie neu, sobald ein Zustand kommt oder Xaero eine neue Welt-Sitzung hat (`getAutoRootContainer` hat sich geändert); Fehler → einmal loggen, danach still.
 
 ## 9. Testen
 | # | Schritt | Erwartung |

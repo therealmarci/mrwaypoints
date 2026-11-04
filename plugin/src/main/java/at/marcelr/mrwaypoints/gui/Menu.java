@@ -87,15 +87,6 @@ public abstract class Menu implements InventoryHolder {
         actions.put(slot, action);
     }
 
-    /** Fills all empty slots of a row with the decorative pane. */
-    protected void fillRow(int row) {
-        for (int slot = row * 9; slot < row * 9 + 9; slot++) {
-            if (inventory.getItem(slot) == null) {
-                inventory.setItem(slot, Items.filler());
-            }
-        }
-    }
-
     final void click(int slot, ClickType type) {
         Consumer<ClickType> action = actions.get(slot);
         if (action != null) {
