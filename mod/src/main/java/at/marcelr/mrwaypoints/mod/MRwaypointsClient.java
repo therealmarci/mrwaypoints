@@ -165,7 +165,12 @@ public final class MRwaypointsClient implements ClientModInitializer {
             return true;
         }
         if (client.player != null) {
-            client.player.sendSystemMessage(Component.translatable("mrwaypoints.message.no-server"));
+            // The server has MRwaypoints but refused this mod: say why instead of "no MRwaypoints".
+            String key = status == Protocol.Status.MOD_TOO_OLD ? "mrwaypoints.message.too-old"
+                    : status == Protocol.Status.MOD_TOO_NEW ? "mrwaypoints.message.too-new"
+                    : status == Protocol.Status.UNKNOWN ? "mrwaypoints.message.refused"
+                    : "mrwaypoints.message.no-server";
+            client.player.sendSystemMessage(Component.translatable(key));
         }
         return false;
     }

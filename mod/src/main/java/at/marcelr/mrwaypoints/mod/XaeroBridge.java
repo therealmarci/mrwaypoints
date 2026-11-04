@@ -142,12 +142,14 @@ final class XaeroBridge {
         lastX = x;
         lastZ = z;
         try {
-            double range = (double) view.range() * view.range();
+            // The range is a square of chunks around the player: 10 = 10 x 10 chunks, i.e. 80 blocks to every side.
+            double half = view.range() * 16 / 2.0;
             for (Shown shown : SHOWN) {
                 double dx = shown.x() + 0.5 - x;
                 double dz = shown.z() + 0.5 - z;
                 // Other dimensions are out of range (Xaero shows them only on the World Map of that dimension).
-                boolean near = view.range() == 0 || shown.dimension().equals(dimension) && dx * dx + dz * dz <= range;
+                boolean near = view.range() == 0
+                        || shown.dimension().equals(dimension) && Math.abs(dx) <= half && Math.abs(dz) <= half;
                 Waypoint waypoint = shown.waypoint();
                 if (near || view.farOnMap()) {
                     waypoint.setDisabled(false);

@@ -101,7 +101,7 @@ public final class WaypointStore {
         for (String key : section.getKeys(false)) {
             ConfigurationSection c = section.getConfigurationSection(key);
             try {
-                views.put(UUID.fromString(key), new View(Math.max(0, c.getInt("range", defaults.range())),
+                views.put(UUID.fromString(key), new View(Math.max(0, c.getInt("range-chunks", defaults.range())),
                         c.getString("display", defaults.worldMapOnly() ? "world-map" : "everywhere").equals("world-map"),
                         c.getBoolean("far-on-world-map", defaults.farOnMap())));
             } catch (RuntimeException e) {
@@ -168,7 +168,7 @@ public final class WaypointStore {
         visibility.forEach((player, choices) -> choices.forEach((category, shown) ->
                 yaml.set("visibility." + player + "." + category, shown)));
         views.forEach((player, view) -> {
-            yaml.set("view." + player + ".range", view.range());
+            yaml.set("view." + player + ".range-chunks", view.range());
             yaml.set("view." + player + ".display", view.worldMapOnly() ? "world-map" : "everywhere");
             yaml.set("view." + player + ".far-on-world-map", view.farOnMap());
         });

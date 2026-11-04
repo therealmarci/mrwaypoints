@@ -193,7 +193,7 @@ gui-range-lore:
   - "<gray>This far in the world and on the minimap"
   - "<dark_gray>Left click: farther · right click: closer"
 gui-range-unlimited: "unlimited"
-gui-range-blocks: "<count> blocks"
+gui-range-chunks: "<count> × <count> chunks"
 gui-display-name: "<aqua>Display: <white><display>"
 gui-display-lore:
   - "<gray>Where the server waypoints show"

@@ -82,9 +82,9 @@ public final class SettingsMenu extends Menu {
         render();
     }
 
-    private Component range(int blocks) {
-        return blocks == 0 ? plugin.messages().get("gui-range-unlimited")
-                : plugin.messages().get("gui-range-blocks", tag("count", blocks));
+    private Component range(int chunks) {
+        return chunks == 0 ? plugin.messages().get("gui-range-unlimited")
+                : plugin.messages().get("gui-range-chunks", tag("count", chunks));
     }
 
     private Component state(boolean on) {
