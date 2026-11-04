@@ -5,6 +5,9 @@
 
 ## [Unveröffentlicht]
 
+### Behoben & geändert
+- **Update-Hinweis trotz aktueller Version:** Die Update-Prüfung hielt das eigene Release (`plugin-mc26.3-v0.1.0`) für eine neuere Version und meldete in der Konsole „New: mc26.3-vplugin-mc26.3-v0.1.0“; Releases des Mods hätten ebenfalls gezählt. Jetzt zählen nur Plugin-Releases, die Vorsilbe `plugin-` wird beim Vergleich entfernt.
+
 ## [0.1.0] - 2026-11-04
 
 ### Neu

@@ -318,7 +318,7 @@ public final class UpdateChecker {
         if (githubRepository.isBlank()) {
             throw new ReasonException("update-reason-no-repository");
         }
-        String body = get("https://api.github.com/repos/" + githubRepository + "/releases?per_page=30");
+        String body = get("https://api.github.com/repos/" + githubRepository + "/releases?per_page=50");
         JsonArray releases = JsonParser.parseString(body).getAsJsonArray();
         Release best = null;
         for (JsonElement element : releases) {
@@ -327,7 +327,8 @@ public final class UpdateChecker {
                 continue;
             }
             String number = release.get("tag_name").getAsString();
-            if (!sameMinecraft(number)) {
+            // Plugin and mod are released separately (tags "plugin-..." and "mod-...") - only the plugin counts here.
+            if (!"plugin".equals(Versions.component(number)) || !sameMinecraft(number)) {
                 continue;
             }
             if (best == null || Versions.compare(number, best.version()) > 0) {
