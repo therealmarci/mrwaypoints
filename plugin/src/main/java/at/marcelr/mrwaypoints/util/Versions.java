@@ -1,5 +1,6 @@
 package at.marcelr.mrwaypoints.util;
 
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,6 +12,8 @@ import java.util.regex.Pattern;
 public final class Versions {
 
     private static final Pattern MC_PREFIX = Pattern.compile("^[mM][cC]([0-9][0-9.]*)-");
+    /** Plugin and mod are released separately: tags "plugin-mc26.3-v0.2.0" and "mod-mc26.3-v0.1.0". */
+    private static final Pattern COMPONENT = Pattern.compile("^(plugin|mod)-", Pattern.CASE_INSENSITIVE);
     private static final Pattern MC_SUFFIX = Pattern.compile("\\+(?:.*\\.)?[mM][cC]([0-9][0-9.]*)$");
 
     private Versions() {
@@ -21,7 +24,7 @@ public final class Versions {
      * Null for plain versions ("v1.0.0").
      */
     public static String minecraft(String version) {
-        Matcher m = MC_PREFIX.matcher(version.trim());
+        Matcher m = MC_PREFIX.matcher(withoutComponent(version));
         if (m.find()) {
             return m.group(1);
         }
@@ -100,8 +103,18 @@ public final class Versions {
         return !value.isEmpty() && value.length() < 19 && value.chars().allMatch(Character::isDigit);
     }
 
+    /** "plugin" or "mod" for a release tag with that prefix, otherwise null. */
+    public static String component(String tag) {
+        Matcher m = COMPONENT.matcher(tag.trim());
+        return m.find() ? m.group(1).toLowerCase(Locale.ROOT) : null;
+    }
+
+    private static String withoutComponent(String version) {
+        return COMPONENT.matcher(version.trim()).replaceFirst("");
+    }
+
     private static String normalize(String version) {
-        String v = MC_PREFIX.matcher(version.trim()).replaceFirst("");
+        String v = MC_PREFIX.matcher(withoutComponent(version)).replaceFirst("");
         if (v.startsWith("v") || v.startsWith("V")) {
             v = v.substring(1);
         }

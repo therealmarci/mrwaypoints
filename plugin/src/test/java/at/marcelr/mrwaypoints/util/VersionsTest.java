@@ -63,4 +63,15 @@ class VersionsTest {
         assertEquals("mc26.3-v1.2.0", Versions.full("26.3", "1.2.0"));
         assertTrue(Versions.compare("mc26.3-v1.10.0", "mc26.3-v1.9.3") > 0);
     }
+
+    @Test
+    void separateReleasesOfPluginAndMod() {
+        assertEquals("plugin", Versions.component("plugin-mc26.3-v0.2.0"));
+        assertEquals("mod", Versions.component("mod-mc26.3-v0.1.0"));
+        assertEquals(null, Versions.component("mc26.3-v0.1.0"));
+        assertEquals("26.3", Versions.minecraft("mod-mc26.3-v0.1.0"));
+        assertEquals("0.2.0", Versions.plugin("plugin-mc26.3-v0.2.0"));
+        assertTrue(Versions.compare("mod-mc26.3-v0.1.1", "0.1.0+mc26.3") > 0);
+        assertEquals(0, Versions.compare("plugin-mc26.3-v0.2.0", "0.2.0+mc26.3"));
+    }
 }
