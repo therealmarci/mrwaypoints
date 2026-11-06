@@ -22,3 +22,8 @@ Am einfachsten im Browser: Mit **MRadmin** unter **Plugins → MRwaypoints → K
 | `lang/<sprache>.yml` | alle Texte, mehr unter [Sprachen & Texte](https://mrtechnology.marcelr.at/wiki/allgemein/sprachen/) |
 
 Die Konsole ist immer Englisch.
+
+## Alle Einstellungen
+Jede Einstellung der `config.yml` mit Standardwert - dieselben Felder wie im Browser-Formular von MRadmin. Die Liste entsteht automatisch aus dem Plugin und ist damit immer auf dem Stand dieser Version.
+
+<!-- auto:config -->

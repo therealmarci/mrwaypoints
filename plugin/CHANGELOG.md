@@ -6,7 +6,7 @@
 ## [Unveröffentlicht]
 
 ### Behoben & geändert
-- **Anleitung als Wiki:** Die Anleitung (Plugin und Mod) steht jetzt im Wiki auf der Website (https://mrtechnology.marcelr.at/wiki/mrwaypoints/) - aufgeteilt in Seiten für Spieler (Wegpunkte-Menü & Wegweiser, In Xaero's Minimap) und für Admins (Kategorien, Befehle, Permissions, Konfiguration, Discord-Log, Häufige Fragen), mit Suche über alle Plugins. Die README ist nur noch eine kurze Übersicht. Alte Links auf `/docs/mrwaypoints/` führen automatisch ins Wiki.
+- **Anleitung als Wiki:** Die Anleitung (Plugin und Mod) steht jetzt im Wiki auf der Website (https://mrtechnology.marcelr.at/wiki/mrwaypoints/) - aufgeteilt in Seiten für Spieler (Wegpunkte-Menü & Wegweiser, In Xaero's Minimap) und für Admins (Kategorien, Befehle, Permissions, Konfiguration, Discord-Log, Häufige Fragen), mit Suche über alle Plugins. Die README ist nur noch eine kurze Übersicht. Alte Links auf `/docs/mrwaypoints/` führen automatisch ins Wiki. Die Seiten **Permissions** und **Konfiguration** listen jede Permission bzw. Einstellung mit Standardwert automatisch aus dem Plugin - sie sind also immer auf dem Stand der Version.
 
 ## [0.1.1] - 2026-11-04
 
