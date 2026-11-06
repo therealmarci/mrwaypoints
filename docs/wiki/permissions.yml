@@ -1,0 +1,33 @@
+# Texte der Permission-Tabellen im Wiki (Platzhalter <!-- auto:permissions --> und <!-- auto:permission-groups -->).
+# Die Tabelle selbst (Permissions, Standard, Gruppe) erzeugt die Website aus plugin.yml - hier steht nur, wofür eine
+# Permission ist, auf Deutsch (de) und optional Englisch (en). Ohne Eintrag gilt die description aus plugin.yml.
+mrwaypoints.player:
+  de: "`/waypoints` mit Wegweiser und eigenen Einstellungen für Xaero, anlegen in Kategorien mit `players-create: true`, `/mrwaypoints version`"
+mrwaypoints.groups.support:
+  de: "Spieler + MRwaypoints im MRadmin-Dashboard und die Wegpunkte im Web ansehen"
+mrwaypoints.groups.staff:
+  de: "Support + in **jeder** Kategorie anlegen, **alle** Wegpunkte bearbeiten und löschen, ohne Limit"
+mrwaypoints.groups.admin:
+  de: "Alles: Staff + zu Wegpunkten teleportieren, Kategorien im Web verwalten, Reload, Discord-Log, Update-Hinweis"
+mrwaypoints.use:
+  de: "`/waypoints`"
+mrwaypoints.settings:
+  de: "`/waypoints` → Einstellungen: Sichtweite und Anzeige in Xaero (mit Mod)"
+mrwaypoints.version:
+  de: "`/mrwaypoints version`"
+mrwaypoints.create.*:
+  de: "In jeder Kategorie Wegpunkte anlegen (einzeln: `mrwaypoints.create.<kategorie>`)"
+mrwaypoints.manage.*:
+  de: "Alle Wegpunkte jeder Kategorie bearbeiten und löschen, ohne Limit pro Spieler (einzeln: `mrwaypoints.manage.<kategorie>`)"
+mrwaypoints.teleport:
+  de: "Shift-Klick im Menü: teleportieren"
+mrwaypoints.admin.view:
+  de: "MRwaypoints im MRadmin-Dashboard, Wegpunkte in der Weboberfläche ansehen"
+mrwaypoints.admin.categories:
+  de: "Kategorien im Web anlegen, ändern, sortieren, löschen"
+mrwaypoints.admin.reload:
+  de: "`/mrwaypoints reload`"
+mrwaypoints.admin.discord:
+  de: "`/mrwaypoints discord [test]`"
+mrwaypoints.admin.update:
+  de: "Update-Hinweis beim Betreten des Servers"
