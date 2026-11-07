@@ -8,40 +8,63 @@ Versionsnummer: [COMPATIBILITY.md](COMPATIBILITY.md).
 ## Versionsschema
 
 ```
-plugin-mc26.3-v0.2.0        mod-mc26.3-v0.1.0
-  │      │      └─ Version (SemVer): MAJOR.MINOR.PATCH
-  │      └──────── Minecraft-Version
-  └─────────────── Teil: plugin oder mod
+plugin-mc26.3-STA-1.4.0-bu002        mod-mc26.3-BET-1.1.0-bu001
+  │      │     │   │      └─ Build: zählt die Releases dieser Versionsnummer (001, 002 …)
+  │      │     │   └──────── MAJOR.MINOR.PATCH
+  │      │     └──────────── Kanal: STA = stabil, BET = Beta
+  │      └────────────────── Minecraft-Version
+  └───────────────────────── Teil: plugin oder mod
 ```
 
-| Teil | Erhöhen, wenn … | Beispiel |
+| Teil | Bedeutung | Beispiel |
 |---|---|---|
-| **MAJOR** | große Releases, inkompatible Änderungen (Config, Befehle, Permissions) | `1.4.2` → `2.0.0` |
+| **Kanal** | `STA` = stabil, `BET` = Beta | `BET-1.4.0-bu001` → `STA-1.4.0-bu002` |
+| **MAJOR** | große Umbauten, inkompatible Änderungen (Config, Befehle, Permissions) | `1.4.2` → `2.0.0` |
 | **MINOR** | neue Funktionen | `1.4.2` → `1.5.0` |
-| **PATCH** | Hotfixes und Fehlerbehebungen | `1.4.2` → `1.4.3` |
+| **PATCH** | Hotfixes | `1.4.2` → `1.4.3` |
+| **BUILD** | zählt die Releases **einer** Version (jede Beta und die Stable), beginnt bei jeder neuen Version bei `001` | `bu001`, `bu002` … |
+
+- **Eine Stable schließt ihre Version ab.** Aus `BET-1.4.0-bu002` wird `STA-1.4.0-bu003`; soll danach wieder eine Beta
+  kommen, ist das `BET-1.4.1-bu001` (nächster PATCH).
+- **Reihenfolge** (was ist neuer?): MAJOR, MINOR, PATCH, dann BUILD. Der Kanal entscheidet nur, wer ein Release
+  bekommt: Server bekommen nur Stables, Betas nur mit eingeschaltetem `updates.include-prereleases` (bzw. bei
+  MRadmin `versions.include-prereleases`) - außer bei `0.x`, das es nur als Beta gibt. Wer Betas wieder ausschaltet,
+  bleibt auf seiner Beta, bis eine neuere Stable kommt (es wird nie zurückgestuft).
+- **Ältere Releases** hießen `mc26.3-v1.3.1` (SemVer) und werden weiter erkannt; sie zählen als Build 0 ihrer Nummer.
+  Erste Plugin-Version, die das neue Schema versteht: die Releases vom 2026-11-07 (z.B. MRadmin 1.4.0).
+- Dieselbe Version kann es für mehrere Minecraft-Versionen geben (`mc26.3-STA-1.5.0-bu001`, `mc26.4-STA-1.5.0-bu001`).
+- Die Klasse `util/Versions` (Vergleich, Kanal, Beta-Regel) ist in allen MRtechnology-Plugins identisch; Prüfung mit
+  `##OTHER/Scripts/check-versions.sh`.
+- Plugin und Mod zählen **getrennt** (eigene Version, eigener Build).
+- Der Mod trägt in der `fabric.mod.json` nur die Nummer (`1.1.0+mc26.3`, Fabric erwartet SemVer) und die volle
+  Version im Feld `mrtechnology:version` - die meldet er dem Plugin.
+- Als „Latest“ markiert GitHub nur Stables des **Plugins** von `main` (Mod-Releases nie), damit Server-Admins
+  auf der Startseite das Plugin finden.
 
 | | Plugin | Mod |
 |---|---|---|
 | Version in | `plugin/gradle.properties` (`version`, `mcVersion`) | `mod/gradle.properties` (`version`, `minecraft_version`) |
 | Changelog | [plugin/CHANGELOG.md](../plugin/CHANGELOG.md) | [mod/CHANGELOG.md](../mod/CHANGELOG.md) |
-| Tag | `plugin-mc26.3-v0.2.0` | `mod-mc26.3-v0.1.0` |
-| JAR | `MRwaypoints-mc26.3-v0.2.0.jar` | `MRwaypoints-mod-mc26.3-v0.1.0.jar` |
+| Tag | `plugin-mc26.3-STA-1.4.0-bu002` | `mod-mc26.3-STA-1.1.0-bu001` |
+| JAR | `MRwaypoints-mc26.3-STA-1.4.0-bu002.jar` | `MRwaypoints-mod-mc26.3-STA-1.1.0-bu001.jar` |
 | Workflow | `release-plugin.yml` (GitHub + Modrinth) | `release-mod.yml` (GitHub) |
 | Update-Hinweis | Admins beim Join, `/mrwaypoints version` | im Einstellungsbildschirm des Mods |
-
-- **Vorabversionen:** `0.x` oder ein Suffix wie `-rc.1`. Auf GitHub als Pre-Release markiert.
-- Als „Latest“ markiert GitHub nur stabile **Plugin**-Releases von `main` (Mod-Releases nie), damit Server-Admins
-  auf der Startseite das Plugin finden.
 
 ## Branches
 | Branch | Zweck | Releases |
 |---|---|---|
-| `beta` | Entwicklung für die **neueste** Minecraft-Version | Vorabversionen |
-| `main` | stabiler Stand für die **neueste** Minecraft-Version | stabile Versionen |
-| `mc/<version>` | Wartung einer **älteren** Minecraft-Version, z.B. `mc/26.3` | stabile Versionen (Hotfixes) |
+| `dev` | tägliche Entwicklung und Testbuilds | keine - jeder Push baut nur ein Actions-Artefakt (Prüfrunde) |
+| `beta` | nächstes Update als Beta | `BET-…` (GitHub-Vorabversion) |
+| `main` | stabiler Stand für die **neueste** Minecraft-Version, Standardzweig (Website, Wiki, Issue-Vorlagen) | `STA-…`, auf GitHub als „Latest“ |
+| `mc/<version>` | Wartung einer **älteren** Minecraft-Version, z.B. `mc/26.3` | `STA-…`/`BET-…` (Hotfixes) |
+
+Weg eines Updates: `dev` → `beta` (Beta-Release) → `main` (Stable). Die Beta darf übersprungen werden
+(`dev` → `main`). Nach jedem Release werden die Branches wieder gleichgezogen. Die Wiki-Vorschau der Website
+(`/wiki/preview/<slug>/`) zeigt den Stand von `beta`, das Wiki selbst den von `main`.
+
+Der Update-Check meldet nur Versionen **derselben** Minecraft-Version - ein Server mit 26.3 bekommt nie `mc26.4-…`.
 
 Beide Teile teilen sich die Branches - Doku, Protokoll und Kompatibilitätsregeln gehören zu beiden.
-Der Update-Check meldet nur Versionen **derselben** Minecraft-Version.
 
 ## Welcher Teil braucht ein Release?
 
@@ -52,18 +75,28 @@ Der Update-Check meldet nur Versionen **derselben** Minecraft-Version.
 | Protokoll (Nachrichten zwischen beiden) | ja | ja - siehe [COMPATIBILITY.md](COMPATIBILITY.md) |
 
 ## Release-Ablauf (Checkliste, je Teil)
-1. `version` in `plugin/gradle.properties` bzw. `mod/gradle.properties` erhöhen.
-2. Protokoll prüfen ([COMPATIBILITY.md](COMPATIBILITY.md)): hat sich eine Nachricht geändert? Dann Protokoll erhöhen,
-   Historie dort ergänzen und **beide** Teile veröffentlichen.
-3. Nur Plugin: neuer Config-Schlüssel → `ConfigUpdater.CURRENT_VERSION` und `config-version` erhöhen; geänderte
-   Texte → `lang-version` und die Liste in `MRWaypoints` (Messages).
-4. Abschnitt `## [<version>] - <datum>` im CHANGELOG des Teils anlegen (wird zum Release-Text).
-5. Bauen (`./gradlew build` im Ordner), auf dem Testserver mit dem Mod testen.
-6. Committen, pushen, Tag setzen und pushen, z.B. `git tag plugin-mc26.3-v0.2.0 && git push origin plugin-mc26.3-v0.2.0`.
+Versionsnummern legt der User fest. Beispiel Beta, dann Stable (Plugin; Mod genauso mit `mod-`):
 
-Die Workflows prüfen, ob der Tag zur `gradle.properties` des Teils passt, lassen stabile Versionen nur von `main`
-oder `mc/<mcVersion>` zu (Vorabversionen auch von `beta`), lassen vorher die Prüfrunde laufen (siehe unten) und
-erstellen das GitHub-Release mit der dort gebauten JAR und Herkunftsnachweis.
+1. Auf `dev` ist alles fertig, gebaut, getestet und committet; im CHANGELOG steht alles unter `## [Unveröffentlicht]`.
+   Protokoll geprüft ([COMPATIBILITY.md](COMPATIBILITY.md)) - hat sich eine Nachricht geändert, brauchen **beide**
+   Teile ein Release.
+2. **Beta:** `dev` nach `beta` mergen. Auf `beta`: `version=BET-1.4.0-bu001` in `plugin/gradle.properties` bzw. `mod/gradle.properties`,
+   im CHANGELOG `## [Unveröffentlicht]` → `## [BET-1.4.0-bu001] - <datum>` (darüber bleibt `## [Unveröffentlicht]` leer
+   stehen), Commit „Pre-Release …“, Tag `plugin-mc26.3-BET-1.4.0-bu001` auf `beta`, pushen.
+3. **Stable:** `beta` (bzw. beim Überspringen `dev`) nach `main` mergen. Auf `main`: `version=STA-1.4.0-bu002`
+   (nächster Build), im CHANGELOG **alle** Beta-Abschnitte seit der letzten Stable zu einem Abschnitt
+   `## [STA-1.4.0-bu002] - <datum>` zusammenfassen (Stable-Nutzer sehen sonst nur die letzte Beta), Commit „Release …“,
+   Tag `plugin-mc26.3-STA-1.4.0-bu002` auf `main`, pushen.
+4. Branches gleichziehen: `beta` und `dev` per Fast-Forward auf den neuen Stand bringen und pushen.
+5. Release-Workflow abwarten (`gh run watch`): Release da, JAR dran, Beta als Vorabversion, Stable als „Latest“ (nur Plugin).
+
+Der Workflow `release-plugin.yml` bzw. `release-mod.yml`
+- prüft das Format der Version und dass der Tag zur `gradle.properties` passt,
+- lässt Stables nur von `main` oder `mc/<mcVersion>` zu, Betas nur von `beta` oder `mc/<mcVersion>`,
+- lässt vorher die Prüfrunde laufen (siehe unten), übernimmt deren JAR und erstellt das GitHub-Release mit
+  Herkunftsnachweis (Beta = Vorabversion, nur eine Stable von `main` wird „Latest“).
+
+Das Release-Text kommt aus dem CHANGELOG-Abschnitt mit genau dieser Version (`## [STA-1.4.0-bu002]`).
 
 ## Prüfrunde vor jedem Release (Sicherheit)
 Jeder Release-Workflow ruft zuerst `.github/workflows/checks.yml` auf. **Ist dort etwas rot, entsteht kein Release.**
@@ -93,7 +126,7 @@ Actions aktualisieren: neue Version und ihren Commit nachschlagen (`gh api repos
 und in allen Workflows ersetzen. Ein Lauf von Hand: `gh workflow run Checks -R therealmarci/<repo> --ref <branch>`.
 ## Neue Minecraft-Version unterstützen (z.B. 26.4)
 1. **Alte Version sichern** (falls weiter gepflegt): `git branch mc/26.3 main && git push -u origin mc/26.3`
-2. Auf `beta` anpassen:
+2. Auf `dev` anpassen:
    - `plugin/gradle.properties`: `mcVersion`, `paperApi`, `supportedGameVersions`
    - `mod/gradle.properties`: `minecraft_version`, `loader_version`, `fabric_api_version`, ggf. `loom_version`
      und `modmenu_version` (aktuelle Werte: https://fabricmc.net/develop)

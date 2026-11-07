@@ -11,6 +11,9 @@
 		"sources": "https://github.com/therealmarci/mrwaypoints"
 	},
 	"license": "LicenseRef-MRtechnology",
+	"custom": {
+		"mrtechnology:version": "${fullVersion}"
+	},
 	"environment": "client",
 	"entrypoints": {
 		"client": [

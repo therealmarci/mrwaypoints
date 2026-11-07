@@ -6,6 +6,9 @@ Versionen - welche Plugin-Versionen passen, steht in [docs/COMPATIBILITY.md](../
 
 ## [Unveröffentlicht]
 
+### Behoben & geändert
+- **Neues Versionsschema:** Der Mod meldet dem Plugin seine volle Version (z.B. `STA-1.1.0-bu001`), damit Update-Hinweis und `mod.minimum-version` auch den Build vergleichen. In Fabric und Mod Menu steht weiter nur die Nummer (`1.1.0`), weil Fabric dort SemVer erwartet. Funktioniert mit allen Plugin-Versionen.
+
 ## [0.1.0] - 2026-11-04
 
 ### Neu

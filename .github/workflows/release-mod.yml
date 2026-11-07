@@ -1,6 +1,6 @@
-# Mod-Release: beim Pushen eines Tags "mod-mc<minecraft>-v<version>" (z.B. mod-mc26.3-v0.1.0) ein GitHub-Release mit
-# der Mod-JAR erstellen. Unabhängig vom Plugin - Spieler müssen den Mod nur aktualisieren, wenn es ein neues
-# Mod-Release gibt. Ablauf: docs/RELEASES.md, Kompatibilität: docs/COMPATIBILITY.md
+# MRwaypoints-Mod-Release: beim Pushen eines Tags "mod-mc<minecraft>-STA-<version>-bu<build>" (stabil) bzw.
+# "mod-mc<minecraft>-BET-..." (Beta), z.B. mod-mc26.3-STA-1.4.0-bu002, ein GitHub-Release mit der JAR erstellen.
+# Stable nur von main (oder dem Wartungs-Branch mc/<minecraft>), Beta nur von beta. Ablauf: docs/RELEASES.md
 #
 # Vorher läuft die ganze Prüfrunde (checks.yml: Bauen + Tests, Bibliotheken, CodeQL) - ist etwas rot, entsteht kein
 # Release. Veröffentlicht wird genau die dort gebaute und geprüfte JAR, mit Herkunftsnachweis (Attestation: GitHub
@@ -9,7 +9,7 @@ name: Release Mod
 
 on:
   push:
-    tags: ['mod-mc*-v*']
+    tags: ['mod-mc*-STA-*', 'mod-mc*-BET-*']
   # By hand on a tag ("Run workflow", choose the tag) - in this repository pushes did not always start workflows.
   workflow_dispatch:
 
@@ -46,7 +46,12 @@ jobs:
           prop() { grep "^$1=" gradle.properties | cut -d= -f2 | tr -d '[:space:]'; }
           VERSION=$(prop version)
           MC=$(prop minecraft_version)
-          FULL="mc$MC-v$VERSION"
+          FULL="mc$MC-$VERSION"
+          # Schema: STA-<MAJOR>.<MINOR>.<PATCH>-bu<BUILD> (stabil) bzw. BET-... (Beta), siehe docs/RELEASES.md
+          if ! printf '%s' "$VERSION" | grep -Eq '^(STA|BET)-[0-9]+\.[0-9]+\.[0-9]+-bu[0-9]{3,}$'; then
+            echo "::error::version=$VERSION in mod/gradle.properties hat nicht das Format STA-1.4.0-bu001 bzw. BET-1.4.0-bu001"
+            exit 1
+          fi
           if [ "mod-$FULL" != "$GITHUB_REF_NAME" ]; then
             echo "::error::Tag $GITHUB_REF_NAME passt nicht zu mod/gradle.properties (erwartet: mod-$FULL)"
             exit 1
@@ -55,18 +60,28 @@ jobs:
           echo "MC=$MC" >> "$GITHUB_ENV"
           echo "FULL=$FULL" >> "$GITHUB_ENV"
           case "$VERSION" in
-            0.*|*-*) echo "PRERELEASE=true" >> "$GITHUB_ENV" ;;
-            *)       echo "PRERELEASE=false" >> "$GITHUB_ENV" ;;
+            BET-*) echo "PRERELEASE=true" >> "$GITHUB_ENV" ;;
+            *)     echo "PRERELEASE=false" >> "$GITHUB_ENV" ;;
           esac
 
-      # Stabile Versionen nur von main oder mc/<version>, Vorabversionen auch von beta.
+      # Stable (STA) nur von main (neueste Minecraft-Version) oder dem Wartungs-Branch mc/<version>, Beta (BET) nur von
+      # beta bzw. mc/<version>. Mod-Releases werden nie "Latest" - das bleibt das Plugin.
       - name: Branch prüfen
         run: |
           on() { git merge-base --is-ancestor "$GITHUB_SHA" "origin/$1" 2>/dev/null; }
-          if [ "$PRERELEASE" = "false" ] && ! on main && ! on "mc/$MC"; then
-            echo "::error::Stabile Version $FULL muss auf main oder mc/$MC getaggt werden (Vorabversionen dürfen von beta kommen)."
+          LATEST=false
+          if [ "$PRERELEASE" = "false" ]; then
+            if on main; then
+              LATEST=false
+            elif ! on "mc/$MC"; then
+              echo "::error::Stable $FULL muss auf main oder mc/$MC getaggt werden."
+              exit 1
+            fi
+          elif ! on beta && ! on "mc/$MC"; then
+            echo "::error::Beta $FULL muss auf beta (oder mc/$MC) getaggt werden."
             exit 1
           fi
+          echo "LATEST=$LATEST" >> "$GITHUB_ENV"
 
       - name: Geprüfte JAR aus der Prüfrunde holen
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2

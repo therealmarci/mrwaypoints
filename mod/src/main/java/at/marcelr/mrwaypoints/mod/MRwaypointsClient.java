@@ -17,6 +17,7 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.metadata.CustomValue;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
@@ -186,9 +187,17 @@ public final class MRwaypointsClient implements ClientModInitializer {
         return new HelloPayload(Protocol.VERSION, version("mrwaypoints"), version("minecraft"));
     }
 
+    /**
+     * Version of a mod. Our own mods publish their full version (STA-1.0.1-bu002+mc26.3) in the custom field
+     * "mrtechnology:version" - the "version" of the fabric.mod.json only holds the SemVer number Fabric expects.
+     */
     private static String version(String mod) {
         return FabricLoader.getInstance().getModContainer(mod)
-                .map(container -> container.getMetadata().getVersion().getFriendlyString())
+                .map(container -> {
+                    CustomValue full = container.getMetadata().getCustomValue("mrtechnology:version");
+                    return full != null && full.getType() == CustomValue.CvType.STRING
+                            ? full.getAsString() : container.getMetadata().getVersion().getFriendlyString();
+                })
                 .orElse("?");
     }
 

@@ -2,10 +2,14 @@ plugins {
 	id 'net.fabricmc.fabric-loom' version "${loom_version}"
 }
 
-// Eigene Version, unabhängig vom Plugin: veröffentlicht wird "mod-mc<minecraft>-v<version>" (Tag), z.B.
-// mod-mc26.3-v0.1.0; die JAR heißt MRwaypoints-mod-mc26.3-v0.1.0.jar. Siehe docs/RELEASES.md.
+// Eigene Version, unabhängig vom Plugin: veröffentlicht wird "mod-mc<minecraft>-<version>" (Tag), z.B.
+// mod-mc26.3-STA-1.0.1-bu001; die JAR heißt MRwaypoints-mod-mc26.3-STA-1.0.1-bu001.jar. Siehe docs/RELEASES.md.
+// Fabric erwartet SemVer: die fabric.mod.json bekommt nur die Nummer (1.0.1+mc26.3), die volle Version steht im
+// Feld "mrtechnology:version" (der Mod meldet sie dem Plugin). Ältere Versionen ("0.2.2") bleiben, wie sie sind.
 def modVersion = project.version.toString()
-version = "mc${project.minecraft_version}-v${modVersion}"
+def newScheme = modVersion ==~ /(?i)(STA|BET)-.+/
+def fabricVersion = newScheme ? modVersion.replaceFirst(/(?i)^(STA|BET)-([0-9.]+)-bu[0-9]+$/, '$2') : modVersion
+version = newScheme ? "mc${project.minecraft_version}-${modVersion}" : "mc${project.minecraft_version}-v${modVersion}"
 base {
 	archivesName = 'MRwaypoints-mod'
 }
@@ -34,7 +38,8 @@ processResources {
 		into("assets/mrwaypoints/lang")
 		rename { "de_ch.json" }
 	}
-	def props = [version: "${modVersion}+mc${project.minecraft_version}", minecraft: project.minecraft_version,
+	def props = [version: "${fabricVersion}+mc${project.minecraft_version}",
+				 fullVersion: "${modVersion}+mc${project.minecraft_version}", minecraft: project.minecraft_version,
 				 loader: project.loader_version]
 	inputs.properties props
 	filesMatching("fabric.mod.json") {
