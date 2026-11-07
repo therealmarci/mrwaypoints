@@ -1,6 +1,10 @@
 # Mod-Release: beim Pushen eines Tags "mod-mc<minecraft>-v<version>" (z.B. mod-mc26.3-v0.1.0) ein GitHub-Release mit
 # der Mod-JAR erstellen. Unabhängig vom Plugin - Spieler müssen den Mod nur aktualisieren, wenn es ein neues
 # Mod-Release gibt. Ablauf: docs/RELEASES.md, Kompatibilität: docs/COMPATIBILITY.md
+#
+# Vorher läuft die ganze Prüfrunde (checks.yml: Bauen + Tests, Bibliotheken, CodeQL) - ist etwas rot, entsteht kein
+# Release. Veröffentlicht wird genau die dort gebaute und geprüfte JAR, mit Herkunftsnachweis (Attestation: GitHub
+# bestätigt, dass sie aus diesem Tag gebaut wurde; prüfen mit "gh attestation verify <jar> -R therealmarci/mrwaypoints").
 name: Release Mod
 
 on:
@@ -10,23 +14,32 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
+  checks:
+    uses: ./.github/workflows/checks.yml
+    permissions:
+      contents: read
+      security-events: write
+
   release:
+    needs: checks
     runs-on: ubuntu-latest
+    permissions:
+      contents: write       # Release anlegen
+      id-token: write       # Herkunftsnachweis
+      attestations: write
     defaults:
       run:
         working-directory: mod
+    env:
+      MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0   # nötig, um zu prüfen, auf welchem Branch der Tag liegt
-      - uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '25'
-      - uses: gradle/actions/setup-gradle@v4
+          persist-credentials: false
 
       - name: Tag mit mod/gradle.properties abgleichen
         run: |
@@ -55,8 +68,21 @@ jobs:
             exit 1
           fi
 
-      - name: Bauen
-        run: chmod +x gradlew && ./gradlew build
+      - name: Geprüfte JAR aus der Prüfrunde holen
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: MRwaypoints-mod
+          path: mod/release-jar
+
+      - name: JAR prüfen
+        run: |
+          JAR="release-jar/MRwaypoints-mod-$FULL.jar"
+          if [ ! -f "$JAR" ]; then
+            echo "::error::$JAR fehlt im Ergebnis der Prüfrunde (vorhanden: $(ls release-jar | tr '\n' ' '))"
+            exit 1
+          fi
+          echo "JAR=mod/$JAR" >> "$GITHUB_ENV"
+          sha256sum "$JAR"
 
       - name: Changelog-Abschnitt auslesen
         run: |
@@ -66,12 +92,17 @@ jobs:
             exit 1
           fi
 
-      # Mod-Releases werden nie als "Latest" markiert - das bleibt das Plugin (Server-Admins laden es zuerst).
+      - name: Herkunftsnachweis
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: ${{ env.JAR }}
+
       - name: GitHub-Release erstellen
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@8a0cd651e5b2365bd640854a3fa5dfc70e4875f3 # v3.0.4
         with:
           name: MRwaypoints Mod ${{ env.VERSION }} (MC ${{ env.MC }})
           body_path: mod/release-notes.md
-          files: mod/build/libs/MRwaypoints-mod-${{ env.FULL }}.jar
+          files: |
+            ${{ env.JAR }}
           prerelease: ${{ env.PRERELEASE == 'true' }}
           make_latest: false
