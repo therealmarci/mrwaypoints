@@ -62,8 +62,35 @@ Der Update-Check meldet nur Versionen **derselben** Minecraft-Version.
 6. Committen, pushen, Tag setzen und pushen, z.B. `git tag plugin-mc26.3-v0.2.0 && git push origin plugin-mc26.3-v0.2.0`.
 
 Die Workflows prüfen, ob der Tag zur `gradle.properties` des Teils passt, lassen stabile Versionen nur von `main`
-oder `mc/<mcVersion>` zu (Vorabversionen auch von `beta`), bauen den Teil und erstellen das GitHub-Release.
+oder `mc/<mcVersion>` zu (Vorabversionen auch von `beta`), lassen vorher die Prüfrunde laufen (siehe unten) und
+erstellen das GitHub-Release mit der dort gebauten JAR und Herkunftsnachweis.
 
+## Prüfrunde vor jedem Release (Sicherheit)
+Jeder Release-Workflow ruft zuerst `.github/workflows/checks.yml` auf. **Ist dort etwas rot, entsteht kein Release.**
+Dieselbe Prüfrunde läuft bei jedem Push, jedem Pull-Request und jeden Montag (findet neue Lücken in schon
+veröffentlichten Versionen - GitHub schickt bei einem roten Lauf eine Mail).
+
+| Prüfung | Was | Stoppt bei |
+|---|---|---|
+| Bauen + Tests | `./gradlew build`, Prüfung des Gradle-Wrappers (`gradle-wrapper.jar` unverändert) | jedem Fehler |
+| Bibliotheken | alles, was auf dem Server landet (eingebettet = `runtimeClasspath`, Mod: `include`, dazu die `libraries:` der `plugin.yml`), per OSV-Scanner gegen bekannte Lücken (`.github/shipped-dependencies.gradle`, `.github/scan-dependencies.sh`) | CVSS ≥ 7.0 (hoch/kritisch) |
+| CodeQL | Code-Analyse auf Sicherheitsprobleme (Abfragen `security-extended`), Funde im Reiter **Security → Code scanning** | offenen Funden „high“/„critical“ (`.github/codeql-gate.sh`) |
+
+Mittlere und niedrige Funde stoppen nicht, sie stehen in der Zusammenfassung des Laufs. **Fehlalarm von CodeQL:** im
+Reiter Security den Fund mit Begründung schließen („False positive“ / „Won't fix“) - danach zählt er nicht mehr.
+**Lücke in einer Bibliothek:** Version anheben (Spalte „Fixed in“ der Zusammenfassung), bauen, neu taggen.
+
+Veröffentlicht wird genau die JAR, die die Prüfrunde gebaut hat (nicht neu gebaut), mit **Herkunftsnachweis**:
+GitHub bestätigt, dass sie aus diesem Tag gebaut wurde. Prüfen: `gh attestation verify <jar> -R therealmarci/<repo>`.
+
+Außerdem: Alle Actions sind auf einen Commit festgelegt (Version als Kommentar daneben), die Workflows haben nur
+Leserechte, Schreibrechte nur der Release-Schritt. `dependency-graph.yml` meldet die mitgelieferten Bibliotheken von
+`main` an GitHub - neue Lücken erscheinen dann als Dependabot-Warnung im Reiter Security (ohne automatische
+Pull-Requests). `gradle/actions` bleibt bewusst auf v5: ab v6 gehört zum Cache ein Baustein mit eigenen
+Nutzungsbedingungen.
+
+Actions aktualisieren: neue Version und ihren Commit nachschlagen (`gh api repos/<owner>/<action>/commits/<tag> --jq .sha`)
+und in allen Workflows ersetzen. Ein Lauf von Hand: `gh workflow run Checks -R therealmarci/<repo> --ref <branch>`.
 ## Neue Minecraft-Version unterstützen (z.B. 26.4)
 1. **Alte Version sichern** (falls weiter gepflegt): `git branch mc/26.3 main && git push -u origin mc/26.3`
 2. Auf `beta` anpassen:
