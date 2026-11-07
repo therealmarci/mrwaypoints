@@ -5,6 +5,9 @@
 
 ## [Unveröffentlicht]
 
+### Behoben & geändert
+- **Erkennbar als Dev-Build:** Builds aus GitHub Actions tragen jetzt Commit und Branch in sich - MRadmin (Server → Plugins) erkennt daran Dev-Builds und zeigt sie mit „Dev <Commit>“ an.
+
 ## [0.1.3] - 2026-11-07
 
 ### Behoben & geändert
