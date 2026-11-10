@@ -5,6 +5,8 @@
 
 ## [Unveröffentlicht]
 
+## [BET-0.1.4-bu002] - 2026-11-10
+
 ### Neu
 - **Team-Hinweise über MRadmin:** Mit MRadmin (Modul-API 15) richtet sich der Update-Hinweis beim Betreten nach der Wahl „Update verfügbar → Im Spiel“ unter Konto → Benachrichtigungen und nach `/mradmin mute`; ohne MRadmin bleibt alles wie bisher.
 
