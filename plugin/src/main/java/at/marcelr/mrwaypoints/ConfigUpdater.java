@@ -22,7 +22,7 @@ import java.util.logging.Level;
 public final class ConfigUpdater {
 
     /** 2: mod (the MRwaypoints mod for Xaero's map). */
-    public static final int CURRENT_VERSION = 8;
+    public static final int CURRENT_VERSION = 9;
     public static final String BOM = "﻿";
     /**
      * Values whose meaning or default changed: key -> config-version that brought the change. Only files older than
@@ -39,7 +39,8 @@ public final class ConfigUpdater {
             Map.entry("server-language", "general.server-language"),
             Map.entry("update-checker.enabled", "updates.enabled"),
             Map.entry("update-checker.source", "updates.source"),
-            Map.entry("update-checker.include-prereleases", "updates.include-prereleases"),
+            Map.entry("update-checker.include-prereleases", "updates.beta"),
+            Map.entry("updates.include-prereleases", "updates.beta"),
             Map.entry("update-checker.interval-hours", "updates.interval-hours"),
             Map.entry("update-checker.notify-on-join", "updates.notify-on-join"));
 
