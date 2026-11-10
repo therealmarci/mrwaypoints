@@ -10,3 +10,4 @@ MRwaypoints runs **on its own**. Together with other MRtechnology plugins it can
 | Button in the MRadmin dashboard (opens `/waypoints`) | MRadmin |
 | Events in the **log** of the MRadmin web interface, Discord log via MRadmin's webhook (`discord.use-mradmin-webhook`) | MRadmin |
 | Waypoints in Xaero's Minimap and World Map, show and hide categories | MRwaypoints mod + Xaero's Minimap |
+| Messages to the team in the game (e.g. update available) can be switched on and off under Account → Notifications and muted with `/mradmin mute` | MRadmin |
