@@ -80,20 +80,15 @@ public final class MRwaypointsClient implements ClientModInitializer {
                 sayHello();
             }
         });
+        // Every join starts fresh: behind a proxy (Velocity) a server switch keeps the connection, so DISCONNECT does
+        // not come - without this the waypoints of the last server stayed and the new one was never greeted.
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
+            reset();
             if (ClientPlayNetworking.canSend(HelloPayload.TYPE)) {
                 sayHello();
             }
         });
-        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
-            XaeroBridge.clear();
-            state = null;
-            compatible = false;
-            helloSent = false;
-            helloTicks = 0;
-            status = null;
-            dirty = false;
-        });
+        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> reset());
 
         // Only J has a default; the others are free to bind (Options -> Controls -> MRwaypoints), so nothing clashes
         // with Xaero or other mods. Fixed order there, the ids stay the same.
@@ -172,6 +167,17 @@ public final class MRwaypointsClient implements ClientModInitializer {
         if (connected(client) && ClientPlayNetworking.canSend(ActionPayload.TYPE)) {
             ClientPlayNetworking.send(new ActionPayload(action));
         }
+    }
+
+    /** Forgets everything about the server (new server or no server). */
+    private static void reset() {
+        XaeroBridge.clear();
+        state = null;
+        compatible = false;
+        helloSent = false;
+        helloTicks = 0;
+        status = null;
+        dirty = false;
     }
 
     private static void sayHello() {
