@@ -6,6 +6,8 @@ Versionen - welche Plugin-Versionen passen, steht in [docs/COMPATIBILITY.md](../
 
 ## [Unveröffentlicht]
 
+## [BET-0.1.0-bu001] - 2026-11-11
+
 ### Behoben & geändert
 - **Neues Versionsschema:** Der Mod meldet dem Plugin seine volle Version (z.B. `STA-1.1.0-bu001`), damit Update-Hinweis und `mod.minimum-version` auch den Build vergleichen. In Fabric und Mod Menu steht weiter nur die Nummer (`1.1.0`), weil Fabric dort SemVer erwartet. Funktioniert mit allen Plugin-Versionen.
 - **Serverwechsel hinter Velocity:** Wechselte man über einen Proxy den Server (z.B. in den Warteraum und zurück), blieben die Server-Wegpunkte des alten Servers in Xaero stehen und der Mod meldete sich beim neuen Server nicht an - erst ein Neu-Verbinden half. Jetzt fängt der Mod bei jedem Betreten eines Servers neu an. Funktioniert mit allen Plugin-Versionen.
