@@ -5,6 +5,9 @@
 
 ## [Unveröffentlicht]
 
+### Behoben & geändert
+- **`mod.minimum-version` im neuen Versionsschema:** Werte wie `BET-0.1.0-bu001` wurden als ungültig abgelehnt („Invalid mod.minimum-version“) und ignoriert. Jetzt gelten sie - so lässt sich auch ein neuer Build derselben Version erzwingen.
+
 ## [BET-0.1.5-bu001] - 2026-11-10
 
 ### Behoben & geändert

@@ -65,7 +65,7 @@ guide:
 # World Map and switch categories on and off in /waypoints -> Categories (the key J and a button in Xaero's waypoint menu
 # open /waypoints). Their choice is saved on the server (players.yml). Without the mod, menu and guide work as usual.
 mod:
-  # Oldest version of the mod that is still allowed (e.g. "0.2.1", empty = any compatible version).
+  # Oldest version of the mod that is still allowed (e.g. "BET-0.1.0-bu001", empty = any compatible version).
   # Which mod versions fit the plugin in principle is built into the plugin (protocol version) - here you
   # can additionally lock out older versions, e.g. because of a bug in the mod.
   minimum-version: ""

@@ -64,8 +64,10 @@ public record Settings(
                 Math.clamp(c.getInt("waypoints.max-name-length", 32), 3, 64));
 
         String minimum = c.getString("mod.minimum-version", "").trim();
-        if (!minimum.isEmpty() && !minimum.matches("\\d+(\\.\\d+){0,2}.*")) {
-            log.warning("Invalid mod.minimum-version '" + minimum + "' (expected e.g. 0.2.0), ignoring it.");
+        // New scheme (BET-0.1.0-bu001, what the mod reports) or an old version (0.2.0).
+        if (!minimum.isEmpty() && !at.marcelr.mrwaypoints.util.Versions.isScheme(minimum)
+                && !minimum.matches("\\d+(\\.\\d+){0,2}.*")) {
+            log.warning("Invalid mod.minimum-version '" + minimum + "' (expected e.g. BET-0.1.0-bu001 or 0.2.0), ignoring it.");
             minimum = "";
         }
         ModSettings mod = new ModSettings(minimum,
