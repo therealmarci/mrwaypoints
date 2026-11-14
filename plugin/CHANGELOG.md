@@ -5,6 +5,9 @@
 
 ## [Unveröffentlicht]
 
+### Neu
+- **Gruppe Bots für Zweitaccounts:** `mrwaypoints.groups.bots` (nicht für OPs, in keiner Team-Gruppe) - keine Rechte in MRwaypoints. Fertige LuckPerms-Gruppe „bots“ im MRadmin-Wiki unter Permissions.
+
 ## [BET-0.1.5-bu002] - 2026-11-11
 
 ### Behoben & geändert

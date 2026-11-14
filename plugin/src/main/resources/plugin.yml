@@ -28,6 +28,9 @@ permissions:
       mrwaypoints.use: true
       mrwaypoints.settings: true
       mrwaypoints.version: true
+  mrwaypoints.groups.bots:
+    description: "Group bots (second accounts): no rights in MRwaypoints (no waypoints)."
+    default: false
   mrwaypoints.groups.support:
     description: "Group support: player + see the waypoints page in MRadmin's web interface."
     default: op

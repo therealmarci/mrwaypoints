@@ -31,3 +31,5 @@ mrwaypoints.admin.discord:
   de: "`/mrwaypoints discord [test]`"
 mrwaypoints.admin.update:
   de: "Update-Hinweis beim Betreten des Servers"
+mrwaypoints.groups.bots:
+  de: "Gruppe Bots (Zweitaccounts): keine Rechte in MRwaypoints (keine Wegpunkte)."
