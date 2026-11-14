@@ -1,6 +1,6 @@
 # Konfiguration
 
-Am einfachsten im Browser: Mit **MRadmin** unter **Plugins → MRwaypoints → Konfiguration** - jede Einstellung mit Erklärung, Speichern lädt MRwaypoints sofort neu (Permission `mradmin.config`). Alles steht außerdem kommentiert in `plugins/MRwaypoints/config.yml`; Änderungen von Hand übernimmst du mit `/mrwaypoints reload`. Die Kategorien stehen getrennt in `categories.yml` (siehe [Kategorien](kategorien.md)).
+Am einfachsten im Browser: Mit **MRadmin** unter **Einstellungen → Konfiguration → MRwaypoints** - jede Einstellung mit Erklärung, Speichern lädt MRwaypoints sofort neu (Permission `mradmin.config`). Alles steht außerdem kommentiert in `plugins/MRwaypoints/config.yml`; Änderungen von Hand übernimmst du mit `/mrwaypoints reload`. Die Kategorien stehen getrennt in `categories.yml` (siehe [Kategorien](kategorien.md)).
 
 | Abschnitt | Wofür |
 |---|---|

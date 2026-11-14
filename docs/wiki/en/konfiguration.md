@@ -1,6 +1,6 @@
 # Configuration
 
-Easiest in the browser: with **MRadmin** under **Plugins → MRwaypoints → Configuration** - every setting with an explanation, saving reloads MRwaypoints right away (permission `mradmin.config`). Everything is also commented in `plugins/MRwaypoints/config.yml`; you apply changes by hand with `/mrwaypoints reload`. The categories are kept separately in `categories.yml` (see [Categories](kategorien.md)).
+Easiest in the browser: with **MRadmin** under **Settings → Configuration → MRwaypoints** - every setting with an explanation, saving reloads MRwaypoints right away (permission `mradmin.config`). Everything is also commented in `plugins/MRwaypoints/config.yml`; you apply changes by hand with `/mrwaypoints reload`. The categories are kept separately in `categories.yml` (see [Categories](kategorien.md)).
 
 | Section | What for |
 |---|---|
